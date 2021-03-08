@@ -130,11 +130,30 @@ export class Health extends Component {
   //abilities
 export class AbilityList extends Component {
   static properties = {abilities: []}
+
+  onAttached(){
+    //upon creation generate the prefabs and fill this list
+    var abilities = []
+
+    this.abilities.forEach( (abil) => {
+      abilities.push(world.createPrefab(abil))
+    })
+    this.abilities=abilities
+  }
 }
 
 
-export class Ability extends Component {
+export class AbilityFunction extends Component {
     static properties = {function: Abilities.Ability} 
 }
-export class AbilityMove extends Component { }
+export class AbilityPhase extends Component {
+  static properties = {phase: "Any"}
+}
   
+export class AbilitySpeed extends Component {
+  static properties = {speed: "Instant"}
+}
+
+export class AbilityStaminaCost extends Component {
+  static properties = {amount: 1}
+}

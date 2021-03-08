@@ -2,11 +2,7 @@ import { Engine } from "geotic";
 
 import * as components from "./component"
 
-import {Being, Tile,
-Wall, Floor,
-PlayerBeing, Mob,
-Goblin,
-} from "./prefab"
+import * as prefabs from "./prefab"
 
 const ecs = new Engine();
 
@@ -29,25 +25,30 @@ ecs.registerComponent(components.Die)
 
 //ability
 ecs.registerComponent(components.AbilityList)
+ecs.registerComponent(components.AbilityFunction)
+ecs.registerComponent(components.AbilityPhase)
+ecs.registerComponent(components.AbilitySpeed)
+ecs.registerComponent(components.AbilityStaminaCost)
 
-ecs.registerComponent(components.Ability)
-ecs.registerComponent(components.AbilityMove)
 
 
 
 
 //prefabs
 
-ecs.registerPrefab(Tile)
-ecs.registerPrefab(Being)
+ecs.registerPrefab(prefabs.Tile)
+ecs.registerPrefab(prefabs.Being)
 
-ecs.registerPrefab(Wall)
-ecs.registerPrefab(Floor)
+ecs.registerPrefab(prefabs.Wall)
+ecs.registerPrefab(prefabs.Floor)
 
-ecs.registerPrefab(PlayerBeing)
-ecs.registerPrefab(Mob)
+ecs.registerPrefab(prefabs.PlayerBeing)
+ecs.registerPrefab(prefabs.Mob)
 
-ecs.registerPrefab(Goblin)
+ecs.registerPrefab(prefabs.Goblin)
+
+ecs.registerPrefab(prefabs.Ability)
+ecs.registerPrefab(prefabs.AbilityMove)
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {
