@@ -88,8 +88,8 @@ const processUserInput = () => {
       console.log(CurrrentActivePlayer)
       //CurrrentActivePlayer.abilityList.abilities[0].function.onUse()
       console.log(CurrrentActivePlayer.abilityList.abilities[0])
-      let abil = CurrrentActivePlayer.abilityList.abilities[0].properties.function
-      abil.onUse(abil, CurrrentActivePlayer)
+      let abil = CurrrentActivePlayer.abilityList.abilities[0]
+      abil.abilityFunction.function.onUse(abil, CurrrentActivePlayer)
     }
 
 

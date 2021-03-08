@@ -1,5 +1,6 @@
 
 import * as components from "./component"
+import * as Abilities from "../systems/abilities"
 
 // Base
 export const Tile = {
@@ -25,6 +26,18 @@ export const Tile = {
       { type: "AbilityList"}
     ],
   };
+
+  export const Ability = {
+    name: "Ability",
+    components:[
+      { type: "Description",
+        properties: {name: "Generic Ability", description: "used for testing as base template"}},
+      { type: "AbilityPhase"},
+      { type: "AbilitySpeed"},
+      { type: "AbilityStaminaCost"},
+      { type: "AbilityFunction"}
+    ]
+  }
 
 
       // description
@@ -80,7 +93,7 @@ export const Floor = {
     },
     {
       type: "AbilityList",
-      properties: {abilities: [components.Ability, components.AbilityMove] }
+      properties: {abilities: ["Ability", "AbilityMove"] }
     }
    ]
  };
@@ -110,6 +123,20 @@ export const Goblin = {
     {
       type: "Description",
       properties: {name: "Goblin", description: "A lowly Goblin"}
+    }
+  ]
+}
+
+
+//abilities
+export const AbilityMove = {
+  name: "AbilityMove",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Move", description: "exhausts 1 die to give it's face value for movement points"}},
+    { type: "AbilityFunction",
+      properties: {function: Abilities.AbilityMove}
     }
   ]
 }
