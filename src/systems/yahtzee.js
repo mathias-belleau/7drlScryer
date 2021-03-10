@@ -1,27 +1,31 @@
-export const CheckSingles = (counts, amountToMatch = 1, Allowed = [1,2,3,4,5,6]) => {
-    return (CheckSames(counts,1))
+export const CheckSingles = (counts, Allowed = [1,2,3,4,5,6]) => {
+    return (CheckSames(counts,1, Allowed))
 }
 
-export const CheckDoubles = (counts) => {
-    return (CheckSames(counts,2))
+export const CheckDoubles = (counts, Allowed = [1,2,3,4,5,6]) => {
+    return (CheckSames(counts,2, Allowed))
 }
 
-export const CheckTriples = (counts) => {
-    return (CheckSames(counts,3))
+export const CheckTriples = (counts, Allowed = [1,2,3,4,5,6]) => {
+    return (CheckSames(counts,3, Allowed))
 }
 
-export const CheckQuads = (counts) => {
-    return (CheckSames(counts,4))
+export const CheckQuads = (counts,  Allowed = [1,2,3,4,5,6]) => {
+    return (CheckSames(counts,4, Allowed))
 }
 
-export const CheckSames = (counts, match) => {
-    var found = false;
+export const CheckSames = (counts, match, Allowed = [1,2,3,4,5,6]) => {
+    var found = [];
     for (let x = 1; x < 7; x++) {
-        if(counts[x] && counts[x] == match){
+        if(counts[x] && counts[x] == match && Allowed.includes(x)){
+            
             console.log("found match")
-            found = true
+            found.push(x)
         }
     }
+
+    //if we went over allowed limit
+    
     console.log(counts)
     console.log(found)
     console.log("match:" + match)

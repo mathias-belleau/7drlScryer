@@ -49,19 +49,21 @@ const dmgTileEntities = world.createQuery({
 
 const update = () => {
     if(gameState == "setup"){
-      gameState = "EnemyTurn"
-    }else if(gameState == "EnemyTurn") {
-      EnemyTurn()
+      gameState = "EnemyTurnDefend"
+    }else if(gameState == "EnemyTurnDefend") {
 
+      
+      EnemyTurn()
+      gameState = "EnemyTurnAttack"
+      render()
+      //set to playerturndefend
+      //check win/lose  
+    }else if(gameState == "EnemyTurnAttack"){
       //fire end turn for all enemy units
       EndTurnProcess(enemyEntities.get())
 
       gameState = "PlayerTurnDefend"
       render()
-      //set to playerturndefend
-      //check win/lose  
-
-      
     }else if(gameState == "PlayerTurnDefend") {
       processUserInput()
       //set to playerturnattack
@@ -145,7 +147,7 @@ const processUserInput = () => {
         //hit existing ability key
         let abil = CurrrentActivePlayer.abilityList.abilities[abilityIndex]
         let canUse = abil.abilityFunction.function.canUse(abil,CurrrentActivePlayer)
-        if(canUse){
+        if(canUse.length > 0){
           //check if ability is instant or targeted
           if(abil.abilityFunction.function.onTarget){
             abil.abilityFunction.function.onTarget(abil, CurrrentActivePlayer)
@@ -164,7 +166,7 @@ const processUserInput = () => {
         gameState = "PlayerTurnAttack"
       }else if (gameState == "PlayerTurnAttack"){
         EndTurnProcess(allyEntities.get())
-        gameState = "EnemyTurn"
+        gameState = "EnemyTurnDefend"
       }
 
       render()

@@ -113,7 +113,9 @@ const renderAbilityMenu = () => {
     for(var x = 0; x < CurrrentActivePlayer.abilityList.abilities.length;x++){
         var color = "gray"
 
-        if(CurrrentActivePlayer.abilityList.abilities[x].abilityFunction.function.canUse(null, CurrrentActivePlayer)){
+        if(CurrrentActivePlayer.abilityList.abilities[x].abilityFunction.function.canUse(
+            CurrrentActivePlayer.abilityList.abilities[x],
+             CurrrentActivePlayer).length > 0){
             color = "white"
         }
 

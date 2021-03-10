@@ -45,7 +45,7 @@ export const AbilityDodge = {
 
 export const AbilitySwordJab = {
     canUse: (ability,entity) => {
-        return yahtzee.CheckSingles(GetSelectedDie(entity))
+        return yahtzee.CheckSingles(GetSelectedDie(entity), ability.abilityAllowedDie.allowed)
     },
     onUse:(ability,entity) => {
         //get target!
@@ -91,7 +91,7 @@ export const AbilitySwordJab = {
 
 export const AbilitySwordSwing = {
     canUse: (ability,entity) => {
-        return yahtzee.CheckSingles(GetSelectedDie(entity))
+        return yahtzee.CheckSingles(GetSelectedDie(entity), ability.abilityAllowedDie.allowed)
     },
     onUse:(ability,entity) => {
         var coords = RotateCoords(ability, entity)

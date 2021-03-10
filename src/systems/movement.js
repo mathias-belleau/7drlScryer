@@ -61,7 +61,7 @@ export const AttemptMove = (moveComp, entity) => {
         return false;
       }else {
         //remove 1 dodge for getting out of tile
-        entity.movement.dodge--;
+        //entity.movement.dodge = Math.max(0,entity.movement.dodge - 1)
       }
     }
 

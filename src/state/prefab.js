@@ -37,7 +37,8 @@ export const Tile = {
       { type: "AbilityStaminaCost"},
       { type: "AbilityFunction"},
       { type: "AbilitySmallName"},
-      { type: "AbilityTarget"}
+      { type: "AbilityTarget"},
+      { type: "AbilityAllowedDie"}
     ]
   }
 
@@ -179,6 +180,10 @@ export const AbilitySwordJab = {
     {
       type: "AbilityTarget",
       properties: {coords: [[0,0]]}
+    },
+    {
+      type:"AbilityAllowedDie",
+      properties: {allowed:[3,4,5,6]}
     }
   ]
 }
@@ -200,6 +205,10 @@ export const AbilitySwordSwing = {
       type: "AbilityTarget",
       //properties: {coords: [[-1,0],[0,0]]}
       properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]}
+    },
+    {
+      type:"AbilityAllowedDie",
+      properties: {allowed:[4,5,6]}
     }
   ]
 }

@@ -87,12 +87,17 @@ export class Health extends Component {
     }
   
     onAttemptMove(evt){
-      if(this.movement <= 0){
+      if(this.movement <= 0 && this.dodge <= 0){
         evt.handle()
       }else {
         var success = Movements.AttemptMove(this, this.entity)
         if(success){
-          this.movement -= 1
+          //check if we used movement or dodge
+          if(this.dodge > 0){
+            this.dodge = Math.max(0,this.dodge - 1)
+          }else {
+            this.movement -= 1
+          }
         }
       }
       this.x = 0
@@ -193,6 +198,9 @@ export class AbilityTarget extends Component {
   static properties = {coords: [[0,0]]}
 }
 
+export class AbilityAllowedDie extends Component {
+  static properties = {allowed: [1,2,3,4,5,6]}
+}
 
 export class AbilityFunction extends Component {
     static properties = {function: Abilities.Ability} 
