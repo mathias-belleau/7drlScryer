@@ -40,11 +40,14 @@ export class Health extends Component {
     static properties = { max: 4, current: 4 };
   
     onTakeDamage(evt) {
+        console.log("i've been hit!")
         this.current -= evt.data.amount;
-  
+      
+      
         console.log(this)
+        console.log("ow")
         if (this.current <= 0) {
-          
+            this.entity.remove(this.entity.position)
             // this.entity.appearance.char = "%";
             // this.entity.remove(this.entity.ai)
             // this.entity.remove(this.entity.isBlocking)

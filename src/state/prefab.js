@@ -198,7 +198,8 @@ export const AbilitySwordSwing = {
     },
     {
       type: "AbilityTarget",
-      properties: {coords: [[-1,0],[0,0]]}
+      //properties: {coords: [[-1,0],[0,0]]}
+      properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]}
     }
   ]
 }

@@ -64,7 +64,12 @@ export const AbilitySwordJab = {
         //for each target create dmg tile
         console.log(ability)
         console.log(ability.abilityTarget.coords)
-        ability.abilityTarget.coords.forEach(coord => {
+
+        var coords = RotateCoords(ability, entity)
+
+        
+        //create dmg tiles
+        coords.forEach(coord => {
             console.log(coord)
             var newDmgTile =  world.createEntity()
             newDmgTile.add(components.Position, {x:targetEntity.position.x + coord[0],y:targetEntity.position.y + coord[1]} )
@@ -89,10 +94,10 @@ export const AbilitySwordSwing = {
         return yahtzee.CheckSingles(GetSelectedDie(entity))
     },
     onUse:(ability,entity) => {
-       
+        var coords = RotateCoords(ability, entity)
         //do ability
         //for each target create dmg tile
-        ability.abilityTarget.coords.forEach(coord => {
+        coords.forEach(coord => {
             console.log(coord)
             var newDmgTile =  world.createEntity()
             newDmgTile.add(components.Position, {x:targetEntity.position.x + coord[0],y:targetEntity.position.y + coord[1]} )
@@ -124,3 +129,65 @@ const GetSelectedDie = (entity) => {
     return counts;
 }
 
+const RotateCoords = (ability, entity) => {
+    //do we need to rotate coords?
+    var diffX = targetEntity.position.x - entity.position.x  
+    var diffY = targetEntity.position.y - entity.position.y;
+    var coords = ability.abilityTarget.coords;
+    console.log("before rotate")
+    console.log(coords)
+    console.log("direction")
+    if(diffY == -1){
+        console.log("up")
+    }else if(diffY == 1){
+        console.log("down")
+        coords = ConvertCoordsDown(coords)
+    }else if(diffX == -1){
+        console.log("left")
+        coords = ConvertCoordsLeft(coords)
+    }else if(diffX == 1){
+        console.log("right")
+        coords = ConvertCoordsRight(coords)
+    }
+    console.log("after rotate")
+    console.log(coords)
+    return coords
+}
+
+const ConvertCoordsRight = (coords) => {
+    var newRight = []
+    coords.forEach( (co) => {
+        var holder = []
+        holder.push(co[1])
+        holder.push(co[0])
+        holder[0] = holder[0] * -1
+        holder[1] = holder[1] * 1
+        newRight.push(holder)
+    })
+    return newRight
+}
+
+const ConvertCoordsLeft = (coords) => {
+    var newRight = []
+    coords.forEach( (co) => {
+        var holder = []
+        holder.push(co[1])
+        holder.push(co[0])
+        //holder[0] = holder[0] * -1
+        holder[1] = holder[1] * -1
+        newRight.push(holder)
+    })
+    return newRight
+}
+
+const ConvertCoordsDown = (coords) => {
+    var newRight = []
+    coords.forEach( (co) => {
+        var holder = []
+        holder = [...co]
+        holder[0] = holder[0] * -1
+        holder[1] = holder[1] * -1
+        newRight.push(holder)
+    })
+    return newRight
+}

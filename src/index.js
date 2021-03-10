@@ -6,7 +6,8 @@ import {makeMap,FetchFreeTile} from "./state/dungeon"
 import * as components from "./state/component"
 import { times } from "lodash";
 import { Tile } from "./state/prefab.js";
-
+import {readCacheSet} from "./state/cache"
+import {toLocId} from "./lib/grid"
 import * as Abilities from "./systems/abilities"
 
 
@@ -42,10 +43,16 @@ const enemyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy]
 })
 
+const dmgTileEntities = world.createQuery({
+  all: [components.DmgTile]
+})
+
 const update = () => {
     if(gameState == "setup"){
       gameState = "EnemyTurn"
     }else if(gameState == "EnemyTurn") {
+      EnemyTurn()
+
       //fire end turn for all enemy units
       EndTurnProcess(enemyEntities.get())
 
@@ -153,6 +160,7 @@ const processUserInput = () => {
     }else if(userInput=="Enter"){
       console.log("Enter")
       if(gameState == "PlayerTurnDefend"){
+        PlayerTurnDefend()
         gameState = "PlayerTurnAttack"
       }else if (gameState == "PlayerTurnAttack"){
         EndTurnProcess(allyEntities.get())
@@ -243,13 +251,17 @@ const PlayerAttemptMove = () => {
 
 const TargetMove = () => {
   if (userInput === "ArrowUp") {
-    targetEntity.position.y += -1
+    targetEntity.position.y = CurrrentActivePlayer.position.y + -1
+    targetEntity.position.x = CurrrentActivePlayer.position.x
   } else if (userInput === "ArrowRight") {
-    targetEntity.position.x += 1
+    targetEntity.position.x = CurrrentActivePlayer.position.x + 1
+    targetEntity.position.y = CurrrentActivePlayer.position.y
   } else if (userInput === "ArrowDown") {
-    targetEntity.position.y += 1
+    targetEntity.position.y = CurrrentActivePlayer.position.y + 1
+    targetEntity.position.x = CurrrentActivePlayer.position.x
   } else if (userInput === "ArrowLeft") {
-    targetEntity.position.x += -1
+    targetEntity.position.x = CurrrentActivePlayer.position.x + -1
+    targetEntity.position.y = CurrrentActivePlayer.position.y
   }
 }
 
@@ -292,18 +304,46 @@ const EnemyTurn = () => {
 
 
   //process playerAttack
+  ProcessDmgTiles()
 }
 
 const PlayerTurnDefend = () => {
   //wait for player input and process, but only allow defensive abilities
 
   //proccess enemyAttack
+  ProcessDmgTiles()
 }
 
 const PlayerTurnAttack = () => {
   //wait for player input and process, but only allow offensive abilities 
 }
 
+const ProcessDmgTiles = () => {
+  console.log("process dmg")
+  //for each dmgtile
+  console.log(dmgTileEntities.get())
+  //dont remove from an array while iterating over it
+  var toDestroy = []
+  dmgTileEntities.get().forEach( (entity) => {
+    var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
+
+    getEntitiesAtLoc.forEach( (eId) => {
+      //check if this is a unit
+      var entityAtLoc = world.getEntity(eId);
+      console.log(entityAtLoc)
+      if(entityAtLoc.layerUnit){
+        entityAtLoc.fireEvent("take-damage", {amount: entity.dmgTile.dmg})
+      }
+    });
+    toDestroy.push(entity)
+  });
+
+  toDestroy.forEach( (ent) =>{
+    ent.destroy()
+  })
+  console.log(dmgTileEntities.get())
+  console.log("end process dmg")
+}
 
 const EndTurnProcess = (entities) => {
   console.log('ending turn for ')

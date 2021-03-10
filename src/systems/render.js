@@ -130,6 +130,9 @@ const renderTarget = () => {
     DrawChar(targetEntity, 
         targetEntity.position.x+grid.map.x,
         targetEntity.position.y+grid.map.y)
+
+    // draw the actual target coords
+    
 }
 
 const renderSlowAttacks = () => {
