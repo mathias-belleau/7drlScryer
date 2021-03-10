@@ -4,6 +4,8 @@ import { Component } from "geotic";
 import { random, compact } from "lodash";
 import {addCacheSet, deleteCacheSet} from "./cache"
 import * as Abilities from "../systems/abilities"
+import * as Movements from "../systems/movement"
+
 export class Appearance extends Component {
     static properties = {
       color: "#ff0077",
@@ -56,7 +58,7 @@ export class Health extends Component {
   }
 
   export class Movement extends Component{
-    static properties = {movement: 0, dodge: 0}
+    static properties = {movement: 0, dodge: 0, x: 0, y: 0}
 
     onGainMovement(evt) {
       this.movement += evt.data;
@@ -65,7 +67,7 @@ export class Health extends Component {
     }
 
     onGainDodge(evt){
-      this.dodge += evtevt.data;
+      this.dodge += evt.data;
       evt.handle();
     }
 
@@ -73,8 +75,26 @@ export class Health extends Component {
       console.log('ended in move')
       this.movement = 0
       this.dodge = 0
+    }
 
-      //evt.handle()
+    onChangePosition(evt){
+      this.x = evt.data.x
+      this.y = evt.data.y
+      evt.handle()
+    }
+  
+    onAttemptMove(evt){
+      if(this.movement <= 0){
+        evt.handle()
+      }else {
+        var success = Movements.AttemptMove(this, this.entity)
+        if(success){
+          this.movement -= 1
+        }
+      }
+      this.x = 0
+      this.y = 0
+      evt.handle()
     }
   }
 
@@ -96,7 +116,9 @@ export class Health extends Component {
     onTurnEnd(evt) {
       console.log('doing turn end')
       //gain stamina back 4-used stamina this turn
-      this.current = Math.min(this.max, this.current+= Math.max(4-this.used,0))
+      //this.onUpdateStamina()
+      this.current = Math.min(this.max, this.current + Math.max(0,4-this.used))
+      this.used = 0;
       this.onRollDice()
       //evt.handle()
     }
@@ -109,11 +131,28 @@ export class Health extends Component {
         this.entity.die[x].number = random(1, 6);
       }
     }
+
+    onUpdateStamina(){
+      //this.current = Math.min(0, this.current+= Math.max(4-this.used,this.max))
+      //this.current = this.current - this.used;
+    }
   }
 
   export class Die extends Component {
     static allowMultiple = true;
     static properties = {number: 0, selected: false, exhausted: false}
+
+    
+    onExhaustSelected(evt){
+      if(this.selected){
+        this.entity.stamina.used++;
+        this.entity.stamina.current--;
+        this.exhausted = true
+        this.selected = false
+
+        this.entity.fireEvent("update-stamina")
+      }
+    }
   }
 
   export class IsPlayerControlled extends Component{}
@@ -126,6 +165,11 @@ export class Health extends Component {
   export class LayerMap extends Component {}
   export class LayerUnit extends Component {}
 
+  export class SlowAttack extends Component {}
+  export class FastAttack extends Component {}
+  export class DmgTile extends Component {
+    static properties = {dmg: 1}
+  }
 
   //abilities
 export class AbilityList extends Component {
@@ -142,6 +186,10 @@ export class AbilityList extends Component {
   }
 }
 
+export class AbilityTarget extends Component {
+  static properties = {coords: [[0,0]]}
+}
+
 
 export class AbilityFunction extends Component {
     static properties = {function: Abilities.Ability} 
@@ -156,4 +204,8 @@ export class AbilitySpeed extends Component {
 
 export class AbilityStaminaCost extends Component {
   static properties = {amount: 1}
+}
+
+export class AbilitySmallName extends Component {
+  static properties = {smallName: "abl"}
 }

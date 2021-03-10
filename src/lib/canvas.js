@@ -9,22 +9,29 @@ export const grid = {
     map: {
       width: 30,
       height: 15,
-      x: 7,
+      x: 10,
       y: 3,
     },
 
     activePlayer: {
       width: 10,
       height: 2,
-      x:2,
-      y:2
+      x:1,
+      y:3
     },
 
     dieMenu: {
       width:50,
       height:2,
-      x: 7,
+      x: 12,
       y: 20
+    },
+
+    abilityMenu: {
+      width:30,
+      height:1,
+      x:12,
+      y:22
     },
 
     phaseMenu: {

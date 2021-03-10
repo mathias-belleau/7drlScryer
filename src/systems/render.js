@@ -4,11 +4,14 @@ import {
   } from "../lib/canvas";
 
 import {Appearance,Health,LayerMap,Position,
-    LayerUnit} from "../state/component"
+    LayerUnit,
+    SlowAttack,
+    FastAttack} from "../state/component"
 
 import world from "../state/ecs";
-
-import {CurrrentActivePlayer, gameState} from "../index"
+import { readCacheSet } from "../state/cache";
+import {toLocId} from "../lib/grid"
+import {CurrrentActivePlayer, gameState, targetEntity} from "../index"
 
 const layerMapEntities = world.createQuery({
     all: [Position, Appearance, LayerMap]
@@ -17,6 +20,15 @@ const layerMapEntities = world.createQuery({
   const layerUnitEntities = world.createQuery({
     all: [Position, Appearance, LayerUnit]
   });
+
+  const slowDmgEntities = world.createQuery({
+    all: [Position, SlowAttack]
+  });
+
+  const fastDmgEntities = world.createQuery({
+    all: [Position, FastAttack]
+  });
+
 
 
 const clearDisplay = () => {
@@ -51,11 +63,17 @@ const renderUnits = () => {
 
 const renderActivePlayer = () => {
     if(CurrrentActivePlayer){
-        var text = "Active: "
+        var text = "Active:"
         DrawText(text,grid.activePlayer.x,grid.activePlayer.y )
         DrawChar(CurrrentActivePlayer,
             grid.activePlayer.x+ text.length,
             grid.activePlayer.y)
+
+        DrawText("Hp:"+CurrrentActivePlayer.health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1)
+        DrawText("Stam:"+CurrrentActivePlayer.stamina.current.toString()+"/"+CurrrentActivePlayer.stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2)
+        DrawText("StamRgn:"+(Math.max(0,4 - CurrrentActivePlayer.stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3)
+        DrawText("Move:"+CurrrentActivePlayer.movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4)
+        DrawText("Dodge:"+CurrrentActivePlayer.movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5)
     }
 }
 
@@ -73,7 +91,7 @@ const renderDieMenu = () => {
             if(CurrrentActivePlayer.die[x].selected){
                 color = "green"
             }else if(CurrrentActivePlayer.die[x].exhausted){
-                color == "grey"
+                color = "grey"
             }
             //display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y-1,'_')    
             DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ (x*5), grid.dieMenu.y)
@@ -83,6 +101,101 @@ const renderDieMenu = () => {
     }
 }
 
+const abilityHotkeys = ['q','w','e','r','t','y']
+
+const renderAbilityMenu = () => {
+    //for each ability make a button max of 3 char name 
+    // q[mv] w[atk] e[dg]
+    
+    //if can use set to green?
+    //if already used set to grey
+    
+    for(var x = 0; x < CurrrentActivePlayer.abilityList.abilities.length;x++){
+        var color = "gray"
+
+        if(CurrrentActivePlayer.abilityList.abilities[x].abilityFunction.function.canUse(null, CurrrentActivePlayer)){
+            color = "white"
+        }
+
+        let smlName = CurrrentActivePlayer.abilityList.abilities[x].abilitySmallName.smallName
+        DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)
+    }
+}
+
+const renderTarget = () => {
+    //get the position of the targetEntity
+    //get entities at position
+    //for now just draw x at position
+    console.log(targetEntity)
+    DrawChar(targetEntity, 
+        targetEntity.position.x+grid.map.x,
+        targetEntity.position.y+grid.map.y)
+}
+
+const renderSlowAttacks = () => {
+    slowDmgEntities.get().forEach(slow => {
+    //check if unit exists on this tile.
+        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:slow.position.x,y:slow.position.y}))
+        var gotUnit = false
+        var floor
+        getEntitiesAtLoc.forEach(eid => {
+            var ents = world.getEntity(eid)
+            if(ents.has(LayerUnit)){
+                gotUnit = true
+                display.draw(slow.position.x + grid.map.x,
+                    slow.position.y + grid.map.y,
+                    ents.appearance.char,
+                    ents.appearance.color, "yellow")
+            }else if(ents.has(LayerMap)){
+                floor = ents
+            }
+
+            if(!gotUnit && floor){
+                display.draw(slow.position.x + grid.map.x, 
+                    slow.position.y + grid.map.y, 
+                    floor.appearance.char, 
+                    floor.appearance.color, "yellow")
+            }
+        })
+    //if yes draw that tile with yellow background
+
+    //just draw the tile with yellow background    
+    })
+    
+}
+
+const renderFastAttacks = () => {
+    fastDmgEntities.get().forEach(fast => {
+    //check if unit exists on this tile.
+        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:fast.position.x,y:fast.position.y}))
+        var gotUnit = false
+        var floor
+        getEntitiesAtLoc.forEach(eid => {
+            var ents = world.getEntity(eid)
+            if(ents.has(LayerUnit)){
+                gotUnit = true
+                display.draw(fast.position.x + grid.map.x,
+                    fast.position.y + grid.map.y,
+                    ents.appearance.char,
+                    ents.appearance.color, "red")
+            }else if(ents.has(LayerMap)){
+                floor = ents
+            }
+
+            if(!gotUnit && floor){
+                display.draw(fast.position.x + grid.map.x, 
+                    fast.position.y + grid.map.y, 
+                    floor.appearance.char, 
+                    floor.appearance.color, "red")
+            }
+        })
+    //if yes draw that tile with yellow background
+
+    //just draw the tile with yellow background    
+    })
+    
+}
+
 export const DrawText = (text, x, y) => {
     display.drawText(x,y,text)
 }
@@ -90,7 +203,7 @@ export const DrawText = (text, x, y) => {
 //x,y are offsets fetched from grid
 export const DrawChar = (entity, x, y) => {
     // display.draw(grid.map.x + 5,  grid.map.y + 4, "@");
-    display.draw(x, y,entity.appearance.char, entity.appearance.color)
+    display.draw(x, y,entity.appearance.char, entity.appearance.color, entity.appearance.background || "black")
 }
 
 export const renderBorder = () => {
@@ -107,6 +220,16 @@ export const render = () => {
     renderUnits()
     renderActivePlayer()
     renderDieMenu()
+    renderAbilityMenu()
     renderPhase()
     renderBorder()
+
+    renderSlowAttacks()
+    renderFastAttacks()
+
+    console.log(gameState)
+    if(gameState === "examine" || gameState === "targeting" ) {
+        console.log("need to show target")
+        renderTarget()
+    }
 }

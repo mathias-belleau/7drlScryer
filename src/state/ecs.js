@@ -23,16 +23,18 @@ ecs.registerComponent(components.Position)
 ecs.registerComponent(components.Stamina)
 ecs.registerComponent(components.Die)
 
+ecs.registerComponent(components.SlowAttack)
+ecs.registerComponent(components.FastAttack)
+ecs.registerComponent(components.DmgTile)
+
 //ability
 ecs.registerComponent(components.AbilityList)
 ecs.registerComponent(components.AbilityFunction)
 ecs.registerComponent(components.AbilityPhase)
 ecs.registerComponent(components.AbilitySpeed)
 ecs.registerComponent(components.AbilityStaminaCost)
-
-
-
-
+ecs.registerComponent(components.AbilitySmallName)
+ecs.registerComponent(components.AbilityTarget)
 
 //prefabs
 
@@ -49,6 +51,9 @@ ecs.registerPrefab(prefabs.Goblin)
 
 ecs.registerPrefab(prefabs.Ability)
 ecs.registerPrefab(prefabs.AbilityMove)
+ecs.registerPrefab(prefabs.AbilityDodge)
+ecs.registerPrefab(prefabs.AbilitySwordJab)
+ecs.registerPrefab(prefabs.AbilitySwordSwing)
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {

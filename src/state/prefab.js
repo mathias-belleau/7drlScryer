@@ -35,7 +35,9 @@ export const Tile = {
       { type: "AbilityPhase"},
       { type: "AbilitySpeed"},
       { type: "AbilityStaminaCost"},
-      { type: "AbilityFunction"}
+      { type: "AbilityFunction"},
+      { type: "AbilitySmallName"},
+      { type: "AbilityTarget"}
     ]
   }
 
@@ -93,7 +95,7 @@ export const Floor = {
     },
     {
       type: "AbilityList",
-      properties: {abilities: ["Ability", "AbilityMove"] }
+      properties: {abilities: ["AbilityMove", "AbilityDodge", "AbilitySwordJab", "AbilitySwordSwing"] }
     }
    ]
  };
@@ -137,6 +139,66 @@ export const AbilityMove = {
       properties: {name: "Move", description: "exhausts 1 die to give it's face value for movement points"}},
     { type: "AbilityFunction",
       properties: {function: Abilities.AbilityMove}
+    },
+    {
+      type: "AbilitySmallName",
+      properties: {smallName: "MOV"}
+    }
+  ]
+}
+
+export const AbilityDodge = {
+  name: "AbilityDodge",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Dodge", description: "exhausts a pair to give 1 dodge point"}},
+    { type: "AbilityFunction",
+      properties: {function: Abilities.AbilityDodge}
+    },
+    {
+      type: "AbilitySmallName",
+      properties: {smallName: "DDG"}
+    }
+  ]
+}
+
+export const AbilitySwordJab = {
+  name: "AbilitySwordJab",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Sword Jab", description: "exhausts 5,6 to do a slow attack on a single tile for 1 dmg"}},
+    { type: "AbilityFunction",
+      properties: {function: Abilities.AbilitySwordJab}
+    },
+    {
+      type: "AbilitySmallName",
+      properties: {smallName: "SJB"}
+    },
+    {
+      type: "AbilityTarget",
+      properties: {coords: [[0,0]]}
+    }
+  ]
+}
+
+export const AbilitySwordSwing = {
+  name: "AbilitySwordSwing",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Sword Swing", description: "exhausts 5,6 to do a slow attack on a single tile for 2 dmg"}},
+    { type: "AbilityFunction",
+      properties: {function: Abilities.AbilitySwordSwing}
+    },
+    {
+      type: "AbilitySmallName",
+      properties: {smallName: "SSW"}
+    },
+    {
+      type: "AbilityTarget",
+      properties: {coords: [[-1,0],[0,0]]}
     }
   ]
 }
