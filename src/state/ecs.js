@@ -36,6 +36,7 @@ ecs.registerComponent(components.AbilityStaminaCost)
 ecs.registerComponent(components.AbilitySmallName)
 ecs.registerComponent(components.AbilityTarget)
 ecs.registerComponent(components.AbilityAllowedDie)
+ecs.registerComponent(components.GainMovement)
 
 //prefabs
 

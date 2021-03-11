@@ -7,11 +7,11 @@ import * as components from "../state/component"
 
 
 export const Ability = {
-    canUse: (ability,entity) => {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
         //console.log('canUse')
-        return yahtzee.CheckSingles(GetSelectedDie(entity))
+        return yahtzee.CheckSingles(dice)
     },
-    onUse: (ability, entity) => {
+    onUse: (ability, entity, target= null) => {
         console.log('used')
         console.log(ability)
         console.log(ability.abilityPhase.phase)
@@ -24,30 +24,30 @@ export const Ability = {
 }
 
 export const AbilityMove = {
-    canUse: (ability,entity) => {
-        return yahtzee.CheckSingles(GetSelectedDie(entity))
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        return yahtzee.CheckSingles(dice)
     },
-    onUse: (ability, entity) => {
+    onUse: (ability, entity,target = null) => {
         entity.fireEvent("gain-movement", 3);
         entity.fireEvent("exhaust-selected")
     },
 }
 
 export const AbilityDodge = {
-    canUse: (ability,entity) => {
-        return yahtzee.CheckDoubles(GetSelectedDie(entity))
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        return yahtzee.CheckDoubles(dice)
     },
-    onUse: (ability, entity) => {
+    onUse: (ability, entity,target= null) => {
         entity.fireEvent("gain-dodge", 1);
         entity.fireEvent("exhaust-selected")
     },
 }
 
 export const AbilitySwordJab = {
-    canUse: (ability,entity) => {
-        return yahtzee.CheckSingles(GetSelectedDie(entity), ability.abilityAllowedDie.allowed)
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
     },
-    onUse:(ability,entity) => {
+    onUse:(ability,entity, target = null) => {
         //get target!
         // var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:targetEntity.position.x,y:targetEntity.position.y}))
         // //apply atk to each tile within this attacks coords
@@ -65,14 +65,15 @@ export const AbilitySwordJab = {
         console.log(ability)
         console.log(ability.abilityTarget.coords)
 
-        var coords = RotateCoords(ability, entity)
+        var coords = RotateCoords(ability, entity, target)
 
         
         //create dmg tiles
         coords.forEach(coord => {
             console.log(coord)
+            console.log(target.x + ","+target.y)
             var newDmgTile =  world.createEntity()
-            newDmgTile.add(components.Position, {x:targetEntity.position.x + coord[0],y:targetEntity.position.y + coord[1]} )
+            newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
             newDmgTile.add(components.FastAttack)
             newDmgTile.add(components.DmgTile)
         })
@@ -90,17 +91,17 @@ export const AbilitySwordJab = {
 }
 
 export const AbilitySwordSwing = {
-    canUse: (ability,entity) => {
-        return yahtzee.CheckSingles(GetSelectedDie(entity), ability.abilityAllowedDie.allowed)
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
     },
-    onUse:(ability,entity) => {
-        var coords = RotateCoords(ability, entity)
+    onUse:(ability,entity,target= null) => {
+        var coords = RotateCoords(ability, entity,target)
         //do ability
         //for each target create dmg tile
         coords.forEach(coord => {
             console.log(coord)
             var newDmgTile =  world.createEntity()
-            newDmgTile.add(components.Position, {x:targetEntity.position.x + coord[0],y:targetEntity.position.y + coord[1]} )
+            newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
             newDmgTile.add(components.SlowAttack)
             newDmgTile.add(components.DmgTile)
         })
@@ -114,7 +115,7 @@ export const AbilitySwordSwing = {
     }
 }
 
-const GetSelectedDie = (entity) => {
+export const GetSelectedDie = (entity) => {
     let dieList = []
     for(var x = 0;x < entity.die.length; x++){
         if(entity.die[x].selected && !entity.die[x].exhausted){
@@ -129,10 +130,27 @@ const GetSelectedDie = (entity) => {
     return counts;
 }
 
-const RotateCoords = (ability, entity) => {
+export const GetAllDie = (entity) => {
+    let dieList = []
+    console.log("AI DICE")
+    for(var x = 0;x < entity.die.length; x++){
+        if(!entity.die[x].exhausted){
+            dieList.push(entity.die[x].number)
+        }
+    }
+
+    dieList.sort()
+    console.log(dieList.toString())
+    var counts = {};
+    dieList.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+    console.log(counts)
+    return counts;
+}
+
+const RotateCoords = (ability, entity, target) => {
     //do we need to rotate coords?
-    var diffX = targetEntity.position.x - entity.position.x  
-    var diffY = targetEntity.position.y - entity.position.y;
+    var diffX = target.x - entity.position.x  
+    var diffY = target.y - entity.position.y;
     var coords = ability.abilityTarget.coords;
     console.log("before rotate")
     console.log(coords)

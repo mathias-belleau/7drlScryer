@@ -106,6 +106,14 @@ export class Health extends Component {
     }
   }
 
+  export class GainMovement extends Component {
+    static properties = {amount:3}
+
+    onTurnStart(evt){
+      this.entity.fireEvent("gain-movement", this.amount)
+    }
+  }
+
   export class Armour extends Component {
     static properties = { max: 0, current: 0}
   }
@@ -138,6 +146,10 @@ export class Health extends Component {
         this.entity.die[x].exhausted = (x>=this.current)
         this.entity.die[x].number = random(1, 6);
       }
+    }
+
+    onUseStamina(evt){
+      this.current = Math.max(this.current - evt.data, 0)
     }
 
     onUpdateStamina(){

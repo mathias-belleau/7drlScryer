@@ -110,7 +110,8 @@ export const Floor = {
     },
     {
       type: "IsEnemy",
-    }
+    },
+    {type: "GainMovement"}
   ]
 };
 
@@ -126,6 +127,10 @@ export const Goblin = {
     {
       type: "Description",
       properties: {name: "Goblin", description: "A lowly Goblin"}
+    },
+    {
+      type: "AbilityList",
+      properties: {abilities: ["AbilitySwordJab", "AbilitySwordSwing"] }
     }
   ]
 }
@@ -160,6 +165,10 @@ export const AbilityDodge = {
     {
       type: "AbilitySmallName",
       properties: {smallName: "DDG"}
+    },
+    {
+      type: "AbilityStaminaCost",
+      properties: {amount: 2}
     }
   ]
 }
@@ -172,6 +181,10 @@ export const AbilitySwordJab = {
       properties: {name: "Sword Jab", description: "exhausts 5,6 to do a slow attack on a single tile for 1 dmg"}},
     { type: "AbilityFunction",
       properties: {function: Abilities.AbilitySwordJab}
+    },
+    {
+      type: "AbilityPhase",
+      properties: {phase: "Attack"}
     },
     {
       type: "AbilitySmallName",
@@ -196,6 +209,10 @@ export const AbilitySwordSwing = {
       properties: {name: "Sword Swing", description: "exhausts 5,6 to do a slow attack on a single tile for 2 dmg"}},
     { type: "AbilityFunction",
       properties: {function: Abilities.AbilitySwordSwing}
+    },
+    {
+      type: "AbilityPhase",
+      properties: {phase: "Attack"}
     },
     {
       type: "AbilitySmallName",

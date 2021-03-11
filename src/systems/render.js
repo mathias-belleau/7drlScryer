@@ -112,12 +112,15 @@ const renderAbilityMenu = () => {
     
     for(var x = 0; x < CurrrentActivePlayer.abilityList.abilities.length;x++){
         var color = "gray"
-
-        if(CurrrentActivePlayer.abilityList.abilities[x].abilityFunction.function.canUse(
+        var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
+        if( (CurrrentActivePlayer.abilityList.abilities[x].abilityPhase.phase == "Any" || CurrrentActivePlayer.abilityList.abilities[x].abilityPhase.phase == currentPhase)
+         && CurrrentActivePlayer.abilityList.abilities[x].abilityFunction.function.canUse(
             CurrrentActivePlayer.abilityList.abilities[x],
              CurrrentActivePlayer).length > 0){
             color = "white"
         }
+
+
 
         let smlName = CurrrentActivePlayer.abilityList.abilities[x].abilitySmallName.smallName
         DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)

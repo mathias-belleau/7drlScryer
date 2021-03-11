@@ -9,7 +9,7 @@ import { Tile } from "./state/prefab.js";
 import {readCacheSet} from "./state/cache"
 import {toLocId} from "./lib/grid"
 import * as Abilities from "./systems/abilities"
-
+import * as AI from "./systems/ai"
 
 export var gameState = "setup"
 export var previousGameState = ""
@@ -53,12 +53,14 @@ const update = () => {
     }else if(gameState == "EnemyTurnDefend") {
 
       
-      EnemyTurn()
+      //EnemyDefendTurn()
+
       gameState = "EnemyTurnAttack"
       render()
       //set to playerturndefend
       //check win/lose  
     }else if(gameState == "EnemyTurnAttack"){
+      EnemyAttackTurn()
       //fire end turn for all enemy units
       EndTurnProcess(enemyEntities.get())
 
@@ -147,13 +149,14 @@ const processUserInput = () => {
         //hit existing ability key
         let abil = CurrrentActivePlayer.abilityList.abilities[abilityIndex]
         let canUse = abil.abilityFunction.function.canUse(abil,CurrrentActivePlayer)
-        if(canUse.length > 0){
+        var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
+        if(canUse.length > 0 && (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == currentPhase)){
           //check if ability is instant or targeted
           if(abil.abilityFunction.function.onTarget){
             abil.abilityFunction.function.onTarget(abil, CurrrentActivePlayer)
 
           }else {
-            abil.abilityFunction.function.onUse(abil, CurrrentActivePlayer)
+            abil.abilityFunction.function.onUse(abil, CurrrentActivePlayer, GetTargetEntityPos())
 
           }
         }
@@ -165,6 +168,9 @@ const processUserInput = () => {
         PlayerTurnDefend()
         gameState = "PlayerTurnAttack"
       }else if (gameState == "PlayerTurnAttack"){
+        //process playerAttack
+        ProcessDmgTiles()
+
         EndTurnProcess(allyEntities.get())
         gameState = "EnemyTurnDefend"
       }
@@ -178,11 +184,7 @@ const processUserInput = () => {
     }else if (userInput === 'p') {
       //used for testing
       console.log(CurrrentActivePlayer)
-      //CurrrentActivePlayer.abilityList.abilities[0].function.onUse()
-      console.log(CurrrentActivePlayer.abilityList.abilities[0])
-      let abil = CurrrentActivePlayer.abilityList.abilities[0]
-      abil.abilityFunction.function.onUse(abil, CurrrentActivePlayer)
-      render()
+      
     }
   }else if (gameState === "examine" || gameState === "targeting") {
       if (userInput === "Escape") {
@@ -194,7 +196,7 @@ const processUserInput = () => {
       }else if(userInput === "Enter" && gameState === "targeting"){
         //activate the queued ability
         console.log(queuedAbility)
-        queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity)
+        queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity, GetTargetEntityPos())
         ExamineTargetDisable()
         render()
     }
@@ -202,6 +204,13 @@ const processUserInput = () => {
     userInput = null
 }
 
+const GetTargetEntityPos = () => {
+  if(targetEntity.has(components.Position)){
+    return {x:targetEntity.position.x,y:targetEntity.position.y}
+  }else {
+    return {x:0,y:0}
+  }
+}
 
 export const ExamineTargetEnable = (state) => {
   previousGameState = gameState
@@ -301,12 +310,20 @@ export const setupTestFight = () => {
     });
 }
 
-const EnemyTurn = () => {
+const EnemyDefendTurn = () => {
   //loop through all enemies and do their turn
-
-
+  enemyEntities.get().forEach( enem => {
+    AI.DoAiTurnDefend(enem)
+  })
   //process playerAttack
   ProcessDmgTiles()
+}
+
+const EnemyAttackTurn = () => {
+  console.log("enemy attacks")
+  enemyEntities.get().forEach( enem => {
+    AI.DoAiTurnAttack(enem)
+  })
 }
 
 const PlayerTurnDefend = () => {
