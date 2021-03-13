@@ -75,10 +75,6 @@ const registerPrefabs = () => {
 registerComps()
 registerPrefabs()
 
-StartGame()
-
-
-
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {
   messageLog.unshift(text);

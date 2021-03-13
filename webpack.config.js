@@ -7,6 +7,13 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
+const mode = () => {
+   // return { mode: "development" };
+
+    return { mode: "production" };
+
+};
+
 const devtool = () => {
       //return { devtool: "inline-source-map" };
       return { devtool: "source-map" };
