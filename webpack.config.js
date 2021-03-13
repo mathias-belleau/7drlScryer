@@ -33,7 +33,7 @@ const devServer = () => {
   };
 
 module.exports = {
-  //...
+  ...mode(),
   ...devtool(),
   ...devServer(),
 

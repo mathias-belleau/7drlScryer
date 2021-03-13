@@ -5,10 +5,8 @@ import {render,SetEntityToRender} from "./systems/render"
 import {makeMap,FetchFreeTile} from "./state/dungeon"
 import * as components from "./state/component"
 import { times } from "lodash";
-import { Tile } from "./state/prefab.js";
 import {readCacheSet} from "./state/cache"
 import {toLocId} from "./lib/grid"
-import * as Abilities from "./systems/abilities"
 import * as AI from "./systems/ai"
 import {HideHelpMenu} from "./state/helpMenu"
 

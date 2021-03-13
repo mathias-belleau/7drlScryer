@@ -3,13 +3,11 @@ import { Engine } from "geotic";
 import * as components from "./component"
 
 import * as prefabs from "./prefab"
-import {StartGame} from "../index"
 
 const ecs = new Engine();
 
 const world = ecs.createWorld();
 
-const registerComps = () => {
   console.log("got here first")
   ecs.registerComponent(components.Appearance);
   ecs.registerComponent(components.Armour)
@@ -44,10 +42,8 @@ const registerComps = () => {
   ecs.registerComponent(components.AbilityDamage)
   ecs.registerComponent(components.AbilityEndsTurn)
 
-}
 
 
-const registerPrefabs = () => {
   //prefabs
 
   ecs.registerPrefab(prefabs.Tile)
@@ -70,10 +66,7 @@ const registerPrefabs = () => {
   ecs.registerPrefab(prefabs.AbilitySwordSwing)
   ecs.registerPrefab(prefabs.AbilityDoubleAxeSwing)
   ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
-}
 
-registerComps()
-registerPrefabs()
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {
