@@ -421,10 +421,14 @@ const EndTurnProcess = (entities) => {
 
 }
 
-makeMap()
-setupTestFight()
-FetchFreeTile()
-render()
+
+export const StartGame = () => {
+  makeMap()
+  setupTestFight()
+  FetchFreeTile()
+  render()
+}
+
 
 
 

@@ -21,8 +21,8 @@ export const Tile = {
       { type: "IsBlocking" },
       { type: "LayerUnit" },
       { type: "Movement"},
-      { type: "armour"},
-      { type: "stamina"},
+      { type: "Armour"},
+      { type: "Stamina"},
       { type: "AbilityList"}
     ],
   };
