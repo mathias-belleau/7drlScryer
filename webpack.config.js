@@ -39,6 +39,17 @@ module.exports = {
 
   entry: "./src/index.js",
 
+  optimization: {
+    minimize: true,
+    minimizer: [
+        new TerserPlugin({
+            terserOptions: {
+                mangle: false,
+            },
+        }),
+    ],
+},
+
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new HtmlWebpackPlugin({
