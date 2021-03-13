@@ -2,7 +2,7 @@ import {GetSelectedDie, GetAllDie} from "./abilities"
 import {readCacheSet} from "../state/cache"
 import world from "../state/ecs"
 import * as components from "../state/component"
-import {AiPathfind} from "./pathfinding"
+import {AiPathfind,CheckStraightLine} from "./pathfinding"
 import {toLocId} from "../lib/grid"
 
 export const DoAiTurnDefend = (entity) => {
@@ -40,8 +40,7 @@ export const DoAiTurnAttack = (entity) => {
 
     entity.abilityList.abilities.forEach( abil => {
         //split the dice counts, if any return true add to can use and continue
-        console.log(abil.abilityStaminaCost)
-        if( (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == "Attack") && stamina >= abil.abilityStaminaCost.amount){
+        if( (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == "Attack") && abil.abilityStaminaCost.amount <= entity.stamina.current){
             //we have enough to use this
             abilitiesCanUse.push(abil)
         }
@@ -122,17 +121,18 @@ const ChooseAiDefend = (entity, abilityList) => {
 
 const ChooseAiAttack = (entity,abilityList) => {
     //get closest target for now
-    var target = AiPathfind(entity)
+    // var target = AiPathfind(entity)
     var attacked = false
     abilityList.shuffle()
     //abilityList.shuffle()
     console.log("Doing mob attack: ")
     for(var x = 0; x < 2;x ++){
+        var target = AiPathfind(entity)
         abilityList.forEach( abil => {
             console.log(target.toString())
             console.log(target.length)
         
-            if(target.length <= 1 && !attacked){
+            if(target.length >= 1 && target.length <= abil.abilityRange.range && !attacked && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y})){
                 //we are in range
                 console.log("In Range")
                 
@@ -140,6 +140,10 @@ const ChooseAiAttack = (entity,abilityList) => {
                 console.log(targ.toString())
 
                 abil.abilityFunction.function.onUse(abil, entity, {x:targ[0],y:targ[1]})
+
+                //use stamina up
+                entity.fireEvent("use-stamina",abil.abilityStaminaCost.amount)
+                entity.fireEvent("ai-use-stamina",abil.abilityStaminaCost.amount)
                 attacked = true
             }
         })
@@ -148,6 +152,10 @@ const ChooseAiAttack = (entity,abilityList) => {
             console.log("Not In Range so we move")
             if(target.length > 1){
                 MoveForward(entity, target)
+
+                //use 1 stamina
+                entity.fireEvent("use-stamina",1)
+                entity.fireEvent("ai-use-stamina",1)
             }
         }
     }    

@@ -48,6 +48,7 @@ export class Health extends Component {
         console.log("ow")
         if (this.current <= 0) {
             this.entity.remove(this.entity.position)
+            this.entity.add(IsDead)
             // this.entity.appearance.char = "%";
             // this.entity.remove(this.entity.ai)
             // this.entity.remove(this.entity.isBlocking)
@@ -119,7 +120,7 @@ export class Health extends Component {
   }
 
   export class Stamina extends Component {
-    static properties = { max: 5, current: 5, used: 0}
+    static properties = { max: 5, current: 5, used: 0, regen: 4}
     onAttached(){
       //console.log("fired stamina")
       //add die to this entity
@@ -133,7 +134,7 @@ export class Health extends Component {
       console.log('doing turn end')
       //gain stamina back 4-used stamina this turn
       //this.onUpdateStamina()
-      this.current = Math.min(this.max, this.current + Math.max(0,4-this.used))
+      this.current = Math.min(this.max, this.current + Math.max(0,this.regen-this.used))
       this.used = 0;
       this.onRollDice()
       //evt.handle()
@@ -150,6 +151,10 @@ export class Health extends Component {
 
     onUseStamina(evt){
       this.current = Math.max(this.current - evt.data, 0)
+    }
+
+    onAiUseStamina(evt){
+      this.used += evt.data;
     }
 
     onUpdateStamina(){
@@ -175,8 +180,12 @@ export class Health extends Component {
     }
   }
 
+  export class IsTurnEnd extends Component {
+    onTurnEnd(evt) {
+      this.destroy()
+    }
+  }
   export class IsPlayerControlled extends Component{}
-  export class IsDead extends Component {}
   export class IsEnemy extends Component {
     static properties = {enemy: true}
   }
@@ -187,6 +196,7 @@ export class Health extends Component {
 
   export class SlowAttack extends Component {}
   export class FastAttack extends Component {}
+  export class IsDead extends Component {} //needs to remove is block and change appearance to corpse and such?
   export class DmgTile extends Component {
     static properties = {dmg: 1}
   }
@@ -232,3 +242,13 @@ export class AbilityStaminaCost extends Component {
 export class AbilitySmallName extends Component {
   static properties = {smallName: "abl"}
 }
+
+export class AbilityRange extends Component {
+  static properties = {range: 1}
+}
+
+export class AbilityDamage extends Component {
+  static properties = {dmg: 1}
+}
+
+export class AbilityEndsTurn extends Component {}

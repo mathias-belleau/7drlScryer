@@ -22,10 +22,10 @@ ecs.registerComponent(components.Movement)
 ecs.registerComponent(components.Position)
 ecs.registerComponent(components.Stamina)
 ecs.registerComponent(components.Die)
-
 ecs.registerComponent(components.SlowAttack)
 ecs.registerComponent(components.FastAttack)
 ecs.registerComponent(components.DmgTile)
+ecs.registerComponent(components.IsTurnEnd)
 
 //ability
 ecs.registerComponent(components.AbilityList)
@@ -37,6 +37,10 @@ ecs.registerComponent(components.AbilitySmallName)
 ecs.registerComponent(components.AbilityTarget)
 ecs.registerComponent(components.AbilityAllowedDie)
 ecs.registerComponent(components.GainMovement)
+ecs.registerComponent(components.AbilityRange)
+ecs.registerComponent(components.AbilityDamage)
+ecs.registerComponent(components.AbilityEndsTurn)
+
 
 //prefabs
 
@@ -50,12 +54,16 @@ ecs.registerPrefab(prefabs.PlayerBeing)
 ecs.registerPrefab(prefabs.Mob)
 
 ecs.registerPrefab(prefabs.Goblin)
+ecs.registerPrefab(prefabs.OrcWarrior)
 
 ecs.registerPrefab(prefabs.Ability)
 ecs.registerPrefab(prefabs.AbilityMove)
 ecs.registerPrefab(prefabs.AbilityDodge)
+ecs.registerPrefab(prefabs.AbilitySpearThrust)
 ecs.registerPrefab(prefabs.AbilitySwordJab)
 ecs.registerPrefab(prefabs.AbilitySwordSwing)
+ecs.registerPrefab(prefabs.AbilityDoubleAxeSwing)
+ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {

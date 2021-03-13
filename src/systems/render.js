@@ -3,32 +3,34 @@ import {
     grid
   } from "../lib/canvas";
 
-import {Appearance,Health,LayerMap,Position,
-    LayerUnit,
-    SlowAttack,
-    FastAttack} from "../state/component"
+import * as components from "../state/component"
 
 import world from "../state/ecs";
 import { readCacheSet } from "../state/cache";
-import {toLocId} from "../lib/grid"
+import {toCell, toLocId} from "../lib/grid"
 import {CurrrentActivePlayer, gameState, targetEntity} from "../index"
+import {DrawHelpMenu,ShowAbilityInfo} from "../state/helpMenu"
 
 const layerMapEntities = world.createQuery({
-    all: [Position, Appearance, LayerMap]
+    all: [components.Position, components.Appearance, components.LayerMap]
   });
 
   const layerUnitEntities = world.createQuery({
-    all: [Position, Appearance, LayerUnit]
+    all: [components.Position, components.Appearance, components.LayerUnit]
   });
 
   const slowDmgEntities = world.createQuery({
-    all: [Position, SlowAttack]
+    all: [components.Position, components.SlowAttack]
   });
 
   const fastDmgEntities = world.createQuery({
-    all: [Position, FastAttack]
+    all: [components.Position, components.FastAttack]
   });
 
+  const enemyEntities = world.createQuery({
+    all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
+    none: [components.IsDead]
+  })
 
 
 const clearDisplay = () => {
@@ -36,6 +38,11 @@ const clearDisplay = () => {
     //clearCanvas(grid.map.x - 1, grid.map.y, grid.map.width + 1, grid.map.height);
     
 };
+let EntityToRender =""
+
+export const SetEntityToRender = (entity) => {
+    EntityToRender = entity
+}
 
 const renderMap = () => {
     layerMapEntities.get().forEach((entity) => {
@@ -45,7 +52,44 @@ const renderMap = () => {
     });
 }
 
+const renderEnemyQuickBar = () => {
+    var count = 1
+    enemyEntities.get().forEach( entity => {
+        var text = "" + count
+        text += "%c{"+entity.appearance.color+"} "+entity.description.name + " " + entity.health.current
+        DrawText(text, grid.enemies.x, grid.enemies.y + count - 1)
+        count++;
+    })
+}
 
+const RenderDamageNumbers = () => {
+    var dmgTiles = []
+    dmgTiles.push.apply(dmgTiles, slowDmgEntities.get());
+    dmgTiles.push.apply(dmgTiles, fastDmgEntities.get());
+    console.log(dmgTiles)
+    var dmgCount = []
+    dmgTiles.forEach( dmg => {
+        var toLoc = toLocId({x:dmg.position.x,y:dmg.position.y})
+        if(!dmgCount[toLoc]) {
+            dmgCount[toLoc] = 0
+        }
+         dmgCount[toLoc] += dmg.dmgTile.dmg
+    })
+    console.log(dmgCount)
+    for (const [key, value] of Object.entries(dmgCount)) {
+        console.log(`${key}: ${value}`);
+        var pos = toCell(key)
+        display.draw(grid.map.x+pos.x, grid.map.y + pos.y, value)
+      }
+}
+
+const RenderEnemyNumbers = () => {
+    var count = 1
+    enemyEntities.get().forEach( entity  => {
+        display.draw(grid.map.x+entity.position.x, grid.map.y+entity.position.y, count.toString())
+        count++
+    })
+}
 
 const renderObjects = () => {
 
@@ -148,13 +192,13 @@ const renderSlowAttacks = () => {
         var floor
         getEntitiesAtLoc.forEach(eid => {
             var ents = world.getEntity(eid)
-            if(ents.has(LayerUnit)){
+            if(ents.has(components.LayerUnit)){
                 gotUnit = true
                 display.draw(slow.position.x + grid.map.x,
                     slow.position.y + grid.map.y,
                     ents.appearance.char,
                     ents.appearance.color, "yellow")
-            }else if(ents.has(LayerMap)){
+            }else if(ents.has(components.LayerMap)){
                 floor = ents
             }
 
@@ -180,13 +224,13 @@ const renderFastAttacks = () => {
         var floor
         getEntitiesAtLoc.forEach(eid => {
             var ents = world.getEntity(eid)
-            if(ents.has(LayerUnit)){
+            if(ents.has(components.LayerUnit)){
                 gotUnit = true
                 display.draw(fast.position.x + grid.map.x,
                     fast.position.y + grid.map.y,
                     ents.appearance.char,
                     ents.appearance.color, "red")
-            }else if(ents.has(LayerMap)){
+            }else if(ents.has(components.LayerMap)){
                 floor = ents
             }
 
@@ -222,22 +266,33 @@ export const renderBorder = () => {
 }
 
 export const render = () => {
-    clearDisplay()
-    renderMap()
-    renderObjects()
-    renderUnits()
-    renderActivePlayer()
-    renderDieMenu()
-    renderAbilityMenu()
-    renderPhase()
-    renderBorder()
+    if(gameState == "Help"){
+        DrawHelpMenu()
+    }else if (gameState == "AbilityInfo"){
+        ShowAbilityInfo(EntityToRender)
+    }else if (gameState == "EnemyNumbers"){
+        RenderEnemyNumbers()
+    }else if ( gameState == "DamageShow"){
+        RenderDamageNumbers()
+    }else {
+        clearDisplay()
+        renderMap()
+        renderObjects()
+        renderUnits()
+        renderActivePlayer()
+        renderDieMenu()
+        renderAbilityMenu()
+        renderPhase()
+        renderBorder()
+        renderEnemyQuickBar()
 
-    renderSlowAttacks()
-    renderFastAttacks()
+        renderSlowAttacks()
+        renderFastAttacks()
 
-    console.log(gameState)
-    if(gameState === "examine" || gameState === "targeting" ) {
-        console.log("need to show target")
-        renderTarget()
+        console.log(gameState)
+        if(gameState === "examine" || gameState === "targeting" ) {
+            console.log("need to show target")
+            renderTarget()
+        }
     }
 }

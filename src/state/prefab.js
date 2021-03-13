@@ -38,7 +38,9 @@ export const Tile = {
       { type: "AbilityFunction"},
       { type: "AbilitySmallName"},
       { type: "AbilityTarget"},
-      { type: "AbilityAllowedDie"}
+      { type: "AbilityAllowedDie"},
+      { type: "AbilityRange"},
+      { type: "AbilityDamage"}
     ]
   }
 
@@ -130,8 +132,31 @@ export const Goblin = {
     },
     {
       type: "AbilityList",
-      properties: {abilities: ["AbilitySwordJab", "AbilitySwordSwing"] }
-    }
+      properties: {abilities: ["AbilitySpearThrust"] }
+    },
+    {type: "Health", properties: {max:2,current:2}},
+    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
+  ]
+}
+
+export const OrcWarrior = {
+  name: "Orc Warrior",
+  inherit:["Mob"],
+  components: [
+    {
+      type: "Appearance",
+      properties: {char: "o", color: "green"}
+    },
+    {
+      type: "Description",
+      properties: {name: "Orc Warrior", description: "A fearsome Orc wielding axees"}
+    },
+    {
+      type: "AbilityList",
+      properties: {abilities: ["AbilityDoubleAxeSwing", "AbilityAxeDecapitate"] }
+    },
+    {type: "Health", properties: {max:8,current:8}},
+    { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}}
   ]
 }
 
@@ -173,14 +198,14 @@ export const AbilityDodge = {
   ]
 }
 
-export const AbilitySwordJab = {
-  name: "AbilitySwordJab",
+export const AbilitySpearThrust = {
+  name: "AbilitySpearThrust",
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Sword Jab", description: "exhausts 5,6 to do a slow attack on a single tile for 1 dmg"}},
+      properties: {name: "Spear Thrust", description: "exhausts 5,6 to do a slow attack on a 2x1 1 dmg"}},
     { type: "AbilityFunction",
-      properties: {function: Abilities.AbilitySwordJab}
+      properties: {function: Abilities.AbilitySpearThrust}
     },
     {
       type: "AbilityPhase",
@@ -188,16 +213,32 @@ export const AbilitySwordJab = {
     },
     {
       type: "AbilitySmallName",
-      properties: {smallName: "SJB"}
+      properties: {smallName: "STH"}
     },
     {
       type: "AbilityTarget",
-      properties: {coords: [[0,0]]}
+      properties: {coords: [[0,0],[0,-1]]}
     },
     {
       type:"AbilityAllowedDie",
-      properties: {allowed:[3,4,5,6]}
-    }
+      properties: {allowed:[5,6]}
+    },
+    { type: "AbilityRange", properties: {range:2}}
+  ]
+}
+
+export const AbilitySwordJab = {
+  name: "AbilitySwordJab",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Sword Jab", description: "exhausts a 4,5,6 to do a slow attack on a single tile for 1 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "SJB"} },
+    { type: "AbilityTarget", properties: {coords: [[0,0]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[4,5,6]} },
+    { type: "AbilityEndsTurn"}
   ]
 }
 
@@ -206,26 +247,47 @@ export const AbilitySwordSwing = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Sword Swing", description: "exhausts 5,6 to do a slow attack on a single tile for 2 dmg"}},
-    { type: "AbilityFunction",
-      properties: {function: Abilities.AbilitySwordSwing}
-    },
-    {
-      type: "AbilityPhase",
-      properties: {phase: "Attack"}
-    },
-    {
-      type: "AbilitySmallName",
-      properties: {smallName: "SSW"}
-    },
-    {
-      type: "AbilityTarget",
-      //properties: {coords: [[-1,0],[0,0]]}
-      properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]}
-    },
-    {
-      type:"AbilityAllowedDie",
-      properties: {allowed:[4,5,6]}
-    }
+      properties: {name: "Sword Swing", description: "exhausts 6 to do a slow attack on a T shape for 1 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordSwing} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "SSW"} },
+    { type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+
+export const AbilityDoubleAxeSwing = {
+  name: "AbilityDoubleAxeSwing",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Double Axe Swing", description: "swings both your axes in two massive arcs dealing 2 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityDoubleAxeSwing} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    {type: "AbilitySmallName",properties: {smallName: "DAS"}},
+    { type: "AbilityTarget", properties: {coords: [[-1,0],[0,0],[1,0],[-1,1],[1,1]]}},
+    { type:"AbilityAllowedDie", properties: {allowed:[5,6]}  },
+    { type: "AbilityStaminaCost", properties: {amount: 3} },
+    { type: "AbilityDamage", properties: {dmg:2} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityAxeDecapitate = {
+  name: "AbilityAxeDecapitate",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Axe Decapitate", description: "Swings an axe directly at the targets head for 3 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityAxeDecapitate} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName",properties: {smallName: "DAC"}},
+    { type: "AbilityTarget", properties: {coords: [[0,0]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
+    { type: "AbilityStaminaCost", properties: {amount: 4} },
+    { type: "AbilityDamage", properties: {dmg:3} },
+    { type: "AbilityEndsTurn"}
   ]
 }

@@ -28,7 +28,15 @@ export const AbilityMove = {
         return yahtzee.CheckSingles(dice)
     },
     onUse: (ability, entity,target = null) => {
-        entity.fireEvent("gain-movement", 3);
+        //get selected die
+        var selected = GetSelectedDie(entity)
+        var toGain = 0
+        for(var x = 1; x< 7;x++){
+            if(selected[x] && selected[x] == 1){
+                toGain = x
+            }
+        }
+        entity.fireEvent("gain-movement", toGain);
         entity.fireEvent("exhaust-selected")
     },
 }
@@ -45,6 +53,9 @@ export const AbilityDodge = {
 
 export const AbilitySwordJab = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
         return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
     },
     onUse:(ability,entity, target = null) => {
@@ -78,6 +89,9 @@ export const AbilitySwordJab = {
             newDmgTile.add(components.DmgTile)
         })
         entity.fireEvent("exhaust-selected")
+        if(ability.has(components.AbilityEndsTurn)){
+            entity.add(components.IsTurnEnd)
+        }
         //set gamestate back
     }, 
     onTarget: (ability,entity) => {
@@ -92,6 +106,9 @@ export const AbilitySwordJab = {
 
 export const AbilitySwordSwing = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
         return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
     },
     onUse:(ability,entity,target= null) => {
@@ -106,12 +123,113 @@ export const AbilitySwordSwing = {
             newDmgTile.add(components.DmgTile)
         })
         entity.fireEvent("exhaust-selected")
+        if(ability.has(components.AbilityEndsTurn)){
+            entity.add(components.IsTurnEnd)
+        }
     }, 
     onTarget: (ability,entity) => {
         SetQueuedAbility(ability)
         SetQueuedEntity(entity)
         //queuedAbility = ability
         ExamineTargetEnable("targeting")
+    }
+}
+
+export const AbilitySpearThrust = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:(ability,entity,target= null) => {
+        var coords = RotateCoords(ability, entity,target)
+        //do ability
+        //for each target create dmg tile
+        coords.forEach(coord => {
+            console.log(coord)
+            var newDmgTile =  world.createEntity()
+            newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
+            newDmgTile.add(components.SlowAttack)
+            newDmgTile.add(components.DmgTile)
+        })
+        entity.fireEvent("exhaust-selected")
+        if(ability.has(components.AbilityEndsTurn)){
+            entity.add(components.IsTurnEnd)
+        }
+    }, 
+    onTarget: (ability,entity) => {
+        SetQueuedAbility(ability)
+        SetQueuedEntity(entity)
+        //queuedAbility = ability
+        ExamineTargetEnable("targeting")
+    }
+}
+
+export const AbilityDoubleAxeSwing = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericSlowAttack, 
+    onTarget: (ability,entity) => {
+        SetQueuedAbility(ability)
+        SetQueuedEntity(entity)
+        //queuedAbility = ability
+        ExamineTargetEnable("targeting")
+    }
+}
+
+export const AbilityAxeDecapitate = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericFastAttack, 
+    onTarget: (ability,entity) => {
+        SetQueuedAbility(ability)
+        SetQueuedEntity(entity)
+        //queuedAbility = ability
+        ExamineTargetEnable("targeting")
+    }
+}
+
+function GenericSlowAttack(ability,entity,target= null) {
+    var coords = RotateCoords(ability, entity,target)
+    //do ability
+    //for each target create dmg tile
+    coords.forEach(coord => {
+        console.log(coord)
+        var newDmgTile =  world.createEntity()
+        newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
+        newDmgTile.add(components.SlowAttack)
+        newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
+    })
+    entity.fireEvent("exhaust-selected")
+    if(ability.has(components.AbilityEndsTurn)){
+        entity.add(components.IsTurnEnd)
+    }
+}
+
+function GenericFastAttack(ability,entity,target= null) {
+    var coords = RotateCoords(ability, entity,target)
+    //do ability
+    //for each target create dmg tile
+    coords.forEach(coord => {
+        console.log(coord)
+        var newDmgTile =  world.createEntity()
+        newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
+        newDmgTile.add(components.FastAttack)
+        newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
+    })
+    entity.fireEvent("exhaust-selected")
+
+    if(ability.has(components.AbilityEndsTurn)){
+        entity.add(components.IsTurnEnd)
     }
 }
 
@@ -155,15 +273,15 @@ const RotateCoords = (ability, entity, target) => {
     console.log("before rotate")
     console.log(coords)
     console.log("direction")
-    if(diffY == -1){
+    if(diffY <= -1){
         console.log("up")
-    }else if(diffY == 1){
+    }else if(diffY >= 1){
         console.log("down")
         coords = ConvertCoordsDown(coords)
-    }else if(diffX == -1){
+    }else if(diffX <= -1){
         console.log("left")
         coords = ConvertCoordsLeft(coords)
-    }else if(diffX == 1){
+    }else if(diffX >= 1){
         console.log("right")
         coords = ConvertCoordsRight(coords)
     }

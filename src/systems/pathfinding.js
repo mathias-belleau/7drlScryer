@@ -64,6 +64,34 @@ const FindClosestTarget = (dijkstra, entity) => {
     return winner
 }
 
+
+export const CheckStraightLine = ([...path], currentXY) => {
+    console.log("in range check")
+    //check if length = 1 then we are right next to target
+    if(path.length == 1){
+        console.log("path short")
+        return true
+    }
+    
+    var Xs = []
+    var Ys = []
+    path.forEach(coords => {
+        Xs.push(coords[0])
+        Ys.push(coords[1])
+    })
+    console.log(Xs.toString())
+    console.log(Ys.toString())
+    //if((allEqual(Xs) || allEqual(Ys) ) && (currentXY.x == path[0][0] || currentXY.y == path[0][1]) ){
+    if((currentXY.x == path[0][0] || currentXY.y == path[0][1]) ){
+        return true
+    }else {
+        return false
+    }
+}
+
+const allEqual = arr => arr.every( v => v === arr[0] )
+
+
 const testingCB = () => {
 
 }

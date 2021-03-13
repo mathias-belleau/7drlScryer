@@ -1,7 +1,7 @@
 import "./lib/canvas.js";
 import world from "./state/ecs";
 import * as ROT from "rot-js";
-import {render} from "./systems/render"
+import {render,SetEntityToRender} from "./systems/render"
 import {makeMap,FetchFreeTile} from "./state/dungeon"
 import * as components from "./state/component"
 import { times } from "lodash";
@@ -10,6 +10,7 @@ import {readCacheSet} from "./state/cache"
 import {toLocId} from "./lib/grid"
 import * as Abilities from "./systems/abilities"
 import * as AI from "./systems/ai"
+import {HideHelpMenu} from "./state/helpMenu"
 
 export var gameState = "setup"
 export var previousGameState = ""
@@ -31,7 +32,8 @@ export var CurrrentActivePlayer
 let userInput = null;
 
 const playerEntities = world.createQuery({
-  all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled]
+  all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
+  none: [components.IsDead]
 });
 
 const allyEntities = world.createQuery({
@@ -40,7 +42,8 @@ const allyEntities = world.createQuery({
 })
 
 const enemyEntities = world.createQuery({
-  all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy]
+  all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
+  none: [components.IsDead]
 })
 
 const dmgTileEntities = world.createQuery({
@@ -77,7 +80,7 @@ const update = () => {
 
       //fire endTurn for all player units
       
-    }else if(gameState=="examine" || gameState =="targeting"){
+    }else if(gameState=="examine" || gameState =="targeting" || gameState == "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers"){
       processUserInput()
       //render entities under current reticle
 
@@ -88,9 +91,13 @@ const update = () => {
 
 
 const processUserInput = () => {
+//show help screen
   if(gameState == "PlayerTurnDefend" || gameState == "PlayerTurnAttack"){
+    if(userInput === "?") {
+      SetPreviousState("Help")
+      render()
 //select next player
-    if (userInput === "n") {
+    }else if (userInput === "n") {
       //change active player to next
       console.log('input: ' + userInput)
       CurrrentActivePlayer = GetNextActivePlayer()
@@ -98,14 +105,18 @@ const processUserInput = () => {
       render()
 
 //die select
-    }else if(userInput === "1" || userInput === "2" || userInput === "3" || userInput === "4" || userInput === "5" || userInput === "6" || userInput === "7" || userInput === "8" || userInput === "9" || userInput === "0") {
+    }else if(userInput === "1" || userInput === "2" || userInput === "3" || userInput === "4" || userInput === "5" || userInput === "6" || userInput === "7" || userInput === "8" || userInput === "9") {
       console.log("dice swap")
       //select die
-      console.log(CurrrentActivePlayer.die[userInput-1])
-      if(!CurrrentActivePlayer.die[userInput-1].exhausted){
-        CurrrentActivePlayer.die[userInput-1].selected = !CurrrentActivePlayer.die[userInput-1].selected
+      if(userInput - 1 < CurrrentActivePlayer.die.length) {
+        console.log(CurrrentActivePlayer.die[userInput-1])
+        if(!CurrrentActivePlayer.die[userInput-1].exhausted){
+          CurrrentActivePlayer.die[userInput-1].selected = !CurrrentActivePlayer.die[userInput-1].selected
+        }
+        render()
+        
       }
-      render()
+      
 
 //movement
     }else if (userInput === "ArrowUp") {
@@ -120,29 +131,7 @@ const processUserInput = () => {
 //ability use
     }else if(userInput === "q" || userInput === "w" || userInput === "e" || userInput === "r" || userInput === "t" || userInput === "y") {
       console.log("ability use")
-      var abilityIndex = 0;
-      switch (userInput) {
-        case "q":
-          abilityIndex = 0
-          break;
-        case "w":
-          abilityIndex = 1
-          break;
-        case "e":
-          abilityIndex = 2
-          break;
-        case "r":
-          abilityIndex = 3
-          break;
-        case "t":
-          abilityIndex = 4
-          break;
-        case "y":
-          abilityIndex = 5
-          break;
-        default:
-          break;
-      }
+      var abilityIndex = ConvertSkillHotkey(userInput)
 
       //check if ability exists
       if(abilityIndex < CurrrentActivePlayer.abilityList.abilities.length){
@@ -162,6 +151,17 @@ const processUserInput = () => {
         }
       }
       render()
+    
+    }else if(userInput === "Q" || userInput === "W" || userInput === "E" || userInput === "R" || userInput === "T" || userInput === "Y") {
+  //ability info
+      console.log("ability info")
+      var abilityIndex = ConvertSkillHotkey(userInput)
+      SetPreviousState("AbilityInfo")
+      console.log(abilityIndex)
+      console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
+      SetEntityToRender(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
+      render()
+    
     }else if(userInput=="Enter"){
       console.log("Enter")
       if(gameState == "PlayerTurnDefend"){
@@ -180,6 +180,12 @@ const processUserInput = () => {
       //set examine mode
       ExamineTargetEnable("examine")
 
+      render()
+    }else if (userInput === 'c') {
+      SetPreviousState("DamageShow")
+      render()
+    }else if (userInput === 'z') {
+      SetPreviousState("EnemyNumbers")
       render()
     }else if (userInput === 'p') {
       //used for testing
@@ -200,8 +206,39 @@ const processUserInput = () => {
         ExamineTargetDisable()
         render()
     }
+  }else if (gameState === "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers" ) {
+    if(userInput ==="Escape"){
+      HideHelpMenu()
+      ReturnPreviousGameState()
+      render()
+    }
   }
     userInput = null
+}
+
+const ConvertSkillHotkey = (hotkey) => {
+  switch (userInput) {
+    case "q":
+    case "Q":
+      return 0
+    case "w":
+    case "W":
+      return 1
+    case "e":
+    case "E":
+      return 2
+    case "r":
+    case "R":
+      return 3
+    case "t":
+    case "T":
+      return 4
+    case "y":
+    case "Y":
+      return 5
+    default:
+      return 0
+  }
 }
 
 const GetTargetEntityPos = () => {
@@ -213,16 +250,24 @@ const GetTargetEntityPos = () => {
 }
 
 export const ExamineTargetEnable = (state) => {
-  previousGameState = gameState
-  gameState = state
+  SetPreviousState(state)
 
   //set examine base position to current active player position
   targetEntity.add(components.Position, {x: CurrrentActivePlayer.position.x,y: CurrrentActivePlayer.position.y})
 }
 
+const SetPreviousState = (state) => {
+  previousGameState = gameState
+  gameState = state
+}
+
 export const ExamineTargetDisable= () => {
-  gameState = previousGameState
+  ReturnPreviousGameState()
   targetEntity.remove(targetEntity.position)
+}
+
+const ReturnPreviousGameState = () => {
+  gameState = previousGameState
 }
 
 const Examing = () => {
@@ -304,10 +349,13 @@ export const setupTestFight = () => {
     emptyTile = FetchFreeTile();
     newPlayer2.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
 
-    times(5, () => {
+    times(6, () => {
       emptyTile = FetchFreeTile();
       world.createPrefab("Goblin").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
     });
+
+    emptyTile = FetchFreeTile();
+    world.createPrefab("Orc Warrior").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
 }
 
 const EnemyDefendTurn = () => {
@@ -373,7 +421,6 @@ const EndTurnProcess = (entities) => {
 
 }
 
-console.log('test')
 makeMap()
 setupTestFight()
 FetchFreeTile()
