@@ -26,7 +26,7 @@ export var targetEntity = world.createEntity("targetEntity")
 targetEntity.add(components.Appearance, {char: 'X', color: "black", background: "green"})
 
 var CurrrentActivePlayerIndex = 0
-export var CurrrentActivePlayer
+export var CurrrentActivePlayer = ""
 let userInput = null;
 
 const playerEntities = world.createQuery({
@@ -97,17 +97,17 @@ const processUserInput = () => {
 //select next player
     }else if (userInput === "n") {
       //change active player to next
-      console.log('input: ' + userInput)
+      // console.log('input: ' + userInput)
       CurrrentActivePlayer = GetNextActivePlayer()
 
       render()
 
 //die select
     }else if(userInput === "1" || userInput === "2" || userInput === "3" || userInput === "4" || userInput === "5" || userInput === "6" || userInput === "7" || userInput === "8" || userInput === "9") {
-      console.log("dice swap")
+      // console.log("dice swap")
       //select die
       if(userInput - 1 < CurrrentActivePlayer.die.length) {
-        console.log(CurrrentActivePlayer.die[userInput-1])
+        // console.log(CurrrentActivePlayer.die[userInput-1])
         if(!CurrrentActivePlayer.die[userInput-1].exhausted){
           CurrrentActivePlayer.die[userInput-1].selected = !CurrrentActivePlayer.die[userInput-1].selected
         }
@@ -128,7 +128,7 @@ const processUserInput = () => {
     
 //ability use
     }else if(userInput === "q" || userInput === "w" || userInput === "e" || userInput === "r" || userInput === "t" || userInput === "y") {
-      console.log("ability use")
+      //console.log("ability use")
       var abilityIndex = ConvertSkillHotkey(userInput)
 
       //check if ability exists
@@ -152,16 +152,16 @@ const processUserInput = () => {
     
     }else if(userInput === "Q" || userInput === "W" || userInput === "E" || userInput === "R" || userInput === "T" || userInput === "Y") {
   //ability info
-      console.log("ability info")
+      //console.log("ability info")
       var abilityIndex = ConvertSkillHotkey(userInput)
       SetPreviousState("AbilityInfo")
-      console.log(abilityIndex)
-      console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
+      //console.log(abilityIndex)
+      //console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
       SetEntityToRender(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
       render()
     
     }else if(userInput=="Enter"){
-      console.log("Enter")
+      //console.log("Enter")
       if(gameState == "PlayerTurnDefend"){
         PlayerTurnDefend()
         gameState = "PlayerTurnAttack"
@@ -187,7 +187,7 @@ const processUserInput = () => {
       render()
     }else if (userInput === 'p') {
       //used for testing
-      console.log(CurrrentActivePlayer)
+      //console.log(CurrrentActivePlayer)
       
     }
   }else if (gameState === "examine" || gameState === "targeting") {
@@ -199,7 +199,7 @@ const processUserInput = () => {
         render()
       }else if(userInput === "Enter" && gameState === "targeting"){
         //activate the queued ability
-        console.log(queuedAbility)
+        //console.log(queuedAbility)
         queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity, GetTargetEntityPos())
         ExamineTargetDisable()
         render()
@@ -325,7 +325,7 @@ const GetNextActivePlayer = () => {
   }else {
     CurrrentActivePlayerIndex++
   }
-  //console.log(playerEntities.get()[CurrrentActivePlayerIndex])
+  ////console.log(playerEntities.get()[CurrrentActivePlayerIndex])
   return playerEntities.get()[CurrrentActivePlayerIndex]
 }
 
@@ -366,7 +366,7 @@ const EnemyDefendTurn = () => {
 }
 
 const EnemyAttackTurn = () => {
-  console.log("enemy attacks")
+  //console.log("enemy attacks")
   enemyEntities.get().forEach( enem => {
     AI.DoAiTurnAttack(enem)
   })
@@ -386,7 +386,7 @@ const PlayerTurnAttack = () => {
 const ProcessDmgTiles = () => {
   console.log("process dmg")
   //for each dmgtile
-  console.log(dmgTileEntities.get())
+  //console.log(dmgTileEntities.get())
   //dont remove from an array while iterating over it
   var toDestroy = []
   dmgTileEntities.get().forEach( (entity) => {
@@ -395,7 +395,7 @@ const ProcessDmgTiles = () => {
     getEntitiesAtLoc.forEach( (eId) => {
       //check if this is a unit
       var entityAtLoc = world.getEntity(eId);
-      console.log(entityAtLoc)
+      //console.log(entityAtLoc)
       if(entityAtLoc.layerUnit){
         entityAtLoc.fireEvent("take-damage", {amount: entity.dmgTile.dmg})
       }
@@ -406,26 +406,26 @@ const ProcessDmgTiles = () => {
   toDestroy.forEach( (ent) =>{
     ent.destroy()
   })
-  console.log(dmgTileEntities.get())
-  console.log("end process dmg")
+  //console.log(dmgTileEntities.get())
+  //console.log("end process dmg")
 }
 
 const EndTurnProcess = (entities) => {
-  console.log('ending turn for ')
+  //console.log('ending turn for ')
   entities.forEach( (entity) => {
-    console.log(entity)
+    //console.log(entity)
     entity.fireEvent('turn-end', entity);
   });
 
 }
 
 
-export const StartGame = () => {
-  makeMap()
-  setupTestFight()
-  FetchFreeTile()
-  render()
-}
+makeMap()
+setupTestFight()
+FetchFreeTile()
+render()
+
+
 
 
 

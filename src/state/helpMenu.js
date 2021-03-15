@@ -5,22 +5,28 @@ import {display, displayHelp,divHelp, grid } from "../lib/canvas"
 export const DrawHelpMenu = () => {
     MakeVisible()
 
-    var helpText = "Welcome to my bad game, this is just placeholder help text for now"
+    var helpText = "Welcome to my bad game"
 
-    helpText += "\n\nEnemy attacks at end of player defend turn"
+    helpText += "\nExample, hit [1] key to activate die"
+    helpText += "\nhit [q] key to activate movement"
+    helpText += "\nyou now have movement pts in top left"
+    helpText += "\nnow you can move with arrow keys"
+    helpText += "\ndon't forget your other char [n]"
+
+    helpText += "\n\nEnemies attack at end of playerdefendturn"
     helpText += "\nyou need to use dodge to get out of red attacks"
-    helpText += "\nYou regen 4 stamina - the amount used this turn"
+    helpText += "\nYou regen 4 stamina minus the amount used this turn"
 
-    helpText += "\nplayer attacks resolve at end of player attack turn"
+    helpText += "\nplayer attacks resolve at end of the playerattackturn"
 
     helpText += "\n\nHOTKEYS:"
     helpText += "\nArrow Keys to move"
     helpText += "\nEnter to end turn / confirm target"
     helpText += "\nn: select next character"
-    helpText += "\n1-6 are to select stamina die"
-    helpText += "\nqwerty selects abilites"
-    helpText += "\nshift+qwerty for info"
-    helpText += "\nz: shows enemy numbers"
+    helpText += "\n1-6 are to select stamina dice"
+    helpText += "\nqwerty keys selects abilites"
+    helpText += "\nshift+qwerty keys for info"
+    helpText += "\nz: shows enemy numbers matched on right"
     helpText += "\nc: shows dmg that will hit tile"
     helpText += "\nEscape to exit this and most menus"
 

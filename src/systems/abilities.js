@@ -12,9 +12,9 @@ export const Ability = {
         return yahtzee.CheckSingles(dice)
     },
     onUse: (ability, entity, target= null) => {
-        console.log('used')
-        console.log(ability)
-        console.log(ability.abilityPhase.phase)
+        // console.log('used')
+        // console.log(ability)
+        // console.log(ability.abilityPhase.phase)
         GetSelectedDie(entity)
         entity.fireEvent("gain-movement", 3)
         entity.fireEvent("exhaust-selected")
@@ -73,16 +73,16 @@ export const AbilitySwordJab = {
 
         //do ability
         //for each target create dmg tile
-        console.log(ability)
-        console.log(ability.abilityTarget.coords)
+        //console.log(ability)
+        // console.log(ability.abilityTarget.coords)
 
         var coords = RotateCoords(ability, entity, target)
 
         
         //create dmg tiles
         coords.forEach(coord => {
-            console.log(coord)
-            console.log(target.x + ","+target.y)
+            //console.log(coord)
+            //console.log(target.x + ","+target.y)
             var newDmgTile =  world.createEntity()
             newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
             newDmgTile.add(components.FastAttack)
@@ -116,7 +116,7 @@ export const AbilitySwordSwing = {
         //do ability
         //for each target create dmg tile
         coords.forEach(coord => {
-            console.log(coord)
+            //console.log(coord)
             var newDmgTile =  world.createEntity()
             newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
             newDmgTile.add(components.SlowAttack)
@@ -147,7 +147,7 @@ export const AbilitySpearThrust = {
         //do ability
         //for each target create dmg tile
         coords.forEach(coord => {
-            console.log(coord)
+            //console.log(coord)
             var newDmgTile =  world.createEntity()
             newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
             newDmgTile.add(components.SlowAttack)
@@ -203,7 +203,7 @@ function GenericSlowAttack(ability,entity,target= null) {
     //do ability
     //for each target create dmg tile
     coords.forEach(coord => {
-        console.log(coord)
+        //console.log(coord)
         var newDmgTile =  world.createEntity()
         newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
         newDmgTile.add(components.SlowAttack)
@@ -220,7 +220,7 @@ function GenericFastAttack(ability,entity,target= null) {
     //do ability
     //for each target create dmg tile
     coords.forEach(coord => {
-        console.log(coord)
+        //console.log(coord)
         var newDmgTile =  world.createEntity()
         newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
         newDmgTile.add(components.FastAttack)
@@ -250,7 +250,7 @@ export const GetSelectedDie = (entity) => {
 
 export const GetAllDie = (entity) => {
     let dieList = []
-    console.log("AI DICE")
+    //console.log("AI DICE")
     for(var x = 0;x < entity.die.length; x++){
         if(!entity.die[x].exhausted){
             dieList.push(entity.die[x].number)
@@ -258,10 +258,10 @@ export const GetAllDie = (entity) => {
     }
 
     dieList.sort()
-    console.log(dieList.toString())
+    //console.log(dieList.toString())
     var counts = {};
     dieList.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
-    console.log(counts)
+    //console.log(counts)
     return counts;
 }
 
@@ -270,23 +270,23 @@ const RotateCoords = (ability, entity, target) => {
     var diffX = target.x - entity.position.x  
     var diffY = target.y - entity.position.y;
     var coords = ability.abilityTarget.coords;
-    console.log("before rotate")
-    console.log(coords)
-    console.log("direction")
+    //console.log("before rotate")
+    //console.log(coords)
+    //console.log("direction")
     if(diffY <= -1){
-        console.log("up")
+        //console.log("up")
     }else if(diffY >= 1){
-        console.log("down")
+        //console.log("down")
         coords = ConvertCoordsDown(coords)
     }else if(diffX <= -1){
-        console.log("left")
+        //console.log("left")
         coords = ConvertCoordsLeft(coords)
     }else if(diffX >= 1){
-        console.log("right")
+        //console.log("right")
         coords = ConvertCoordsRight(coords)
     }
-    console.log("after rotate")
-    console.log(coords)
+    //console.log("after rotate")
+    //console.log(coords)
     return coords
 }
 

@@ -66,7 +66,7 @@ const RenderDamageNumbers = () => {
     var dmgTiles = []
     dmgTiles.push.apply(dmgTiles, slowDmgEntities.get());
     dmgTiles.push.apply(dmgTiles, fastDmgEntities.get());
-    console.log(dmgTiles)
+    //console.log(dmgTiles)
     var dmgCount = []
     dmgTiles.forEach( dmg => {
         var toLoc = toLocId({x:dmg.position.x,y:dmg.position.y})
@@ -75,9 +75,9 @@ const RenderDamageNumbers = () => {
         }
          dmgCount[toLoc] += dmg.dmgTile.dmg
     })
-    console.log(dmgCount)
+    //console.log(dmgCount)
     for (const [key, value] of Object.entries(dmgCount)) {
-        console.log(`${key}: ${value}`);
+        //console.log(`${key}: ${value}`);
         var pos = toCell(key)
         display.draw(grid.map.x+pos.x, grid.map.y + pos.y, value)
       }
@@ -97,7 +97,7 @@ const renderObjects = () => {
 
 
 const renderUnits = () => {
-    // console.log(layerUnitEntities.get())
+    // //console.log(layerUnitEntities.get())
     layerUnitEntities.get().forEach((entity) => {
         DrawChar(entity,
             entity.position.x+grid.map.x,
@@ -128,7 +128,7 @@ const renderPhase = () => {
 const renderDieMenu = () => {
     if(CurrrentActivePlayer){
         for(var x = 0; x < CurrrentActivePlayer.die.length; x++){
-            //console.log(CurrrentActivePlayer.die[x])
+            ////console.log(CurrrentActivePlayer.die[x])
             //  1|3|
             //get color
             var color = "white"
@@ -175,7 +175,7 @@ const renderTarget = () => {
     //get the position of the targetEntity
     //get entities at position
     //for now just draw x at position
-    console.log(targetEntity)
+    //console.log(targetEntity)
     DrawChar(targetEntity, 
         targetEntity.position.x+grid.map.x,
         targetEntity.position.y+grid.map.y)
@@ -289,9 +289,9 @@ export const render = () => {
         renderSlowAttacks()
         renderFastAttacks()
 
-        console.log(gameState)
+        //console.log(gameState)
         if(gameState === "examine" || gameState === "targeting" ) {
-            console.log("need to show target")
+            //console.log("need to show target")
             renderTarget()
         }
     }

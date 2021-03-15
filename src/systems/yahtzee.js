@@ -19,16 +19,16 @@ export const CheckSames = (counts, match, Allowed = [1,2,3,4,5,6]) => {
     for (let x = 1; x < 7; x++) {
         if(counts[x] && counts[x] == match && Allowed.includes(x)){
             
-            console.log("found match")
+            // console.log("found match")
             found.push(x)
         }
     }
 
     //if we went over allowed limit
     
-    console.log(counts)
-    console.log(found)
-    console.log("match:" + match)
+    // console.log(counts)
+    // console.log(found)
+    // console.log("match:" + match)
     return found
 }
 

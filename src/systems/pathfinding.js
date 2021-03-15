@@ -17,10 +17,10 @@ const MakeDijkstra = (x,y) =>{
 
 export const AiPathfind = (entity) => {
     var dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
-    console.log("path finder")
-    console.log(dijkstra)
+    //console.log("path finder")
+    //console.log(dijkstra)
     var target = FindClosestTarget(dijkstra, entity)
-    console.log(target)
+    //console.log(target)
     //target.reverse()
     target.pop()
     return target
@@ -45,12 +45,12 @@ const FindClosestTarget = (dijkstra, entity) => {
     if(entity.has(components.IsEnemy)) {
         //loop through all allies and get their coords and calc path
         
-        console.log("enemies to check: " + allyEntities.get().length)
+        //console.log("enemies to check: " + allyEntities.get().length)
         allyEntities.get().forEach( entity => {
             var closest = []
-            // console.log(entity)
+            // //console.log(entity)
             dijkstra.compute(entity.position.x, entity.position.y, function (x,y) {
-                // console.log('test path?')
+                // //console.log('test path?')
 
                 closest.push([x,y])
             })
@@ -66,10 +66,10 @@ const FindClosestTarget = (dijkstra, entity) => {
 
 
 export const CheckStraightLine = ([...path], currentXY) => {
-    console.log("in range check")
+    //console.log("in range check")
     //check if length = 1 then we are right next to target
     if(path.length == 1){
-        console.log("path short")
+        //console.log("path short")
         return true
     }
     
@@ -79,8 +79,8 @@ export const CheckStraightLine = ([...path], currentXY) => {
         Xs.push(coords[0])
         Ys.push(coords[1])
     })
-    console.log(Xs.toString())
-    console.log(Ys.toString())
+    //console.log(Xs.toString())
+    //console.log(Ys.toString())
     //if((allEqual(Xs) || allEqual(Ys) ) && (currentXY.x == path[0][0] || currentXY.y == path[0][1]) ){
     if((currentXY.x == path[0][0] || currentXY.y == path[0][1]) ){
         return true
@@ -97,7 +97,7 @@ const testingCB = () => {
 }
 
 const passableCallback = (x,y) => {
-    //console.log("checking coords: " + x + ":" + y)
+    ////console.log("checking coords: " + x + ":" + y)
     //get entities at x,y
     var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:x,y:y}))
 

@@ -66,7 +66,7 @@ export class Health extends Component {
 
     onGainMovement(evt) {
       this.movement += evt.data;
-      console.log("new movement: " + this.movement)
+      // console.log("new movement: " + this.movement)
       evt.handle();
     }
 
@@ -76,7 +76,7 @@ export class Health extends Component {
     }
 
     onTurnEnd(evt){
-      console.log('ended in move')
+      // console.log('ended in move')
       this.movement = 0
       this.dodge = 0
     }
@@ -99,11 +99,11 @@ export class Health extends Component {
           }else {
             this.movement -= 1
           }
+          evt.handle()
         }
       }
       this.x = 0
       this.y = 0
-      evt.handle()
     }
   }
 

@@ -16,14 +16,14 @@ export const DoAiTurnDefend = (entity) => {
 
     entity.abilityList.abilities.forEach( abil => {
         //split the dice counts, if any return true add to can use and continue
-        console.log(abil.abilityStaminaCost)
+        //console.log(abil.abilityStaminaCost)
         if( (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == "Defend") && stamina >= abil.abilityStaminaCost.amount){
             //we have enough to use this
             abilitiesCanUse.push(abil)
         }
     })
-    console.log("ai usable abilities")
-    console.log(abilitiesCanUse)
+    //console.log("ai usable abilities")
+    //console.log(abilitiesCanUse)
     ChooseAiDefend(entity, abilitiesCanUse)
 
 }
@@ -46,9 +46,9 @@ export const DoAiTurnAttack = (entity) => {
         }
     })
     console.log("ai usable abilities")
-    console.log(abilitiesCanUse)
+    console.log(abilitiesCanUse.length)
     ChooseAiAttack(entity, abilitiesCanUse)
-    console.log("pathfinding")
+    //console.log("pathfinding")
     //AiPathfind(entity)
     // var attackUsed = 0
     //for each attack ability, check if we can use
@@ -64,7 +64,7 @@ export const DoAiTurnAttack = (entity) => {
 var blockers = []
 
 const ChooseAiDefend = (entity, abilityList) => {
-    console.log(entity)
+    //console.log(entity)
     var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
     var fastHere = false
     var slowHere = false
@@ -124,11 +124,12 @@ const ChooseAiAttack = (entity,abilityList) => {
     // var target = AiPathfind(entity)
     var attacked = false
     abilityList.shuffle()
-    //abilityList.shuffle()
+
     console.log("Doing mob attack: ")
     for(var x = 0; x < 2;x ++){
         var target = AiPathfind(entity)
         abilityList.forEach( abil => {
+            console.log("our target is")
             console.log(target.toString())
             console.log(target.length)
         
@@ -152,10 +153,6 @@ const ChooseAiAttack = (entity,abilityList) => {
             console.log("Not In Range so we move")
             if(target.length > 1){
                 MoveForward(entity, target)
-
-                //use 1 stamina
-                entity.fireEvent("use-stamina",1)
-                entity.fireEvent("ai-use-stamina",1)
             }
         }
     }    
@@ -170,16 +167,22 @@ const MoveForward = (entity, target) => {
     var y = entity.movement.movement
     for(var x = 0; x < y;x++){
         if(target && target.length > 1){
-            console.log("remaining target")
-            console.log(target.toString())
+            //console.log("remaining target")
+            //console.log(target.toString())
             //did we find a target? walk towards the last
             var nextStep = target.pop()
-            console.log("Next Step" + nextStep.toString())
+            //console.log("Next Step" + nextStep.toString())
             
             //convert to a step from position
             entity.movement.x = nextStep[0] - entity.position.x
-            entity.movement.y =  nextStep[1] - entity.position.y 
-            entity.fireEvent("attempt-move")
+            entity.movement.y = nextStep[1] - entity.position.y 
+            var handled = entity.fireEvent("attempt-move")
+            if(handled){
+                //use 1 stamina
+                // entity.fireEvent("use-stamina",1)
+                // entity.fireEvent("ai-use-stamina",1)
+            }
+
         }
     }
 }
@@ -203,7 +206,7 @@ const GetDie = (entity) => {
     dieList.sort()
     var counts = {};
     dieList.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
-    //console.log(counts)
+    ////console.log(counts)
     return counts;
 }
 

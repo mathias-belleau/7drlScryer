@@ -8,9 +8,9 @@ export const AttemptMove = (moveComp, entity) => {
     //move comp will contain an x/y change
 
     //entity is the moving entity
-    console.log("check here")
-    console.log(moveComp)
-    console.log(entity)
+    //console.log("check here")
+    //console.log(moveComp)
+    //console.log(entity)
 
     let mx = moveComp.x;
     let my = moveComp.y;
@@ -30,9 +30,9 @@ export const AttemptMove = (moveComp, entity) => {
     const blockers = [];
     const fastAttacks = [];
     // read from cache
-    console.log(`${mx},${my}`)
+    //console.log(`${mx},${my}`)
     const entitiesAtLoc = readCacheSet("entitiesAtLocation", `${mx},${my}`);
-    console.log(entitiesAtLoc)
+    //console.log(entitiesAtLoc)
     for (const eId of entitiesAtLoc) {
         if (world.getEntity(eId).isBlocking) {
           blockers.push(eId);
@@ -41,14 +41,14 @@ export const AttemptMove = (moveComp, entity) => {
 
     if(blockers.length >= 1){
         //we can't move here
-        console.log('blocked')
+        //console.log('blocked')
         return false;
     }
 
     //check current tile for fast attacks
     const entitiesAtCurrentLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
     for (const eId of entitiesAtCurrentLoc) {
-      console.log(world.getEntity(eId))
+      //console.log(world.getEntity(eId))
       if(world.getEntity(eId).fastAttack) {
         fastAttacks.push(entity)
       }
@@ -57,7 +57,7 @@ export const AttemptMove = (moveComp, entity) => {
     if(fastAttacks.length >= 1){
       //we need dodge to move.
       if(entity.movement.dodge < 1){
-        console.log("no dodge")
+        //console.log("no dodge")
         return false;
       }else {
         //remove 1 dodge for getting out of tile

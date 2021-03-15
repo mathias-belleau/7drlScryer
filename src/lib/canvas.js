@@ -49,7 +49,7 @@ export const grid = {
     },
 
     helpMenu: {
-      width:40,
+      width:45,
       height:30
     }
 }
@@ -76,7 +76,7 @@ const displayOptionsHelp = {
   width: grid.helpMenu.width,
   height: grid.helpMenu.height, // canvas height and width
   fontSize: 18, // canvas fontsize
-  forceSquareRatio: true // make the canvas squared ratio
+  forceSquareRatio: false // make the canvas squared ratio
 }
 
 export const  divHelp = document.createElement('div');
