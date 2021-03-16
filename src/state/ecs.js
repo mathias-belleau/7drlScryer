@@ -42,12 +42,19 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.AbilityDamage)
   ecs.registerComponent(components.AbilityEndsTurn)
 
+  //scenario
+  ecs.registerComponent(components.ScenarioBattle)
+  ecs.registerComponent(components.ScenarioChoice)
+  ecs.registerComponent(components.ScenarioMessage)
 
+  //hunt
+  ecs.registerComponent(components.HuntScenarios)
 
   //prefabs
-
+//bases
   ecs.registerPrefab(prefabs.Tile)
   ecs.registerPrefab(prefabs.Being)
+  ecs.registerPrefab(prefabs.Scenario)
 
   ecs.registerPrefab(prefabs.Wall)
   ecs.registerPrefab(prefabs.Floor)
@@ -67,6 +74,9 @@ const world = ecs.createWorld();
   ecs.registerPrefab(prefabs.AbilityDoubleAxeSwing)
   ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
 
+  //scenarios
+  ecs.registerPrefab(prefabs.Hunt)
+  
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {

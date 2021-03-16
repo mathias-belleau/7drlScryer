@@ -44,6 +44,14 @@ export const Tile = {
     ]
   }
 
+  export const Scenario = {
+    name: "Scenario",
+    components:[
+      { type: "ScenarioMessage"},
+      { type: "ScenarioBattle"}
+    ]
+  }
+
 
       // description
 		// name
@@ -289,5 +297,13 @@ export const AbilityAxeDecapitate = {
     { type: "AbilityStaminaCost", properties: {amount: 4} },
     { type: "AbilityDamage", properties: {dmg:3} },
     { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const Hunt = {
+  name: "Hunt",
+  components:[
+    { type: "description"},
+    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Scenario"]}}
   ]
 }

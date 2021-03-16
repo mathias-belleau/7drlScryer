@@ -252,3 +252,23 @@ export class AbilityDamage extends Component {
 }
 
 export class AbilityEndsTurn extends Component {}
+
+
+//scenarios
+
+export class ScenarioBattle extends Component {
+  static properties = {enemies: [["Goblin", 1]], allies: []}
+}
+
+export class ScenarioMessage extends Component {
+  static properties = {message: "Test scenario pls ignore"}
+}
+
+export class ScenarioChoice extends Component {
+  static allowMultiple = true;
+  static properties = {choiceMessage: "This is a test", scenario: "TestScenario"}
+}
+
+export class HuntScenarios extends Component {
+  static properties = {scenarios: ["Scenario"]}
+}

@@ -9,8 +9,10 @@ import {readCacheSet} from "./state/cache"
 import {toLocId} from "./lib/grid"
 import * as AI from "./systems/ai"
 import {HideHelpMenu} from "./state/helpMenu"
+import gameTown from "./state/town"
+import * as Hunt from "./state/scenario"
 
-export var gameState = "setup"
+export var gameState = "loading"
 export var previousGameState = ""
 
 var queuedAbility = "hi"
@@ -25,8 +27,6 @@ export const SetQueuedEntity = (ent) => {
 export var targetEntity = world.createEntity("targetEntity")
 targetEntity.add(components.Appearance, {char: 'X', color: "black", background: "green"})
 
-var CurrrentActivePlayerIndex = 0
-export var CurrrentActivePlayer = ""
 let userInput = null;
 
 const playerEntities = world.createQuery({
@@ -98,7 +98,7 @@ const processUserInput = () => {
     }else if (userInput === "n") {
       //change active player to next
       // console.log('input: ' + userInput)
-      CurrrentActivePlayer = GetNextActivePlayer()
+      gameTown.GetNextActive()
 
       render()
 
@@ -106,10 +106,10 @@ const processUserInput = () => {
     }else if(userInput === "1" || userInput === "2" || userInput === "3" || userInput === "4" || userInput === "5" || userInput === "6" || userInput === "7" || userInput === "8" || userInput === "9") {
       // console.log("dice swap")
       //select die
-      if(userInput - 1 < CurrrentActivePlayer.die.length) {
+      if(userInput - 1 < gameTown.GetActive().die.length) {
         // console.log(CurrrentActivePlayer.die[userInput-1])
-        if(!CurrrentActivePlayer.die[userInput-1].exhausted){
-          CurrrentActivePlayer.die[userInput-1].selected = !CurrrentActivePlayer.die[userInput-1].selected
+        if(!gameTown.GetActive().die[userInput-1].exhausted){
+          gameTown.GetActive().die[userInput-1].selected = !gameTown.GetActive().die[userInput-1].selected
         }
         render()
         
@@ -132,18 +132,18 @@ const processUserInput = () => {
       var abilityIndex = ConvertSkillHotkey(userInput)
 
       //check if ability exists
-      if(abilityIndex < CurrrentActivePlayer.abilityList.abilities.length){
+      if(abilityIndex < gameTown.GetActive().abilityList.abilities.length){
         //hit existing ability key
-        let abil = CurrrentActivePlayer.abilityList.abilities[abilityIndex]
-        let canUse = abil.abilityFunction.function.canUse(abil,CurrrentActivePlayer)
+        let abil = gameTown.GetActive().abilityList.abilities[abilityIndex]
+        let canUse = abil.abilityFunction.function.canUse(abil,gameTown.GetActive())
         var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
         if(canUse.length > 0 && (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == currentPhase)){
           //check if ability is instant or targeted
           if(abil.abilityFunction.function.onTarget){
-            abil.abilityFunction.function.onTarget(abil, CurrrentActivePlayer)
+            abil.abilityFunction.function.onTarget(abil, gameTown.GetActive())
 
           }else {
-            abil.abilityFunction.function.onUse(abil, CurrrentActivePlayer, GetTargetEntityPos())
+            abil.abilityFunction.function.onUse(abil, gameTown.GetActive(), GetTargetEntityPos())
 
           }
         }
@@ -157,7 +157,7 @@ const processUserInput = () => {
       SetPreviousState("AbilityInfo")
       //console.log(abilityIndex)
       //console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
-      SetEntityToRender(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
+      SetEntityToRender(gameTown.GetActive().abilityList.abilities[abilityIndex])
       render()
     
     }else if(userInput=="Enter"){
@@ -170,6 +170,7 @@ const processUserInput = () => {
         ProcessDmgTiles()
 
         EndTurnProcess(allyEntities.get())
+        CheckVictory()
         gameState = "EnemyTurnDefend"
       }
 
@@ -251,7 +252,7 @@ export const ExamineTargetEnable = (state) => {
   SetPreviousState(state)
 
   //set examine base position to current active player position
-  targetEntity.add(components.Position, {x: CurrrentActivePlayer.position.x,y: CurrrentActivePlayer.position.y})
+  targetEntity.add(components.Position, {x: gameTown.GetActive().position.x,y: gameTown.GetActive().position.y})
 }
 
 const SetPreviousState = (state) => {
@@ -286,47 +287,37 @@ const PlayerAttemptMove = () => {
   // player.add(Move, { x: -1, y: 0 }); l
 
   if (userInput === "ArrowUp") {
-    CurrrentActivePlayer.movement.y = -1
+    gameTown.GetActive().movement.y = -1
   }
   if (userInput === "ArrowRight") {
-    CurrrentActivePlayer.movement.x = 1
+    gameTown.GetActive().movement.x = 1
   }
   if (userInput === "ArrowDown") {
-    CurrrentActivePlayer.movement.y = 1
+    gameTown.GetActive().movement.y = 1
   }
   if (userInput === "ArrowLeft") {
-    CurrrentActivePlayer.movement.x = -1
+    gameTown.GetActive().movement.x = -1
   }
 
-  CurrrentActivePlayer.fireEvent("attempt-move")
+  gameTown.GetActive().fireEvent("attempt-move")
 
   render()
 }
 
 const TargetMove = () => {
   if (userInput === "ArrowUp") {
-    targetEntity.position.y = CurrrentActivePlayer.position.y + -1
-    targetEntity.position.x = CurrrentActivePlayer.position.x
+    targetEntity.position.y = gameTown.GetActive().position.y + -1
+    targetEntity.position.x = gameTown.GetActive().position.x
   } else if (userInput === "ArrowRight") {
-    targetEntity.position.x = CurrrentActivePlayer.position.x + 1
-    targetEntity.position.y = CurrrentActivePlayer.position.y
+    targetEntity.position.x = gameTown.GetActive().position.x + 1
+    targetEntity.position.y = gameTown.GetActive().position.y
   } else if (userInput === "ArrowDown") {
-    targetEntity.position.y = CurrrentActivePlayer.position.y + 1
-    targetEntity.position.x = CurrrentActivePlayer.position.x
+    targetEntity.position.y = gameTown.GetActive().position.y + 1
+    targetEntity.position.x = gameTown.GetActive().position.x
   } else if (userInput === "ArrowLeft") {
-    targetEntity.position.x = CurrrentActivePlayer.position.x + -1
-    targetEntity.position.y = CurrrentActivePlayer.position.y
+    targetEntity.position.x = gameTown.GetActive().position.x + -1
+    targetEntity.position.y = gameTown.GetActive().position.y
   }
-}
-
-const GetNextActivePlayer = () => {
-  if(CurrrentActivePlayerIndex + 1 >= playerEntities.get().length){
-    CurrrentActivePlayerIndex = 0
-  }else {
-    CurrrentActivePlayerIndex++
-  }
-  ////console.log(playerEntities.get()[CurrrentActivePlayerIndex])
-  return playerEntities.get()[CurrrentActivePlayerIndex]
 }
 
 document.addEventListener("keydown", (ev) => {
@@ -419,16 +410,105 @@ const EndTurnProcess = (entities) => {
 
 }
 
+const CheckVictory = () =>{
+  var count = 0
+  console.log("check victory")
+  enemyEntities.get().forEach(enem => {
+    count++
+  })
+  //did we beat all enemies?
+  if(count == 0){
+    //still an enemy alive
+    console.log("VICTORY")
+    var final = Hunt.StartNextScenario()
+    //means there are more scenarios
+    if(!final){
+      console.log("going to next scenario")
+      CleanUpPostBattle()
+      StartScenario()
+    }else{
+      console.log("finished")
+    }
+    //true go to town
+  }
+}
 
-makeMap()
-setupTestFight()
-FetchFreeTile()
-render()
+const CleanUpPostBattle = () => {
+  //we need to delete all enemies
+  //delete allies that aren't permanent?
+  //remove position from all alies
+
+  var hunters = gameTown.GetHunters()
+  for(var x = 0; x<hunters.length;x++){
+    if(gameTown.GetVillager(hunters[x]).has(components.Position)){
+      gameTown.GetVillager(hunters[x]).remove(gameTown.GetVillager(hunters[x]).position)
+    }
+  }
+}
+
+const StartHunt = (huntName) => {
+
+  //set hunt
+  Hunt.StartHunt(huntName)
+
+  //fetch the hunt
+  Hunt.GetCurrentHunt()
+  //fetch the first scenario
+  StartScenario()
+}
+
+const StartScenario = () => {
+  var currScenario = Hunt.GetCurrentScenario();
+
+  //TODO: check if this has dialogue or battle
+  //for now assume battle
+  //make map
+  makeMap()
+  //make allies
+  //for loop over current huntScenario.allies
+
+  console.log(currScenario)
+  //make enemies
+  currScenario.scenarioBattle.enemies.forEach(enem => {
+    times(enem[1], () => {
+      var emptyTile = FetchFreeTile();
+      world.createPrefab(enem[0]).add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
+    });
+  })
+  //for loop over current huntscenario
+  //spawn first 4 players in villagers (for now)
+  gameTown.SetHunters()
+  var hunters = gameTown.GetHunters()
+  console.log("hunters going to battle")
+  console.log(hunters)
+  hunters.forEach( hunter => {
+    console.log("setting up hunter")
+    console.log(gameTown.GetVillager(hunter))
+    var emptyTile = FetchFreeTile();
+    gameTown.GetVillager(hunter).add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
+  })
+
+  gameState = "setup"
+  render()
+}
 
 
+const SetupGame = () => {
+  //make hunts
+  Hunt.SetupHunts()
 
+  
+  //make initial town
+  console.log(gameTown)
 
+    StartHunt("Hunt")
+  
+//   makeMap()
+// setupTestFight()
+// render()
+}
 
+SetupGame()
 
 const gameLoop = () => {
     update();

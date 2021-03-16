@@ -9,6 +9,7 @@ import world from "../state/ecs";
 import { readCacheSet } from "../state/cache";
 import {toCell, toLocId} from "../lib/grid"
 import {CurrrentActivePlayer, gameState, targetEntity} from "../index"
+import gameTown from "../state/town"
 import {DrawHelpMenu,ShowAbilityInfo} from "../state/helpMenu"
 
 const layerMapEntities = world.createQuery({
@@ -106,18 +107,18 @@ const renderUnits = () => {
 }
 
 const renderActivePlayer = () => {
-    if(CurrrentActivePlayer){
+    if(gameTown.GetActive()){
         var text = "Active:"
         DrawText(text,grid.activePlayer.x,grid.activePlayer.y )
-        DrawChar(CurrrentActivePlayer,
+        DrawChar(gameTown.GetActive(),
             grid.activePlayer.x+ text.length,
             grid.activePlayer.y)
 
-        DrawText("Hp:"+CurrrentActivePlayer.health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1)
-        DrawText("Stam:"+CurrrentActivePlayer.stamina.current.toString()+"/"+CurrrentActivePlayer.stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2)
-        DrawText("StamRgn:"+(Math.max(0,4 - CurrrentActivePlayer.stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3)
-        DrawText("Move:"+CurrrentActivePlayer.movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4)
-        DrawText("Dodge:"+CurrrentActivePlayer.movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5)
+        DrawText("Hp:"+gameTown.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1)
+        DrawText("Stam:"+gameTown.GetActive().stamina.current.toString()+"/"+gameTown.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2)
+        DrawText("StamRgn:"+(Math.max(0,4 - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3)
+        DrawText("Move:"+gameTown.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4)
+        DrawText("Dodge:"+gameTown.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5)
     }
 }
 
@@ -126,21 +127,21 @@ const renderPhase = () => {
 }
 
 const renderDieMenu = () => {
-    if(CurrrentActivePlayer){
-        for(var x = 0; x < CurrrentActivePlayer.die.length; x++){
+    if(gameTown.GetActive()){
+        for(var x = 0; x < gameTown.GetActive().die.length; x++){
             ////console.log(CurrrentActivePlayer.die[x])
             //  1|3|
             //get color
             var color = "white"
-            if(CurrrentActivePlayer.die[x].selected){
+            if(gameTown.GetActive().die[x].selected){
                 color = "green"
-            }else if(CurrrentActivePlayer.die[x].exhausted){
+            }else if(gameTown.GetActive().die[x].exhausted){
                 color = "grey"
             }
             //display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y-1,'_')    
             DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ (x*5), grid.dieMenu.y)
             //console.log(CurrrentActivePlayer.die[x].number)
-            display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y, CurrrentActivePlayer.die[x].number.toString(), "black", color)
+            display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y, gameTown.GetActive().die[x].number.toString(), "black", color)
         }
     }
 }
@@ -153,20 +154,20 @@ const renderAbilityMenu = () => {
     
     //if can use set to green?
     //if already used set to grey
-    
-    for(var x = 0; x < CurrrentActivePlayer.abilityList.abilities.length;x++){
+    // console.log(gameTown.GetActive())
+    for(var x = 0; x < gameTown.GetActive().abilityList.abilities.length;x++){
         var color = "gray"
         var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
-        if( (CurrrentActivePlayer.abilityList.abilities[x].abilityPhase.phase == "Any" || CurrrentActivePlayer.abilityList.abilities[x].abilityPhase.phase == currentPhase)
-         && CurrrentActivePlayer.abilityList.abilities[x].abilityFunction.function.canUse(
-            CurrrentActivePlayer.abilityList.abilities[x],
-             CurrrentActivePlayer).length > 0){
+        if( (gameTown.GetActive().abilityList.abilities[x].abilityPhase.phase == "Any" || gameTown.GetActive().abilityList.abilities[x].abilityPhase.phase == currentPhase)
+         && gameTown.GetActive().abilityList.abilities[x].abilityFunction.function.canUse(
+            gameTown.GetActive().abilityList.abilities[x],
+            gameTown.GetActive()).length > 0){
             color = "white"
         }
 
 
 
-        let smlName = CurrrentActivePlayer.abilityList.abilities[x].abilitySmallName.smallName
+        let smlName = gameTown.GetActive().abilityList.abilities[x].abilitySmallName.smallName
         DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)
     }
 }
