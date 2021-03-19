@@ -14,8 +14,10 @@ const MakeDijkstra = (x,y) =>{
     var dijkstra = new ROT.Path.Dijkstra(x, y, passableCallback, {topology :4});
     return dijkstra
 }
-
+let pathingUnit = "";
 export const AiPathfind = (entity) => {
+    console.log(entity)
+    pathingUnit= entity.id
     var dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
     //console.log("path finder")
     //console.log(dijkstra)
@@ -59,6 +61,7 @@ const FindClosestTarget = (dijkstra, entity) => {
             }
         })
     }
+    console.log(winner)
     //  
         //loop through all enemies and get their coords and calc path
     return winner
@@ -99,22 +102,24 @@ const testingCB = () => {
 const passableCallback = (x,y) => {
     ////console.log("checking coords: " + x + ":" + y)
     //get entities at x,y
+    
     var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:x,y:y}))
-
     if(!getEntitiesAtLoc){
-        return 0
+        return false
     }
+    getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
 
-    getEntitiesAtLoc.forEach( eid => {
-        var entity = world.getEntity(eid)
-
-        if(entity.has(components.IsBlocking)){
-            return 0
+    for (var x = 0; x < getEntitiesAtLoc.length; x++){
+        if(getEntitiesAtLoc[x] != pathingUnit) {
+            var ent = world.getEntity(getEntitiesAtLoc[x])
+            if(ent.has(components.IsBlocking) && (ent.has(components.LayerMap) || ent.has(components.IsEnemy)) ){
+                    return false
+            }
+        }else {
+            return true
         }
-    })
-    //if length 0, return 1
-    //if any isBlock return 1
-
+    }
+    
     //return 0
-    return 1
+    return true
 }

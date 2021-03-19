@@ -23,7 +23,8 @@ export const Tile = {
       { type: "Movement"},
       { type: "Armour"},
       { type: "Stamina"},
-      { type: "AbilityList"}
+      { type: "AbilityGrabBagList"},
+      { type: "AbilityList"},
     ],
   };
 
@@ -40,7 +41,7 @@ export const Tile = {
       { type: "AbilityTarget"},
       { type: "AbilityAllowedDie"},
       { type: "AbilityRange"},
-      { type: "AbilityDamage"}
+      { type: "AbilityDamage"},
     ]
   }
 
@@ -101,12 +102,12 @@ export const Floor = {
      {
        type: "IsPlayerControlled"
      },
-     { type: "Apperance",
+     { type: "Appearance",
       properties: {char: "@"}
     },
     {
       type: "AbilityList",
-      properties: {abilities: ["AbilityMove", "AbilityDodge", "AbilitySwordJab", "AbilitySwordSwing"] }
+      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
     }
    ]
  };
@@ -115,13 +116,9 @@ export const Floor = {
   name: "Mob",
   inherit: ["Being"],
   components: [
-    {
-      type: "Ai"
-    },
-    {
-      type: "IsEnemy",
-    },
-    {type: "GainMovement"}
+    { type: "Ai" },
+    { type: "IsEnemy"},
+    {type: "GainMovement"},
   ]
 };
 
@@ -140,7 +137,7 @@ export const Goblin = {
     },
     {
       type: "AbilityList",
-      properties: {abilities: ["AbilitySpearThrust"] }
+      properties: {abilities: [ ["AbilitySpearThrust", 1], ["AbilityDoNothing",1]] }
     },
     {type: "Health", properties: {max:2,current:2}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
@@ -161,7 +158,7 @@ export const OrcWarrior = {
     },
     {
       type: "AbilityList",
-      properties: {abilities: ["AbilityDoubleAxeSwing", "AbilityAxeDecapitate"] }
+      properties: {abilities: [ ["AbilityDoubleAxeSwing",1], ["AbilityAxeDecapitate",1]] }
     },
     {type: "Health", properties: {max:8,current:8}},
     { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}}
@@ -176,13 +173,8 @@ export const AbilityMove = {
   components:[
     { type: "Description",
       properties: {name: "Move", description: "exhausts 1 die to give it's face value for movement points"}},
-    { type: "AbilityFunction",
-      properties: {function: Abilities.AbilityMove}
-    },
-    {
-      type: "AbilitySmallName",
-      properties: {smallName: "MOV"}
-    }
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityMove} },
+    { type: "AbilitySmallName", properties: {smallName: "MOV"} },
   ]
 }
 
@@ -206,31 +198,32 @@ export const AbilityDodge = {
   ]
 }
 
+export const AbilityDoNothing= {
+  name: "AbilityDoNothing",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Does Nothing", description: "Rest this turn"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityDoNothing} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "RST"}     },
+    { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
+    { type: "AbilityRange", properties: {range:5}}
+  ]
+}
+
 export const AbilitySpearThrust = {
   name: "AbilitySpearThrust",
   inherit:["Ability"],
   components:[
     { type: "Description",
       properties: {name: "Spear Thrust", description: "exhausts 5,6 to do a slow attack on a 2x1 1 dmg"}},
-    { type: "AbilityFunction",
-      properties: {function: Abilities.AbilitySpearThrust}
-    },
-    {
-      type: "AbilityPhase",
-      properties: {phase: "Attack"}
-    },
-    {
-      type: "AbilitySmallName",
-      properties: {smallName: "STH"}
-    },
-    {
-      type: "AbilityTarget",
-      properties: {coords: [[0,0],[0,-1]]}
-    },
-    {
-      type:"AbilityAllowedDie",
-      properties: {allowed:[5,6]}
-    },
+    { type: "AbilityFunction", properties: {function: Abilities.AbilitySpearThrust} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "STH"}     },
+    { type: "AbilityTarget", properties: {coords: [[0,0],[0,-1]]}     },
+    { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityRange", properties: {range:2}}
   ]
 }

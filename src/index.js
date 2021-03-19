@@ -132,9 +132,9 @@ const processUserInput = () => {
       var abilityIndex = ConvertSkillHotkey(userInput)
 
       //check if ability exists
-      if(abilityIndex < gameTown.GetActive().abilityList.abilities.length){
+      if(abilityIndex < gameTown.GetActive().abilityGrabBagList.abilities.length){
         //hit existing ability key
-        let abil = gameTown.GetActive().abilityList.abilities[abilityIndex]
+        let abil = gameTown.GetActive().abilityGrabBagList.abilities[abilityIndex]
         let canUse = abil.abilityFunction.function.canUse(abil,gameTown.GetActive())
         var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
         if(canUse.length > 0 && (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == currentPhase)){
@@ -157,7 +157,7 @@ const processUserInput = () => {
       SetPreviousState("AbilityInfo")
       //console.log(abilityIndex)
       //console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
-      SetEntityToRender(gameTown.GetActive().abilityList.abilities[abilityIndex])
+      SetEntityToRender(gameTown.GetActive().abilityGrabBagList.abilities[abilityIndex])
       render()
     
     }else if(userInput=="Enter"){
@@ -347,15 +347,6 @@ export const setupTestFight = () => {
     world.createPrefab("Orc Warrior").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
 }
 
-const EnemyDefendTurn = () => {
-  //loop through all enemies and do their turn
-  enemyEntities.get().forEach( enem => {
-    AI.DoAiTurnDefend(enem)
-  })
-  //process playerAttack
-  ProcessDmgTiles()
-}
-
 const EnemyAttackTurn = () => {
   //console.log("enemy attacks")
   enemyEntities.get().forEach( enem => {
@@ -509,6 +500,8 @@ const SetupGame = () => {
 }
 
 SetupGame()
+
+
 
 const gameLoop = () => {
     update();

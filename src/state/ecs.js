@@ -27,6 +27,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.FastAttack)
   ecs.registerComponent(components.DmgTile)
   ecs.registerComponent(components.IsTurnEnd)
+  ecs.registerComponent(components.Ai)
 
   //ability
   ecs.registerComponent(components.AbilityList)
@@ -41,6 +42,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.AbilityRange)
   ecs.registerComponent(components.AbilityDamage)
   ecs.registerComponent(components.AbilityEndsTurn)
+  ecs.registerComponent(components.AbilityGrabBagList)
 
   //scenario
   ecs.registerComponent(components.ScenarioBattle)
@@ -49,6 +51,7 @@ const world = ecs.createWorld();
 
   //hunt
   ecs.registerComponent(components.HuntScenarios)
+
 
   //prefabs
 //bases
@@ -66,6 +69,7 @@ const world = ecs.createWorld();
   ecs.registerPrefab(prefabs.OrcWarrior)
 
   ecs.registerPrefab(prefabs.Ability)
+  ecs.registerPrefab(prefabs.AbilityDoNothing)
   ecs.registerPrefab(prefabs.AbilityMove)
   ecs.registerPrefab(prefabs.AbilityDodge)
   ecs.registerPrefab(prefabs.AbilitySpearThrust)

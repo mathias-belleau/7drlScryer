@@ -5,149 +5,66 @@ import * as components from "../state/component"
 import {AiPathfind,CheckStraightLine} from "./pathfinding"
 import {toLocId} from "../lib/grid"
 
-export const DoAiTurnDefend = (entity) => {
-    var abilitiesCanUse = []
-    //for each defense ability check if we can use
-    var stamina = entity.stamina.current;
-    
-    console.log("AI usable stamina")
-    console.log(entity)
-    console.log(stamina)
-
-    entity.abilityList.abilities.forEach( abil => {
-        //split the dice counts, if any return true add to can use and continue
-        //console.log(abil.abilityStaminaCost)
-        if( (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == "Defend") && stamina >= abil.abilityStaminaCost.amount){
-            //we have enough to use this
-            abilitiesCanUse.push(abil)
-        }
-    })
-    //console.log("ai usable abilities")
-    //console.log(abilitiesCanUse)
-    ChooseAiDefend(entity, abilitiesCanUse)
-
-}
 
 export const DoAiTurnAttack = (entity) => {
-
-    var abilitiesCanUse = []
-    //for each defense ability check if we can use
-    var stamina = entity.stamina.current;
     
-    console.log("AI usable stamina")
-    console.log(entity)
-    console.log(stamina)
-
-    entity.abilityList.abilities.forEach( abil => {
-        //split the dice counts, if any return true add to can use and continue
-        if( (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == "Attack") && abil.abilityStaminaCost.amount <= entity.stamina.current){
-            //we have enough to use this
-            abilitiesCanUse.push(abil)
-        }
-    })
-    console.log("ai usable abilities")
-    console.log(abilitiesCanUse.length)
-    ChooseAiAttack(entity, abilitiesCanUse)
-    //console.log("pathfinding")
-    //AiPathfind(entity)
-    // var attackUsed = 0
-    //for each attack ability, check if we can use
-
-    //check if we are in range to use?
-        //if not in range
-            //attempt move?
-        //if in range && attackUsed == 0
-            //use attack on target
-            //attackUsed = 1
+    //for each attack ability check if we can use
+    if(entity.abilityGrabBagList.abilities.length > 0){
+        var abilitiesToUse = entity.abilityGrabBagList.abilities.pop()
+        console.log(abilitiesToUse.description)
+        ChooseAiAttack(entity,abilitiesToUse)
+    }
 }
 
-var blockers = []
-
-const ChooseAiDefend = (entity, abilityList) => {
-    //console.log(entity)
-    var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
-    var fastHere = false
-    var slowHere = false
-    getEntitiesAtLoc.forEach( eid => {
-        var entity = world.getEntity(eid);
-    //check if we are on a fast tile
-        if(entity.has(components.FastAttack)){
-            fastHere = true
-    //check if we are on a tile with slow attack
-        }else if(entity.has(components.SlowAttack)) {
-            slowHere = true
-        }
-    })
-    var moved = false
-    if(fastHere){
-        //check if dodge in usable
-        var dodge
-        abilityList.forEach( abil => {
-            if(abil.description.name == "dodge") {
-                dodge = abil
-            }
-        })
-        if(dodge){
-            //we have dodge so we should use it!
-            StaminaCost(entity, dodge.abilityStaminaCost.amount)
-            dodge.abilityFunction.function.onUse(dodge, entity)
-            moved = true
-        }
-    }else if(slowHere){
-        //check if we can move
-        var move 
-        abilityList.forEach(abil => {
-            if(abil.description.name == "move"){
-                move = abil
-            }
-        })
-        //if move
-        if(move){
-            //use it!
-            StaminaCost(entity, dodge.abilityStaminaCost.amount)
-            move.abilityFunction.function.onUse(move, entity)
-            moved = true
-        }
-
-        //then move
-            //moved = true
-    }
-
-    if( (fastHere || slowHere) && !moved) {
-        //check if we have any block skills
-    }
- 
-}
-
-const ChooseAiAttack = (entity,abilityList) => {
+const ChooseAiAttack = (entity,abilityToUse) => {
     //get closest target for now
     // var target = AiPathfind(entity)
     var attacked = false
-    abilityList.shuffle()
 
     console.log("Doing mob attack: ")
     for(var x = 0; x < 2;x ++){
         var target = AiPathfind(entity)
-        abilityList.forEach( abil => {
+
             console.log("our target is")
             console.log(target.toString())
             console.log(target.length)
-        
-            if(target.length >= 1 && target.length <= abil.abilityRange.range && !attacked && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y})){
+
+            var noAlly = true;
+            for(var coord = 0; coord < target.length; coord++){
+                console.log(target[coord][0])
+                var entitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target[coord][0],y:target[coord][1]}))
+                entitiesAtLoc = Array.from(entitiesAtLoc)
+                for(var ents = 0;ents < entitiesAtLoc.length;ents++){
+                    
+                    var entityAtLoc = world.getEntity(entitiesAtLoc[ents])
+                    // console.log(entityAtLoc)
+                    // console.log(entityAtLoc.has(components.IsEnemy))
+                    console.log(entityAtLoc.has(components.IsEnemy))
+                    if(entityAtLoc.has(components.IsEnemy) && entity.id != entitiesAtLoc[ents]){
+                        noAlly = false
+                    }
+                }
+            }
+
+            //make sure we are not standing on top of target
+            // make sure we are in range
+            // we haven't already attacked
+            // check if this is a straight line to remove diag attacks
+            //check that no allies are in the path of target?
+            if(target.length >= 1 && target.length <= abilityToUse.abilityRange.range 
+                && !attacked && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y}) 
+                && noAlly
+                ){
                 //we are in range
                 console.log("In Range")
                 
                 var targ = target.pop()
                 console.log(targ.toString())
 
-                abil.abilityFunction.function.onUse(abil, entity, {x:targ[0],y:targ[1]})
+                abilityToUse.abilityFunction.function.onUse(abilityToUse, entity, {x:targ[0],y:targ[1]})
 
-                //use stamina up
-                entity.fireEvent("use-stamina",abil.abilityStaminaCost.amount)
-                entity.fireEvent("ai-use-stamina",abil.abilityStaminaCost.amount)
                 attacked = true
             }
-        })
         if(target.length > 1 && !attacked){
             //move towards enemy
             console.log("Not In Range so we move")

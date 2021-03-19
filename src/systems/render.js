@@ -155,19 +155,19 @@ const renderAbilityMenu = () => {
     //if can use set to green?
     //if already used set to grey
     // console.log(gameTown.GetActive())
-    for(var x = 0; x < gameTown.GetActive().abilityList.abilities.length;x++){
+    for(var x = 0; x < gameTown.GetActive().abilityGrabBagList.abilities.length;x++){
         var color = "gray"
         var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
-        if( (gameTown.GetActive().abilityList.abilities[x].abilityPhase.phase == "Any" || gameTown.GetActive().abilityList.abilities[x].abilityPhase.phase == currentPhase)
-         && gameTown.GetActive().abilityList.abilities[x].abilityFunction.function.canUse(
-            gameTown.GetActive().abilityList.abilities[x],
+        if( (gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == "Any" || gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == currentPhase)
+         && gameTown.GetActive().abilityGrabBagList.abilities[x].abilityFunction.function.canUse(
+            gameTown.GetActive().abilityGrabBagList.abilities[x],
             gameTown.GetActive()).length > 0){
             color = "white"
         }
 
 
 
-        let smlName = gameTown.GetActive().abilityList.abilities[x].abilitySmallName.smallName
+        let smlName = gameTown.GetActive().abilityGrabBagList.abilities[x].abilitySmallName.smallName
         DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)
     }
 }

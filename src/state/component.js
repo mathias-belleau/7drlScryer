@@ -6,6 +6,8 @@ import {addCacheSet, deleteCacheSet} from "./cache"
 import * as Abilities from "../systems/abilities"
 import * as Movements from "../systems/movement"
 
+import * as ROT from "rot-js"
+
 export class Appearance extends Component {
     static properties = {
       color: "#ff0077",
@@ -153,9 +155,6 @@ export class Health extends Component {
       this.current = Math.max(this.current - evt.data, 0)
     }
 
-    onAiUseStamina(evt){
-      this.used += evt.data;
-    }
 
     onUpdateStamina(){
       //this.current = Math.min(0, this.current+= Math.max(4-this.used,this.max))
@@ -210,10 +209,25 @@ export class AbilityList extends Component {
     var abilities = []
 
     this.abilities.forEach( (abil) => {
-      abilities.push(world.createPrefab(abil))
+      var prefAbil = world.createPrefab(abil[0])
+      for(var x = 0;x < abil[1];x++){
+        abilities.push(prefAbil)
+      }
     })
-    this.abilities=abilities
+    ROT.RNG.shuffle(abilities)
+    this.entity.abilityGrabBagList.abilities=abilities
   }
+
+  onTurnEnd(evt){
+    //check if grabbaglist is empty
+    if(this.entity.abilityGrabBagList.abilities.length == 0){
+      this.onAttached()
+    }
+  }
+}
+
+export class AbilityGrabBagList extends Component {
+  static properties = {abilities: []}
 }
 
 export class AbilityTarget extends Component {
@@ -257,7 +271,7 @@ export class AbilityEndsTurn extends Component {}
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [["Goblin", 1]], allies: []}
+  static properties = {enemies: [["Goblin", 2]], allies: []}
 }
 
 export class ScenarioMessage extends Component {

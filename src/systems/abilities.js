@@ -23,6 +23,19 @@ export const Ability = {
     
 }
 
+
+
+export const AbilityDoNothing = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        //console.log('canUse')
+        return yahtzee.CheckSingles(dice)
+    },
+    onUse: (ability, entity, target= null) => {
+        return;
+    },
+    
+}
+
 export const AbilityMove = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
         return yahtzee.CheckSingles(dice)
