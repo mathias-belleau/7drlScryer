@@ -168,7 +168,7 @@
 
 /*! ./yahtzee */
 
-/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityAxeDecapitate, GetSelectedDie, GetAllDie */
+/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, GetSelectedDie, GetAllDie */
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
@@ -198,7 +198,7 @@
 
 /*! exports provided: TYPE_TEXT, TYPE_NEWLINE, TYPE_FG, TYPE_BG, measure, tokenize */
 
-/*! exports provided: Tile, Being, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Goblin, OrcWarrior, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityAxeDecapitate, Hunt */
+/*! exports provided: Tile, Being, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Goblin, GoblinShaman, OrcWarrior, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, Hunt, OrcTestScenario */
 
 /*! exports provided: Town, default */
 
