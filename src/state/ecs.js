@@ -67,6 +67,7 @@ const world = ecs.createWorld();
 
   ecs.registerPrefab(prefabs.Goblin)
   ecs.registerPrefab(prefabs.OrcWarrior)
+  ecs.registerPrefab(prefabs.GoblinShaman)
 
   ecs.registerPrefab(prefabs.Ability)
   ecs.registerPrefab(prefabs.AbilityDoNothing)
@@ -77,8 +78,11 @@ const world = ecs.createWorld();
   ecs.registerPrefab(prefabs.AbilitySwordSwing)
   ecs.registerPrefab(prefabs.AbilityDoubleAxeSwing)
   ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
+  ecs.registerPrefab(prefabs.AbilityFlameHands)
 
+  
   //scenarios
+  ecs.registerPrefab(prefabs.OrcTestScenario)
   ecs.registerPrefab(prefabs.Hunt)
   
 

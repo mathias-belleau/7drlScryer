@@ -69,44 +69,9 @@ export const AbilitySwordJab = {
         if(entity.has(components.IsTurnEnd)){
             return false
         }
-        return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
     },
-    onUse:(ability,entity, target = null) => {
-        //get target!
-        // var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:targetEntity.position.x,y:targetEntity.position.y}))
-        // //apply atk to each tile within this attacks coords
-        // console.log(getEntitiesAtLoc)
-        // getEntitiesAtLoc.forEach(eid => {
-        //     var fetchedEnt = world.getEntity(eid)
-        //     console.log(fetchedEnt)
-        //     if(fetchedEnt.has(components.LayerMap)){
-        //         //this is our map tile ?
-        //     }             
-        // });
-
-        //do ability
-        //for each target create dmg tile
-        //console.log(ability)
-        // console.log(ability.abilityTarget.coords)
-
-        var coords = RotateCoords(ability, entity, target)
-
-        
-        //create dmg tiles
-        coords.forEach(coord => {
-            //console.log(coord)
-            //console.log(target.x + ","+target.y)
-            var newDmgTile =  world.createEntity()
-            newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
-            newDmgTile.add(components.FastAttack)
-            newDmgTile.add(components.DmgTile)
-        })
-        entity.fireEvent("exhaust-selected")
-        if(ability.has(components.AbilityEndsTurn)){
-            entity.add(components.IsTurnEnd)
-        }
-        //set gamestate back
-    }, 
+    onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
         //set gameState to targeting
         //console.log(queuedAbility)
@@ -124,22 +89,7 @@ export const AbilitySwordSwing = {
         }
         return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
     },
-    onUse:(ability,entity,target= null) => {
-        var coords = RotateCoords(ability, entity,target)
-        //do ability
-        //for each target create dmg tile
-        coords.forEach(coord => {
-            //console.log(coord)
-            var newDmgTile =  world.createEntity()
-            newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
-            newDmgTile.add(components.SlowAttack)
-            newDmgTile.add(components.DmgTile)
-        })
-        entity.fireEvent("exhaust-selected")
-        if(ability.has(components.AbilityEndsTurn)){
-            entity.add(components.IsTurnEnd)
-        }
-    }, 
+    onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
         SetQueuedAbility(ability)
         SetQueuedEntity(entity)
@@ -185,6 +135,22 @@ export const AbilityDoubleAxeSwing = {
             return false
         }
         return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericSlowAttack, 
+    onTarget: (ability,entity) => {
+        SetQueuedAbility(ability)
+        SetQueuedEntity(entity)
+        //queuedAbility = ability
+        ExamineTargetEnable("targeting")
+    }
+}
+
+export const AbilityFlameHands = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckStraight(dice, 3)
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {

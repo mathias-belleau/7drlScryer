@@ -30,6 +30,8 @@ const ChooseAiAttack = (entity,abilityToUse) => {
             console.log(target.length)
 
             var noAlly = true;
+            const entityIsEnemy = entity.has(components.IsEnemy)
+
             for(var coord = 0; coord < target.length; coord++){
                 console.log(target[coord][0])
                 var entitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target[coord][0],y:target[coord][1]}))
@@ -40,7 +42,7 @@ const ChooseAiAttack = (entity,abilityToUse) => {
                     // console.log(entityAtLoc)
                     // console.log(entityAtLoc.has(components.IsEnemy))
                     console.log(entityAtLoc.has(components.IsEnemy))
-                    if(entityAtLoc.has(components.IsEnemy) && entity.id != entitiesAtLoc[ents]){
+                    if(entityAtLoc.has(components.LayerUnit) && entityAtLoc.has(components.IsEnemy) == entityIsEnemy && entity.id != entitiesAtLoc[ents]){
                         noAlly = false
                     }
                 }

@@ -117,7 +117,6 @@ export const Floor = {
   inherit: ["Being"],
   components: [
     { type: "Ai" },
-    { type: "IsEnemy"},
     {type: "GainMovement"},
   ]
 };
@@ -140,6 +139,27 @@ export const Goblin = {
       properties: {abilities: [ ["AbilitySpearThrust", 1], ["AbilityDoNothing",1]] }
     },
     {type: "Health", properties: {max:2,current:2}},
+    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
+  ]
+}
+
+export const GoblinShaman = {
+  name: "Goblin Shaman",
+  inherit:["Mob"],
+  components: [
+    {
+      type: "Appearance",
+      properties: {char: "s", color: "green"}
+    },
+    {
+      type: "Description",
+      properties: {name: "Goblin Shaman", description: "A leader of a Goblin tribe"}
+    },
+    {
+      type: "AbilityList",
+      properties: {abilities: [ ["AbilityFlameHands",1], ["AbilityDoNothing",2]] }
+    },
+    {type: "Health", properties: {max:3,current:3}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
   ]
 }
@@ -233,12 +253,13 @@ export const AbilitySwordJab = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Sword Jab", description: "exhausts a 4,5,6 to do a slow attack on a single tile for 1 dmg"}},
+      properties: {name: "Sword Jab", description: "exhausts a pair of 4,5,6 to do a slow attack on a single tile for 2 dmg"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "SJB"} },
     { type: "AbilityTarget", properties: {coords: [[0,0]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[4,5,6]} },
+    { type: "AbilityDamage", properties: {dmg:2} },
     { type: "AbilityEndsTurn"}
   ]
 }
@@ -248,12 +269,13 @@ export const AbilitySwordSwing = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Sword Swing", description: "exhausts 6 to do a slow attack on a T shape for 1 dmg"}},
+      properties: {name: "Sword Swing", description: "exhausts a 5,6 to do a slow attack on a 2x1 shape for 1 dmg"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordSwing} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "SSW"} },
-    { type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]} },
-    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    //{ type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]} },
+    { type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0] ]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityEndsTurn"}
   ]
 }
@@ -270,6 +292,23 @@ export const AbilityDoubleAxeSwing = {
     {type: "AbilitySmallName",properties: {smallName: "DAS"}},
     { type: "AbilityTarget", properties: {coords: [[-1,0],[0,0],[1,0],[-1,1],[1,1]]}},
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]}  },
+    { type: "AbilityStaminaCost", properties: {amount: 3} },
+    { type: "AbilityDamage", properties: {dmg:2} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityFlameHands = {
+  name: "AbilityFlameHands",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Flame Hands", description: "a cone shaped blast of fire using a straight 3 of dice"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityFlameHands} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    {type: "AbilitySmallName",properties: {smallName: "FLH"}},
+    { type: "AbilityTarget", properties: {coords: [ [0,0],[-1,-1],[0,-1],[1,-1],[-2,-2],[-1,-2],[0,-2],[1,-2],[2,-2]  ]}},
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityStaminaCost", properties: {amount: 3} },
     { type: "AbilityDamage", properties: {dmg:2} },
     { type: "AbilityEndsTurn"}
@@ -297,6 +336,14 @@ export const Hunt = {
   name: "Hunt",
   components:[
     { type: "description"},
-    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Scenario"]}}
+    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Orc Test Scenario"]}}
+  ]
+}
+
+export const OrcTestScenario = {
+  name: "Orc Test Scenario",
+  inherit:["Scenario"],
+  components:[
+    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [ ["Goblin",3] ]}}
   ]
 }

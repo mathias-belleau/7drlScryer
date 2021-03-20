@@ -36,7 +36,7 @@ const playerEntities = world.createQuery({
 
 const allyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit],
-  none: [components.IsEnemy]
+  none: [components.IsEnemy, components.IsPlayerControlled]
 })
 
 const enemyEntities = world.createQuery({
@@ -170,6 +170,7 @@ const processUserInput = () => {
         ProcessDmgTiles()
 
         EndTurnProcess(allyEntities.get())
+        EndTurnProcess(playerEntities.get())
         CheckVictory()
         gameState = "EnemyTurnDefend"
       }
@@ -354,11 +355,20 @@ const EnemyAttackTurn = () => {
   })
 }
 
+const AllyAttackTurn = () => {
+  allyEntities.get().forEach( ally => {
+    AI.DoAiTurnAttack(ally)
+  })
+}
+
 const PlayerTurnDefend = () => {
   //wait for player input and process, but only allow defensive abilities
 
   //proccess enemyAttack
   ProcessDmgTiles()
+
+  //process ally turns
+  AllyAttackTurn()
 }
 
 const PlayerTurnAttack = () => {
@@ -463,9 +473,22 @@ const StartScenario = () => {
   currScenario.scenarioBattle.enemies.forEach(enem => {
     times(enem[1], () => {
       var emptyTile = FetchFreeTile();
-      world.createPrefab(enem[0]).add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
+      var newEnem = world.createPrefab(enem[0])
+      newEnem.add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
+      newEnem.add(components.IsEnemy)
     });
   })
+
+  //make ally
+  currScenario.scenarioBattle.allies.forEach( ally => {
+    times(ally[1], () => {
+      var emptyTile = FetchFreeTile();
+      var newAlly = world.createPrefab(ally[0])
+      newAlly.add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
+      newAlly.appearance.color = "blue"
+    });
+  })
+
   //for loop over current huntscenario
   //spawn first 4 players in villagers (for now)
   gameTown.SetHunters()

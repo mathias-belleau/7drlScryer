@@ -9,15 +9,20 @@ const allyEntities = world.createQuery({
     none: [components.IsEnemy]
 })
 
+const enemyEntities = world.createQuery({
+    all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
+    none: [components.IsDead]
+  })
+
 const MakeDijkstra = (x,y) =>{
     /* prepare path to given coords */
     var dijkstra = new ROT.Path.Dijkstra(x, y, passableCallback, {topology :4});
     return dijkstra
 }
-let pathingUnit = "";
+let pathingUnit = {};
 export const AiPathfind = (entity) => {
     console.log(entity)
-    pathingUnit= entity.id
+    pathingUnit= entity;
     var dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
     //console.log("path finder")
     //console.log(dijkstra)
@@ -42,25 +47,28 @@ const FindClosestEmptyTile = (dijkstra, entity) => {
 
 const FindClosestTarget = (dijkstra, entity) => {
     var winner
-
-    //if entity has isEnemy,
+    var toBeLooped = []
     if(entity.has(components.IsEnemy)) {
-        //loop through all allies and get their coords and calc path
-        
-        //console.log("enemies to check: " + allyEntities.get().length)
-        allyEntities.get().forEach( entity => {
-            var closest = []
-            // //console.log(entity)
-            dijkstra.compute(entity.position.x, entity.position.y, function (x,y) {
-                // //console.log('test path?')
-
-                closest.push([x,y])
-            })
-            if(!winner || closest.length < winner.length){
-                winner = closest
-            }
-        })
+        toBeLooped = allyEntities.get()
+    }else {
+        toBeLooped = enemyEntities.get()
     }
+    //loop through all allies and get their coords and calc path
+    
+    //console.log("enemies to check: " + allyEntities.get().length)
+    toBeLooped.forEach( entity => {
+        var closest = []
+        // //console.log(entity)
+        dijkstra.compute(entity.position.x, entity.position.y, function (x,y) {
+            // //console.log('test path?')
+
+            closest.push([x,y])
+        })
+        if(!winner || closest.length < winner.length){
+            winner = closest
+        }
+    })
+    
     console.log(winner)
     //  
         //loop through all enemies and get their coords and calc path
@@ -108,11 +116,11 @@ const passableCallback = (x,y) => {
         return false
     }
     getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
-
+    const entityIsEnemy = pathingUnit.has(components.IsEnemy)
     for (var x = 0; x < getEntitiesAtLoc.length; x++){
-        if(getEntitiesAtLoc[x] != pathingUnit) {
+        if(getEntitiesAtLoc[x] != pathingUnit.id) {
             var ent = world.getEntity(getEntitiesAtLoc[x])
-            if(ent.has(components.IsBlocking) && (ent.has(components.LayerMap) || ent.has(components.IsEnemy)) ){
+            if(ent.has(components.IsBlocking) && (ent.has(components.LayerMap) || ent.has(components.IsEnemy) == entityIsEnemy) ){
                     return false
             }
         }else {

@@ -33,18 +33,21 @@ export const CheckSames = (counts, match, Allowed = [1,2,3,4,5,6]) => {
 }
 
 export const CheckStraight = (counts, match) => {
-    var found = false;
+    var found = [];
+    var currentFound = []
     var matched = 1;
     for(var x = 1; x < 7; x++){
-        if(counts[x] || 0) { //make sure this die exists
-            if(counts[x-1] || 0){ //make sure previous die exists
+        if(counts[x] || false) { //make sure this die exists
+            if(counts[x-1] || false){ //make sure previous die exists
                 if(counts[x] == counts[x-1]){ //if current die equals previous die
                     matched++; //we found a match so up it
+                    currentFound.push(x)
                     if(matched == match){ // if our matched count equals our straight target found = true
-                        found = true
+                        found = [...currentFound] //our found list should match current found
                     }
                 }else {
                     matched = 1; //current doesn't match previous set matched back to count 1
+                    currentFound = [] //clear current found list
                 }
             }
         }
