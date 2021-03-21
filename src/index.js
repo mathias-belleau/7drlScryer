@@ -31,17 +31,17 @@ let userInput = null;
 
 const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
-  none: [components.IsDead]
+  none: [components.IsDead, components.MultiTileBody]
 });
 
 const allyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit],
-  none: [components.IsEnemy, components.IsPlayerControlled]
+  none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
 })
 
 const enemyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
-  none: [components.IsDead]
+  none: [components.IsDead, components.MultiTileBody]
 })
 
 const dmgTileEntities = world.createQuery({
@@ -472,20 +472,14 @@ const StartScenario = () => {
   //make enemies
   currScenario.scenarioBattle.enemies.forEach(enem => {
     times(enem[1], () => {
-      var emptyTile = FetchFreeTile();
-      var newEnem = world.createPrefab(enem[0])
-      newEnem.add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
-      newEnem.add(components.IsEnemy)
+      SpawnScenarioUnits(enem[0], true)
     });
   })
 
   //make ally
   currScenario.scenarioBattle.allies.forEach( ally => {
     times(ally[1], () => {
-      var emptyTile = FetchFreeTile();
-      var newAlly = world.createPrefab(ally[0])
-      newAlly.add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
-      newAlly.appearance.color = "blue"
+      SpawnScenarioUnits(ally[0],false)
     });
   })
 
@@ -506,6 +500,43 @@ const StartScenario = () => {
   render()
 }
 
+const SpawnScenarioUnits = (prefabName, isEnemy) => {
+  //spawn it
+  var newUnit = world.createPrefab(prefabName);
+
+  //get an empty tile
+  var emptyTile;
+  if(newUnit.has(components.MultiTileHead)){ //if multitile get empty with clear south,east,se
+    emptyTile = FetchFreeTile();
+  }else {
+    emptyTile = FetchFreeTile();
+  }
+  
+  //add position
+  newUnit.add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
+
+  if(isEnemy){
+    //add is enemy
+    newUnit.add(components.IsEnemy)
+  }else {
+    //add background blue
+    newUnit.appearance.color = "blue"
+  }
+
+  //if multiTile
+    //spawn body parts
+  var coords = [ [0,1], [1,0], [1,1]]
+  if(newUnit.has(components.MultiTileHead)){
+    coords.forEach(coord => {
+      var newBodyPart = world.createPrefab("MultiTileBody")
+      newBodyPart.add(components.Position, {x: emptyTile.position.x + coord[0], y: emptyTile.position.y + coord[1]})
+      newBodyPart.appearance = newUnit.appearance
+      newBodyPart.multiTileBody = {headID: newUnit.id}
+      newUnit.multiTileHead.bodyEntities.push(newBodyPart.id)
+    })
+  }
+  
+}
 
 const SetupGame = () => {
   //make hunts

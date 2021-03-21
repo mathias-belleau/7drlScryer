@@ -94,6 +94,8 @@ export class Health extends Component {
         evt.handle()
       }else {
         var success = Movements.AttemptMove(this, this.entity)
+
+        
         if(success){
           //check if we used movement or dodge
           if(this.dodge > 0){
@@ -101,7 +103,7 @@ export class Health extends Component {
           }else {
             this.movement -= 1
           }
-          evt.handle()
+          // evt.handle()
         }
       }
       this.x = 0
@@ -177,6 +179,15 @@ export class Health extends Component {
         this.entity.fireEvent("update-stamina")
       }
     }
+  }
+
+  export class MultiTileHead extends Component {
+    static properties = {bodyEntities: []}
+
+  }
+
+  export class MultiTileBody extends Component {
+    static properties = {headID: ""}
   }
 
   export class IsTurnEnd extends Component {
@@ -271,7 +282,7 @@ export class AbilityEndsTurn extends Component {}
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [["Goblin", 6], ["Goblin Shaman", 1]], allies: [  ]}
+  static properties = {enemies: [["Goblin", 0], ["Goblin Shaman", 0], ["Ogre", 1]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {

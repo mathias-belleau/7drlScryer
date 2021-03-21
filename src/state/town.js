@@ -3,7 +3,7 @@
 import world from "./ecs"
 
 const { times } = require("lodash")
-const villageColors = ["green","blue","red","purple","white","yellow","pink"]
+const villageColors = ["green","blue","orange","purple","white","yellow","pink"]
 
 export class Town {
     constructor(population, townName) {

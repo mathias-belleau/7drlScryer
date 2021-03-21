@@ -30,7 +30,7 @@ const layerMapEntities = world.createQuery({
 
   const enemyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
-    none: [components.IsDead]
+    none: [components.IsDead, components.MultiTileBody]
   })
 
 

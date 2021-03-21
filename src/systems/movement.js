@@ -34,7 +34,7 @@ export const AttemptMove = (moveComp, entity) => {
     const entitiesAtLoc = readCacheSet("entitiesAtLocation", `${mx},${my}`);
     //console.log(entitiesAtLoc)
     for (const eId of entitiesAtLoc) {
-        if (world.getEntity(eId).isBlocking) {
+        if (world.getEntity(eId).isBlocking && !entity.multiTileHead.bodyEntities.includes(eId)) {
           blockers.push(eId);
         } 
     }
@@ -65,6 +65,23 @@ export const AttemptMove = (moveComp, entity) => {
       }
     }
 
+    //check if we multi, if yes move body parts
+    if(entity.has(components.MultiTileHead)){
+      entity.multiTileHead.bodyEntities.forEach( bodyPart => {
+        var body = world.getEntity(bodyPart)
+        
+        deleteCacheSet("entitiesAtLocation",
+        `${body.position.x},${body.position.y}`,
+        body.id)
+
+        
+        body.position.x += moveComp.x
+        body.position.y += moveComp.y
+
+        addCacheSet("entitiesAtLocation", `${body.position.x},${body.position.y}`, body.id);
+      })
+    }
+
     //we can move to this position
     deleteCacheSet(
         "entitiesAtLocation",
@@ -75,6 +92,8 @@ export const AttemptMove = (moveComp, entity) => {
   
       entity.position.x = mx;
       entity.position.y = my;
+
+      console.log(mx +':'+my)
   
     return true
 }

@@ -28,6 +28,8 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.DmgTile)
   ecs.registerComponent(components.IsTurnEnd)
   ecs.registerComponent(components.Ai)
+  ecs.registerComponent(components.MultiTileHead)
+  ecs.registerComponent(components.MultiTileBody)
 
   //ability
   ecs.registerComponent(components.AbilityList)
@@ -58,6 +60,7 @@ const world = ecs.createWorld();
   ecs.registerPrefab(prefabs.Tile)
   ecs.registerPrefab(prefabs.Being)
   ecs.registerPrefab(prefabs.Scenario)
+  ecs.registerPrefab(prefabs.MultiTileBody)
 
   ecs.registerPrefab(prefabs.Wall)
   ecs.registerPrefab(prefabs.Floor)
@@ -68,6 +71,7 @@ const world = ecs.createWorld();
   ecs.registerPrefab(prefabs.Goblin)
   ecs.registerPrefab(prefabs.OrcWarrior)
   ecs.registerPrefab(prefabs.GoblinShaman)
+  ecs.registerPrefab(prefabs.Ogre)
 
   ecs.registerPrefab(prefabs.Ability)
   ecs.registerPrefab(prefabs.AbilityDoNothing)

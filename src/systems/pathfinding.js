@@ -6,12 +6,12 @@ import {toLocId} from "../lib/grid"
 
 const allyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit],
-    none: [components.IsEnemy]
+    none: [components.IsEnemy, components.MultiTileBody]
 })
 
 const enemyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
-    none: [components.IsDead]
+    none: [components.IsDead, components.MultiTileBody]
   })
 
 const MakeDijkstra = (x,y) =>{
@@ -19,11 +19,32 @@ const MakeDijkstra = (x,y) =>{
     var dijkstra = new ROT.Path.Dijkstra(x, y, passableCallback, {topology :4});
     return dijkstra
 }
+
+const MakeMultiDijkstra = (x,y) => {
+    var dijkstra = new ROT.Path.Dijkstra(x,y, passableCallbackMulti, {topology: 4})
+    return dijkstra
+}
+
 let pathingUnit = {};
 export const AiPathfind = (entity) => {
     console.log(entity)
     pathingUnit= entity;
-    var dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
+    var dijkstra;
+    if(entity.has(components.MultiTileHead)){
+        //awful solution, remove blocking from body parts for now
+        pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
+            var bodyPart = world.getEntity(bodyEnt);
+            bodyPart.remove(bodyPart.isBlocking)
+        })
+        dijkstra = MakeMultiDijkstra(entity.position.x,entity.position.y)
+
+        pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
+            var bodyPart = world.getEntity(bodyEnt);
+            bodyPart.add(components.IsBlocking)
+        })
+    }else {
+        dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
+    }   
     //console.log("path finder")
     //console.log(dijkstra)
     var target = FindClosestTarget(dijkstra, entity)
@@ -123,6 +144,47 @@ const passableCallback = (x,y) => {
             if(ent.has(components.IsBlocking) && (ent.has(components.LayerMap) || ent.has(components.IsEnemy) == entityIsEnemy) ){
                     return false
             }
+        }else {
+            return true
+        }
+    }
+    
+    //return 0
+    return true
+}
+
+const passableCallbackMulti = (x,y) => {
+    ////console.log("checking coords: " + x + ":" + y)
+    //get entities at x,y
+    
+    //check east/south/se for blocking if any return false
+    //[0,1], [1,0], [1,1]
+    //but also need to check these aren't our current body tiles
+    
+
+    // if( (pathingUnit.position.x == x && pathingUnit.position.y+1 == y) ||
+    // (pathingUnit.position.x+1 == x && pathingUnit.position.y == y) ||
+    // (pathingUnit.position.x+1 == x && pathingUnit.position.y+1 == y) ){
+    //     return true
+    // }
+
+   
+
+    var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:x,y:y}))
+    if(!getEntitiesAtLoc){
+        return false
+    }
+    getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+    const entityIsEnemy = pathingUnit.has(components.IsEnemy)
+    for (var x = 0; x < getEntitiesAtLoc.length; x++){
+        if(getEntitiesAtLoc[x] != pathingUnit.id && !pathingUnit.multiTileHead.bodyEntities.includes(getEntitiesAtLoc[x])) {
+            var ent = world.getEntity(getEntitiesAtLoc[x])
+            if(ent.has(components.IsBlocking) && (ent.has(components.LayerMap) || ent.has(components.IsEnemy) == entityIsEnemy) ){
+                    return false
+            }
+            // if(!passableCallback(x,y+1) || !passableCallback(x+1,y) || !passableCallback(x+1,y+1)) {
+            //     return false
+            // }
         }else {
             return true
         }

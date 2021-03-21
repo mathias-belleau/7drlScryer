@@ -28,6 +28,16 @@ export const Tile = {
     ],
   };
 
+  export const MultiTileBody = {
+    name: "MultiTileBody",
+    components: [
+      { type: "Appearance"},
+      { type: "IsBlocking"},
+      { type: "LayerUnit"},
+      { type: "MultiTileBody"}
+    ]
+  }
+
   export const Ability = {
     name: "Ability",
     components:[
@@ -168,20 +178,32 @@ export const OrcWarrior = {
   name: "Orc Warrior",
   inherit:["Mob"],
   components: [
-    {
-      type: "Appearance",
-      properties: {char: "o", color: "green"}
-    },
-    {
-      type: "Description",
+    { type: "Appearance", properties: {char: "o", color: "green"} },
+    { type: "Description",
       properties: {name: "Orc Warrior", description: "A fearsome Orc wielding axees"}
     },
-    {
-      type: "AbilityList",
+    { type: "AbilityList",
       properties: {abilities: [ ["AbilityDoubleAxeSwing",1], ["AbilityAxeDecapitate",1]] }
     },
     {type: "Health", properties: {max:8,current:8}},
     { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}}
+  ]
+}
+
+export const Ogre = {
+  name: "Ogre",
+  inherit:["Mob"],
+  components: [
+    { type: "Appearance", properties: {char: "O", color: "brown"} },
+    { type: "Description",
+      properties: {name: "Ogre", description: "A massive humanoid who loves to club smaller things than it"}
+    },
+    { type: "AbilityList",
+      properties: {abilities: [ ["AbilityDoubleAxeSwing",1], ["AbilityAxeDecapitate",1]] }
+    },
+    {type: "Health", properties: {max:16,current:16}},
+    {type: "MultiTileHead", properties: {bodyEntities: [] }}
+   
   ]
 }
 

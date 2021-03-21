@@ -70,11 +70,22 @@ const ChooseAiAttack = (entity,abilityToUse) => {
         if(target.length > 1 && !attacked){
             //move towards enemy
             console.log("Not In Range so we move")
-            if(target.length > 1){
+            
+            if(target.length > 1 ){
                 MoveForward(entity, target)
             }
         }
     }    
+}
+
+const MultiTileTargetCoords = [ [0,-1], [1,-1], [-1,0], [-1,1], [2,0], [2,1], [0,2], [1,2] ]
+const CheckMultiTileMove = (entity, target) => {
+    for(var x = 0; x < MultiTileTargetCoords.length; x++){
+        if(target[0][0] == MultiTileTargetCoords[x][0] + entity.position.x && target[0][1] == MultiTileTargetCoords[x][1] + entity.position.y){
+            return true
+        }
+    }
+    return false
 }
 
 const MoveForward = (entity, target) => {
@@ -85,7 +96,7 @@ const MoveForward = (entity, target) => {
 
     var y = entity.movement.movement
     for(var x = 0; x < y;x++){
-        if(target && target.length > 1){
+        if(target && target.length > 1  && !(entity.has(components.MultiTileHead) && CheckMultiTileMove(entity,target))){
             //console.log("remaining target")
             //console.log(target.toString())
             //did we find a target? walk towards the last
