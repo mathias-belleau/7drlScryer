@@ -1,4 +1,4 @@
-import {GetSelectedDie, GetAllDie} from "./abilities"
+import {GetSelectedDie, GetAllDie, RotateCoords} from "./abilities"
 import {readCacheSet} from "../state/cache"
 import world from "../state/ecs"
 import * as components from "../state/component"
@@ -48,22 +48,24 @@ const ChooseAiAttack = (entity,abilityToUse) => {
                 }
             }
 
+            //no longer need?  && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y}) 
             //make sure we are not standing on top of target
             // make sure we are in range
             // we haven't already attacked
             // check if this is a straight line to remove diag attacks
             //check that no allies are in the path of target?
-            if(target.length >= 1 && target.length <= abilityToUse.abilityRange.range 
-                && !attacked && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y}) 
+            var checkRange = CheckInRange(abilityToUse, entity, target) ;
+            if(target.length >= 1 && checkRange
+                && !attacked
                 && noAlly
                 ){
                 //we are in range
                 console.log("In Range")
                 
-                var targ = target.pop()
-                console.log(targ.toString())
+                //var targ = target.pop()
+                // console.log(targ.toString())
 
-                abilityToUse.abilityFunction.function.onUse(abilityToUse, entity, {x:targ[0],y:targ[1]})
+                abilityToUse.abilityFunction.function.onUse(abilityToUse, entity, {x:target[0][0],y:target[0][1]})
 
                 attacked = true
             }
@@ -76,6 +78,17 @@ const ChooseAiAttack = (entity,abilityToUse) => {
             }
         }
     }    
+}
+
+const CheckInRange = (ability, entity, target) => {
+    var coords = RotateCoords(ability,entity,{x:target[0][0], y:target[0][1]})
+    //if (target[0] - all the coords == entity.x we are in range!)
+    for(var x = 0; x < coords.length; x++){
+        if(entity.position.x == target[0][0] - coords[x][0] && entity.position.y == target[0][1] - coords[x][1]) {
+            return true
+        }
+    }
+    return false
 }
 
 const MultiTileTargetCoords = [ [0,-1], [1,-1], [-1,0], [-1,1], [2,0], [2,1], [0,2], [1,2] ]

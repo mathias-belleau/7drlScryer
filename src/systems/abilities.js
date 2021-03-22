@@ -112,7 +112,7 @@ export const AbilitySpearThrust = {
         coords.forEach(coord => {
             //console.log(coord)
             var newDmgTile =  world.createEntity()
-            newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
+            newDmgTile.add(components.Position, {x:entity.position.x + coord[0],y:entity.position.y + coord[1]} )
             newDmgTile.add(components.SlowAttack)
             newDmgTile.add(components.DmgTile)
         })
@@ -177,6 +177,41 @@ export const AbilityAxeDecapitate = {
     }
 }
 
+export const AbilityOgreSmash = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericSlowAttack, 
+    onTarget: (ability,entity) => {
+        SetQueuedAbility(ability)
+        SetQueuedEntity(entity)
+        //queuedAbility = ability
+        ExamineTargetEnable("targeting")
+    }
+}
+
+export const AbilityOgreRockThrow = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:(ability,entity,target) => {
+        GenericSlowAttack(ability,entity,target);
+        entity.abilityList.abilities[0][1] = 0
+    }, 
+    onTarget: (ability,entity) => {
+        SetQueuedAbility(ability)
+        SetQueuedEntity(entity)
+        //queuedAbility = ability
+        ExamineTargetEnable("targeting")
+    }
+}
+
 function GenericSlowAttack(ability,entity,target= null) {
     var coords = RotateCoords(ability, entity,target)
     //do ability
@@ -184,7 +219,7 @@ function GenericSlowAttack(ability,entity,target= null) {
     coords.forEach(coord => {
         //console.log(coord)
         var newDmgTile =  world.createEntity()
-        newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
+        newDmgTile.add(components.Position, {x:entity.position.x + coord[0],y:entity.position.y + coord[1]} )
         newDmgTile.add(components.SlowAttack)
         newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
     })
@@ -201,7 +236,7 @@ function GenericFastAttack(ability,entity,target= null) {
     coords.forEach(coord => {
         //console.log(coord)
         var newDmgTile =  world.createEntity()
-        newDmgTile.add(components.Position, {x:target.x + coord[0],y:target.y + coord[1]} )
+        newDmgTile.add(components.Position, {x:entity.position.x + coord[0],y:entity.position.y + coord[1]} )
         newDmgTile.add(components.FastAttack)
         newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
     })
@@ -244,45 +279,48 @@ export const GetAllDie = (entity) => {
     return counts;
 }
 
-const RotateCoords = (ability, entity, target) => {
+export const RotateCoords = (ability, entity, target) => {
     //do we need to rotate coords?
     var diffX = target.x - entity.position.x  
     var diffY = target.y - entity.position.y;
-    var coords = ability.abilityTarget.coords;
+    var coords = [...ability.abilityTarget.coords];
+    var multi = (entity.has(components.MultiTileHead)) ? 1 : 0;
+    var newCoords = [...coords]
     //console.log("before rotate")
     //console.log(coords)
     //console.log("direction")
     if(diffY <= -1){
         //console.log("up")
-    }else if(diffY >= 1){
+    }else if( (diffY >= 1 && !entity.has(components.MultiTileHead) ) || (entity.has(components.MultiTileHead) && diffY >= 2)){
         //console.log("down")
-        coords = ConvertCoordsDown(coords)
+        newCoords = ConvertCoordsDown(coords,multi)
     }else if(diffX <= -1){
         //console.log("left")
-        coords = ConvertCoordsLeft(coords)
-    }else if(diffX >= 1){
+        newCoords = ConvertCoordsLeft(coords,multi)
+    }else if( (diffX >= 1 && !entity.has(components.MultiTileHead)) || (entity.has(components.MultiTileHead) && diffX >= 2)){
         //console.log("right")
-        coords = ConvertCoordsRight(coords)
+        newCoords = ConvertCoordsRight(coords,multi)
     }
     //console.log("after rotate")
-    //console.log(coords)
-    return coords
+     console.log(coords)
+    return newCoords
 }
 
-const ConvertCoordsRight = (coords) => {
+const ConvertCoordsRight = (coords, multi = 0) => {
     var newRight = []
     coords.forEach( (co) => {
         var holder = []
         holder.push(co[1])
         holder.push(co[0])
         holder[0] = holder[0] * -1
+        holder[0] += multi
         holder[1] = holder[1] * 1
         newRight.push(holder)
     })
     return newRight
 }
 
-const ConvertCoordsLeft = (coords) => {
+const ConvertCoordsLeft = (coords, multi = 0) => {
     var newRight = []
     coords.forEach( (co) => {
         var holder = []
@@ -290,18 +328,21 @@ const ConvertCoordsLeft = (coords) => {
         holder.push(co[0])
         //holder[0] = holder[0] * -1
         holder[1] = holder[1] * -1
+        holder[1] += multi
         newRight.push(holder)
     })
     return newRight
 }
 
-const ConvertCoordsDown = (coords) => {
+const ConvertCoordsDown = (coords, multi = 0) => {
     var newRight = []
     coords.forEach( (co) => {
         var holder = []
         holder = [...co]
         holder[0] = holder[0] * -1
         holder[1] = holder[1] * -1
+        holder[1] += multi
+        holder[0] += multi
         newRight.push(holder)
     })
     return newRight

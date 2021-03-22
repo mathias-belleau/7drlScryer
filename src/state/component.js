@@ -260,17 +260,13 @@ export class AbilitySpeed extends Component {
   static properties = {speed: "Instant"}
 }
 
-export class AbilityStaminaCost extends Component {
-  static properties = {amount: 1}
-}
+
 
 export class AbilitySmallName extends Component {
   static properties = {smallName: "abl"}
 }
 
-export class AbilityRange extends Component {
-  static properties = {range: 1}
-}
+
 
 export class AbilityDamage extends Component {
   static properties = {dmg: 1}

@@ -45,12 +45,10 @@ export const Tile = {
         properties: {name: "Generic Ability", description: "used for testing as base template"}},
       { type: "AbilityPhase"},
       { type: "AbilitySpeed"},
-      { type: "AbilityStaminaCost"},
       { type: "AbilityFunction"},
       { type: "AbilitySmallName"},
       { type: "AbilityTarget"},
       { type: "AbilityAllowedDie"},
-      { type: "AbilityRange"},
       { type: "AbilityDamage"},
     ]
   }
@@ -199,7 +197,7 @@ export const Ogre = {
       properties: {name: "Ogre", description: "A massive humanoid who loves to club smaller things than it"}
     },
     { type: "AbilityList",
-      properties: {abilities: [ ["AbilityDoubleAxeSwing",1], ["AbilityAxeDecapitate",1]] }
+      properties: {abilities: [ ["AbilityOgreRockThrow", 1 ], ["AbilityOgreSmash",1]] }
     },
     {type: "Health", properties: {max:16,current:16}},
     {type: "MultiTileHead", properties: {bodyEntities: [] }}
@@ -232,10 +230,6 @@ export const AbilityDodge = {
     {
       type: "AbilitySmallName",
       properties: {smallName: "DDG"}
-    },
-    {
-      type: "AbilityStaminaCost",
-      properties: {amount: 2}
     }
   ]
 }
@@ -251,7 +245,6 @@ export const AbilityDoNothing= {
     { type: "AbilitySmallName", properties: {smallName: "RST"}     },
     { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
-    { type: "AbilityRange", properties: {range:5}}
   ]
 }
 
@@ -264,9 +257,8 @@ export const AbilitySpearThrust = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySpearThrust} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "STH"}     },
-    { type: "AbilityTarget", properties: {coords: [[0,0],[0,-1]]}     },
+    { type: "AbilityTarget", properties: {coords: [[0,-1],[0,-2]]}     },
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
-    { type: "AbilityRange", properties: {range:2}}
   ]
 }
 
@@ -279,7 +271,7 @@ export const AbilitySwordJab = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "SJB"} },
-    { type: "AbilityTarget", properties: {coords: [[0,0]]} },
+    { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[4,5,6]} },
     { type: "AbilityDamage", properties: {dmg:2} },
     { type: "AbilityEndsTurn"}
@@ -296,7 +288,7 @@ export const AbilitySwordSwing = {
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "SSW"} },
     //{ type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]} },
-    { type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0] ]} },
+    { type: "AbilityTarget", properties: {coords: [ [-1,-1],[0,-1] ]} },
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityEndsTurn"}
   ]
@@ -312,9 +304,8 @@ export const AbilityDoubleAxeSwing = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilityDoubleAxeSwing} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     {type: "AbilitySmallName",properties: {smallName: "DAS"}},
-    { type: "AbilityTarget", properties: {coords: [[-1,0],[0,0],[1,0],[-1,1],[1,1]]}},
+    { type: "AbilityTarget", properties: {coords: [[-1,1],[0,-1],[1,-1],[-1,0],[1,0]]}},
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]}  },
-    { type: "AbilityStaminaCost", properties: {amount: 3} },
     { type: "AbilityDamage", properties: {dmg:2} },
     { type: "AbilityEndsTurn"}
   ]
@@ -329,9 +320,8 @@ export const AbilityFlameHands = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilityFlameHands} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     {type: "AbilitySmallName",properties: {smallName: "FLH"}},
-    { type: "AbilityTarget", properties: {coords: [ [0,0],[-1,-1],[0,-1],[1,-1],[-2,-2],[-1,-2],[0,-2],[1,-2],[2,-2]  ]}},
+    { type: "AbilityTarget", properties: {coords: [ [0,-1],[-1,-2],[0,-2],[1,-2],[-2,-3],[-1,-3],[0,-3],[1,-3],[2,-3]  ]}},
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
-    { type: "AbilityStaminaCost", properties: {amount: 3} },
     { type: "AbilityDamage", properties: {dmg:2} },
     { type: "AbilityEndsTurn"}
   ]
@@ -346,10 +336,41 @@ export const AbilityAxeDecapitate = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilityAxeDecapitate} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName",properties: {smallName: "DAC"}},
-    { type: "AbilityTarget", properties: {coords: [[0,0]]} },
+    { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
-    { type: "AbilityStaminaCost", properties: {amount: 4} },
     { type: "AbilityDamage", properties: {dmg:3} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityOgreSmash = {
+  name: "AbilityOgreSmash",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Ogre Smash", description: "BIG SMASH 3 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityOgreSmash} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName",properties: {smallName: "SMH"}},
+    { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2] ]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
+    { type: "AbilityDamage", properties: {dmg:4} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityOgreRockThrow = {
+  name: "AbilityOgreRockThrow",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Ogre Smash", description: "Yeets a boulder 3 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityOgreRockThrow} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName",properties: {smallName: "RTH"}},
+    { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2], [0,-3], [1,-3], [0,-4], [1,-4], [0,-5], [1,-5], [0,-6], [1,-6], [0,-7], [1,-7], [0,-8], [1,-8] ]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
+    { type: "AbilityDamage", properties: {dmg:4} },
     { type: "AbilityEndsTurn"}
   ]
 }

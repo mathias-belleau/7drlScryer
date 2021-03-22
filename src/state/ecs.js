@@ -36,12 +36,10 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.AbilityFunction)
   ecs.registerComponent(components.AbilityPhase)
   ecs.registerComponent(components.AbilitySpeed)
-  ecs.registerComponent(components.AbilityStaminaCost)
   ecs.registerComponent(components.AbilitySmallName)
   ecs.registerComponent(components.AbilityTarget)
   ecs.registerComponent(components.AbilityAllowedDie)
   ecs.registerComponent(components.GainMovement)
-  ecs.registerComponent(components.AbilityRange)
   ecs.registerComponent(components.AbilityDamage)
   ecs.registerComponent(components.AbilityEndsTurn)
   ecs.registerComponent(components.AbilityGrabBagList)
@@ -83,6 +81,8 @@ const world = ecs.createWorld();
   ecs.registerPrefab(prefabs.AbilityDoubleAxeSwing)
   ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
   ecs.registerPrefab(prefabs.AbilityFlameHands)
+  ecs.registerPrefab(prefabs.AbilityOgreSmash)
+  ecs.registerPrefab(prefabs.AbilityOgreRockThrow)
 
   
   //scenarios
