@@ -168,11 +168,11 @@
 
 /*! ./yahtzee */
 
-/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, GetSelectedDie, GetAllDie */
+/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords */
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
-/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Armour, Stamina, Die, IsTurnEnd, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilityStaminaCost, AbilitySmallName, AbilityRange, AbilityDamage, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios */
+/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Armour, Stamina, Die, MultiTileHead, MultiTileBody, IsTurnEnd, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
 
 /*! exports provided: AttemptMove */
 
@@ -198,7 +198,7 @@
 
 /*! exports provided: TYPE_TEXT, TYPE_NEWLINE, TYPE_FG, TYPE_BG, measure, tokenize */
 
-/*! exports provided: Tile, Being, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Goblin, GoblinShaman, OrcWarrior, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, Hunt, OrcTestScenario */
+/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Goblin, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario */
 
 /*! exports provided: Town, default */
 
