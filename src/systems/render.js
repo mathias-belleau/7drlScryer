@@ -116,12 +116,32 @@ const renderActivePlayer = () => {
 
         DrawText("Hp:"+gameTown.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1)
         DrawText("Stam:"+gameTown.GetActive().stamina.current.toString()+"/"+gameTown.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2)
-        DrawText("StamRgn:"+(Math.max(0,4 - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3)
+        DrawText("StamRgn:"+(Math.max(0,2 - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3)
         DrawText("Move:"+gameTown.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4)
         DrawText("Dodge:"+gameTown.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5)
+
+        DrawText("-Armour-",grid.activePlayer.x,grid.activePlayer.y+6)
+        DrawText(gameTown.GetActive().armour.weight,grid.activePlayer.x,grid.activePlayer.y+7)
+        DrawText("Amount: "+gameTown.GetActive().armour.amount,grid.activePlayer.x,grid.activePlayer.y+8)
+        DrawText(GetArmourString(gameTown.GetActive()),grid.activePlayer.x,grid.activePlayer.y+9)
     }
 }
+const GetArmourString = (entity) => {
+    var armString = "Arm:"
+    if(entity.has(components.Armour)){
+        var armourRating = entity.armour.weight;
+        entity.armourDie.forEach( armDie => {
+            if(armourRating == "Light" && armDie.number >= 6){
+                armString+= "%c{green}"+armDie.number.toString() + "%c{}"
+            }else{
+                armString+= "%c{}"+armDie.number.toString() + "%c{}"
+            }
+        })
+            
+    }
+    return armString
 
+}
 const renderPhase = () => {
     DrawText(gameState, grid.phaseMenu.x,grid.phaseMenu.y)
 }

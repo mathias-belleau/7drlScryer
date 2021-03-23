@@ -24,51 +24,53 @@ const ChooseAiAttack = (entity,abilityToUse) => {
     console.log("Doing mob attack: ")
     for(var x = 0; x < 2;x ++){
         var target = AiPathfind(entity)
+        if(!target || target.length == 0){
+            return;
+        }
+        console.log("our target is")
+        console.log(target.toString())
+        console.log(target.length)
 
-            console.log("our target is")
-            console.log(target.toString())
-            console.log(target.length)
+        var noAlly = true;
+        const entityIsEnemy = entity.has(components.IsEnemy)
 
-            var noAlly = true;
-            const entityIsEnemy = entity.has(components.IsEnemy)
-
-            for(var coord = 0; coord < target.length; coord++){
-                console.log(target[coord][0])
-                var entitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target[coord][0],y:target[coord][1]}))
-                entitiesAtLoc = Array.from(entitiesAtLoc)
-                for(var ents = 0;ents < entitiesAtLoc.length;ents++){
-                    
-                    var entityAtLoc = world.getEntity(entitiesAtLoc[ents])
-                    // console.log(entityAtLoc)
-                    // console.log(entityAtLoc.has(components.IsEnemy))
-                    console.log(entityAtLoc.has(components.IsEnemy))
-                    if(entityAtLoc.has(components.LayerUnit) && entityAtLoc.has(components.IsEnemy) == entityIsEnemy && entity.id != entitiesAtLoc[ents]){
-                        noAlly = false
-                    }
+        for(var coord = 0; coord < target.length; coord++){
+            console.log(target[coord][0])
+            var entitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target[coord][0],y:target[coord][1]}))
+            entitiesAtLoc = Array.from(entitiesAtLoc)
+            for(var ents = 0;ents < entitiesAtLoc.length;ents++){
+                
+                var entityAtLoc = world.getEntity(entitiesAtLoc[ents])
+                // console.log(entityAtLoc)
+                // console.log(entityAtLoc.has(components.IsEnemy))
+                console.log(entityAtLoc.has(components.IsEnemy))
+                if(entityAtLoc.has(components.LayerUnit) && entityAtLoc.has(components.IsEnemy) == entityIsEnemy && entity.id != entitiesAtLoc[ents]){
+                    noAlly = false
                 }
             }
+        }
 
-            //no longer need?  && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y}) 
-            //make sure we are not standing on top of target
-            // make sure we are in range
-            // we haven't already attacked
-            // check if this is a straight line to remove diag attacks
-            //check that no allies are in the path of target?
-            var checkRange = CheckInRange(abilityToUse, entity, target) ;
-            if(target.length >= 1 && checkRange
-                && !attacked
-                && noAlly
-                ){
-                //we are in range
-                console.log("In Range")
-                
-                //var targ = target.pop()
-                // console.log(targ.toString())
+        //no longer need?  && CheckStraightLine(target, {x:entity.position.x,y:entity.position.y}) 
+        //make sure we are not standing on top of target
+        // make sure we are in range
+        // we haven't already attacked
+        // check if this is a straight line to remove diag attacks
+        //check that no allies are in the path of target?
+        var checkRange = CheckInRange(abilityToUse, entity, target) ;
+        if(target.length >= 1 && checkRange
+            && !attacked
+            && noAlly
+            ){
+            //we are in range
+            console.log("In Range")
+            
+            //var targ = target.pop()
+            // console.log(targ.toString())
 
-                abilityToUse.abilityFunction.function.onUse(abilityToUse, entity, {x:target[0][0],y:target[0][1]})
+            abilityToUse.abilityFunction.function.onUse(abilityToUse, entity, {x:target[0][0],y:target[0][1]})
 
-                attacked = true
-            }
+            attacked = true
+        }
         if(target.length > 1 && !attacked){
             //move towards enemy
             console.log("Not In Range so we move")

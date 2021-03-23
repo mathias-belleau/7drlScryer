@@ -21,7 +21,6 @@ export const Tile = {
       { type: "IsBlocking" },
       { type: "LayerUnit" },
       { type: "Movement"},
-      { type: "Armour"},
       { type: "Stamina"},
       { type: "AbilityGrabBagList"},
       { type: "AbilityList"},
@@ -107,16 +106,14 @@ export const Floor = {
    name: "PlayerBeing",
    inherit: ["Being"],
    components: [
-     {
-       type: "IsPlayerControlled"
-     },
-     { type: "Appearance",
-      properties: {char: "@"}
-    },
+     { type: "IsPlayerControlled" },
+     { type: "Appearance", properties: {char: "@"} },
     {
       type: "AbilityList",
-      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
-    }
+      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilityShieldRaise",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
+    },
+    {type: "Armour"},
+    {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}}
    ]
  };
 
@@ -181,7 +178,7 @@ export const OrcWarrior = {
       properties: {name: "Orc Warrior", description: "A fearsome Orc wielding axees"}
     },
     { type: "AbilityList",
-      properties: {abilities: [ ["AbilityDoubleAxeSwing",1], ["AbilityAxeDecapitate",1]] }
+      properties: {abilities: [["AbilityDoNothing",2], ["AbilityDoubleAxeSwing",3], ["AbilityAxeDecapitate",1]] }
     },
     {type: "Health", properties: {max:8,current:8}},
     { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}}
@@ -200,7 +197,8 @@ export const Ogre = {
       properties: {abilities: [ ["AbilityOgreRockThrow", 1 ], ["AbilityOgreSmash",1]] }
     },
     {type: "Health", properties: {max:16,current:16}},
-    {type: "MultiTileHead", properties: {bodyEntities: [] }}
+    {type: "MultiTileHead", properties: {bodyEntities: [] }},
+    {type: "OgreRage"}
    
   ]
 }
@@ -262,6 +260,19 @@ export const AbilitySpearThrust = {
   ]
 }
 
+export const AbilityShieldRaise = {
+  name: "AbilityShieldRaise",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Shield Raise", description: "exhausts 6 to gain 1 armour"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityShieldRaise} },
+    { type: "AbilityPhase", properties: {phase: "Any"} },
+    { type: "AbilitySmallName", properties: {smallName: "SHR"}     },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+  ]
+}
+
 export const AbilitySwordJab = {
   name: "AbilitySwordJab",
   inherit:["Ability"],
@@ -304,7 +315,7 @@ export const AbilityDoubleAxeSwing = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilityDoubleAxeSwing} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     {type: "AbilitySmallName",properties: {smallName: "DAS"}},
-    { type: "AbilityTarget", properties: {coords: [[-1,1],[0,-1],[1,-1],[-1,0],[1,0]]}},
+    { type: "AbilityTarget", properties: {coords: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0]]}},
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]}  },
     { type: "AbilityDamage", properties: {dmg:2} },
     { type: "AbilityEndsTurn"}
@@ -352,10 +363,40 @@ export const AbilityOgreSmash = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilityOgreSmash} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName",properties: {smallName: "SMH"}},
-    { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2] ]} },
+    { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2], [-1,-1],[-1,-2], [2,-1],[2,-2]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
     { type: "AbilityDamage", properties: {dmg:4} },
     { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityOgreSmashSmash ={
+  name:"AbilityOgreSmashSmash",
+  inherit:["AbilityOgreSmash"],
+  components:[
+    { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2], [-1,-1],[-1,-2], [2,-1],[2,-2],
+      [0,2],[1,2], [0,3], [1,3], [-1,2],[-1,3], [2,2],[2,3]]} },
+  ]
+}
+
+export const AbilityOgreSmashSmashSmash ={
+  name:"AbilityOgreSmashSmashSmash",
+  inherit:["AbilityOgreSmash"],
+  components:[
+    { type: "AbilityTarget", properties: {coords: [[-1,-2],[0,-2],[1,-2],[2,-2],[-2,-1],[-1,-1],[0,-1],[1,-1],[2,1],
+      [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[2,1],[3,1],[-2,2],[-1,2],[2,2],[3,2]
+      ]} },
+  ]
+}
+
+export const AbilityOgreSmashSmashSmashSmash ={
+  name:"AbilityOgreSmashSmashSmashSmash",
+  inherit:["AbilityOgreSmash"],
+  components:[
+    { type: "AbilityTarget", properties: {coords: [[-1,-2],[0,-2],[1,-2],[2,-1],[2,-2],[-2,-1],[-1,-1],[0,-1],[2,1],[-1,-1],
+      [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[3,1],[-2,2],[-1,2],[2,2],[3,2],
+      [0,2],[1,2],[-1,3],[0,3],[1,3],[2,3]
+      ]} },
   ]
 }
 
@@ -379,7 +420,7 @@ export const Hunt = {
   name: "Hunt",
   components:[
     { type: "description"},
-    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Orc Test Scenario"]}}
+    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Ogre Test Scenario"]}}
   ]
 }
 
@@ -387,6 +428,14 @@ export const OrcTestScenario = {
   name: "Orc Test Scenario",
   inherit:["Scenario"],
   components:[
-    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [ ["Goblin",3] ]}}
+    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [ ["Goblin",4] ]}}
+  ]
+}
+
+export const OgreTestScenario = {
+  name: "Ogre Test Scenario",
+  inherit:["Scenario"],
+  components:[
+    {type: "ScenarioBattle", properties: {enemies: [["Ogre", 1]], allies: [  ]}}
   ]
 }

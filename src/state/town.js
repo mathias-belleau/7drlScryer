@@ -1,6 +1,7 @@
 //class for keeping track of population
 
 import world from "./ecs"
+import * as components from "./component"
 
 const { times } = require("lodash")
 const villageColors = ["green","blue","orange","purple","white","yellow","pink"]
@@ -19,6 +20,7 @@ export class Town {
             var newVillager =  world.createPrefab("PlayerBeing", {
                 appearance: {char: "@", color: villageColors[x]}
               });
+              newVillager.fireEvent("init")
             this.population[newVillager.id] = newVillager
         }
     }
@@ -39,6 +41,9 @@ export class Town {
           }
 
           this.CurrrentActivePlayer = this.ActiveHunters[this.CurrrentActivePlayerIndex]
+          if(world.getEntity(this.CurrrentActivePlayer).has(components.IsDead)){
+              this.GetNextActive()
+          }
     }
 
     GetHunters(){

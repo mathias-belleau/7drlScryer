@@ -32,16 +32,16 @@ export const AiPathfind = (entity) => {
     var dijkstra;
     if(entity.has(components.MultiTileHead)){
         //awful solution, remove blocking from body parts for now
-        pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-            var bodyPart = world.getEntity(bodyEnt);
-            bodyPart.remove(bodyPart.isBlocking)
-        })
+        // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
+        //     var bodyPart = world.getEntity(bodyEnt);
+        //     bodyPart.remove(bodyPart.isBlocking)
+        // })
         dijkstra = MakeMultiDijkstra(entity.position.x,entity.position.y)
 
-        pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-            var bodyPart = world.getEntity(bodyEnt);
-            bodyPart.add(components.IsBlocking)
-        })
+        // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
+        //     var bodyPart = world.getEntity(bodyEnt);
+        //     bodyPart.add(components.IsBlocking)
+        // })
     }else {
         dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
     }   

@@ -164,7 +164,10 @@ const processUserInput = () => {
       //console.log("Enter")
       if(gameState == "PlayerTurnDefend"){
         PlayerTurnDefend()
+        
         gameState = "PlayerTurnAttack"
+
+        CheckDefeat()
       }else if (gameState == "PlayerTurnAttack"){
         //process playerAttack
         ProcessDmgTiles()
@@ -172,7 +175,9 @@ const processUserInput = () => {
         EndTurnProcess(allyEntities.get())
         EndTurnProcess(playerEntities.get())
         CheckVictory()
+        
         gameState = "EnemyTurnDefend"
+        CheckDefeat()
       }
 
       render()
@@ -369,6 +374,7 @@ const PlayerTurnDefend = () => {
 
   //process ally turns
   AllyAttackTurn()
+
 }
 
 const PlayerTurnAttack = () => {
@@ -388,8 +394,11 @@ const ProcessDmgTiles = () => {
       //check if this is a unit
       var entityAtLoc = world.getEntity(eId);
       //console.log(entityAtLoc)
-      if(entityAtLoc.layerUnit){
+      if(entityAtLoc.layerUnit && !(entityAtLoc.has(components.MultiTileBody))){
         entityAtLoc.fireEvent("take-damage", {amount: entity.dmgTile.dmg})
+      }else if(entityAtLoc.has(components.MultiTileBody)){
+        var headEnt = world.getEntity(entityAtLoc.multiTileBody.headID)
+        headEnt.fireEvent("take-damage", {amount: entity.dmgTile.dmg})
       }
     });
     toDestroy.push(entity)
@@ -426,6 +435,8 @@ const CheckVictory = () =>{
     if(!final){
       console.log("going to next scenario")
       CleanUpPostBattle()
+      //rest
+      RestPhase()
       StartScenario()
     }else{
       console.log("finished")
@@ -434,9 +445,34 @@ const CheckVictory = () =>{
   }
 }
 
+const CheckDefeat = () => {
+  var stillAlive = false
+  for(var x = 0; x < playerEntities.get().length;x++){
+    if(playerEntities.get()[x].health.current > 0){
+      stillAlive = true
+    }
+  }
+
+  if(!stillAlive){
+    gameState = "gameover"
+  }
+}
+
+const RestPhase = () => {
+  playerEntities.get().forEach(player => {
+    player.stamina.current = 5;
+  })
+}
+
 const CleanUpPostBattle = () => {
   //we need to delete all enemies
+  enemyEntities.get().forEach(enem => { 
+    world.destroyEntity(enem.id)
+  })
   //delete allies that aren't permanent?
+  allyEntities.get().forEach( ally => {
+    world.destroyEntity(ally.id)
+  })
   //remove position from all alies
 
   var hunters = gameTown.GetHunters()
@@ -503,7 +539,7 @@ const StartScenario = () => {
 const SpawnScenarioUnits = (prefabName, isEnemy) => {
   //spawn it
   var newUnit = world.createPrefab(prefabName);
-
+  newUnit.fireEvent("init")
   //get an empty tile
   var emptyTile;
   if(newUnit.has(components.MultiTileHead)){ //if multitile get empty with clear south,east,se

@@ -43,7 +43,14 @@ export class Health extends Component {
   
     onTakeDamage(evt) {
         console.log("i've been hit!")
-        this.current -= evt.data.amount;
+        for(var dmg = 0; dmg < evt.data.amount; dmg++){
+          if(this.entity.armour.amount >= 1){
+            this.entity.armour.amount--
+          }else {
+            this.current--;
+
+          }
+        }
       
       
         console.log(this)
@@ -119,13 +126,13 @@ export class Health extends Component {
     }
   }
 
-  export class Armour extends Component {
-    static properties = { max: 0, current: 0}
-  }
-
   export class Stamina extends Component {
-    static properties = { max: 5, current: 5, used: 0, regen: 4}
+    static properties = { max: 5, current: 5, used: 0, regen: 2}
     onAttached(){
+      
+    }
+
+    onInit(evt){
       //console.log("fired stamina")
       //add die to this entity
       for(var x = 0; x < this.max;x++){
@@ -181,6 +188,53 @@ export class Health extends Component {
     }
   }
 
+  export class Armour extends Component {
+    static properties = {weight: "Light", dice:3, amount: 0}
+
+    onAttached(){
+      //console.log("fired stamina")
+      //add die to this entity
+      for(var x = 0; x < this.dice;x++){
+        this.entity.add(ArmourDie)
+      }
+      this.onRollDice()
+      this.GetArmourAmount()
+    }
+
+    onTurnEnd(evt){
+      this.amount = 0;
+
+      this.onRollDice()
+      
+      this.GetArmourAmount()
+    }
+
+    GetArmourAmount(){
+      //get armour value for next turn
+      for(var x = 0; x < this.dice; x++){
+        if(this.weight == "Light" && this.entity.armourDie[x].number >= 6){
+          this.amount += 1
+        }
+      }
+    }
+
+    onGainArmour(evt){
+      this.amount+= evt.data.armourAmt
+    }
+
+    onRollDice(){
+      //loop over all die and shuffle them and exhaust ones that are past max
+      for(var x = 0; x < this.dice; x++){
+        this.entity.armourDie[x].number = random(1, 6);
+      }
+    }
+  }
+
+  export class ArmourDie extends Component {
+    static allowMultiple = true;
+    static properties = {number: 0, shattered: false}
+  }
+
   export class MultiTileHead extends Component {
     static properties = {bodyEntities: []}
 
@@ -215,25 +269,53 @@ export class Health extends Component {
 export class AbilityList extends Component {
   static properties = {abilities: []}
 
-  onAttached(){
+  SetupGrabBag(){
     //upon creation generate the prefabs and fill this list
     var abilities = []
 
     this.abilities.forEach( (abil) => {
-      var prefAbil = world.createPrefab(abil[0])
-      for(var x = 0;x < abil[1];x++){
-        abilities.push(prefAbil)
+      if(abil[1] >= 1){
+        var prefAbil = world.createPrefab(abil[0])
+        for(var x = 0;x < abil[1];x++){
+          abilities.push(prefAbil)
+        }
       }
+    
     })
-    ROT.RNG.shuffle(abilities)
+    if(this.entity.has(Ai)){
+      abilities = ROT.RNG.shuffle(abilities)
+    }
     this.entity.abilityGrabBagList.abilities=abilities
+  }
+
+  onInit(evt){
+    this.SetupGrabBag()
+  }
+  onAttached(){
+    
   }
 
   onTurnEnd(evt){
     //check if grabbaglist is empty
     if(this.entity.abilityGrabBagList.abilities.length == 0){
-      this.onAttached()
+      this.SetupGrabBag()
     }
+  }
+
+  onChangeAbility(evt){
+
+    const existAbil = this.abilities.filter(abil => abil[0] == evt.data.abilName);
+    if(existAbil && existAbil.length >= 1){
+      for(var x = 0; x < this.abilities.length;x++){
+        if(this.abilities[x][0] == evt.data.abilName){
+          this.abilities[x][1] = evt.data.value
+        }
+      }
+      // existAbil[1] = evt.data.value
+    }else{
+      this.abilities.push([evt.data.abilName, evt.data.value])
+    }
+    console.log('but')
   }
 }
 
@@ -278,7 +360,7 @@ export class AbilityEndsTurn extends Component {}
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [["Goblin", 0], ["Goblin Shaman", 0], ["Ogre", 1]], allies: [  ]}
+  static properties = {enemies: [["Goblin", 1], ["Goblin Shaman", 0]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {
@@ -292,4 +374,29 @@ export class ScenarioChoice extends Component {
 
 export class HuntScenarios extends Component {
   static properties = {scenarios: ["Scenario"]}
+}
+
+
+//unit abilities
+export class OgreRage extends Component {
+  onTurnEnd(evt) {
+    if(this.entity.health.current <= 4){
+    //check if this unit is below 4hp
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 0})
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmash", value: 0})
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmashSmash", value: 1})
+      
+    }else if(this.entity.health.current <= 8) {
+    //check if this unit is below 8hp
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 0})
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmash", value: 1})
+    }else if(this.entity.health.current <= 12) {
+    //check if this unit is below 12hp
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
+      this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 1})
+    }
+    
+  }
 }

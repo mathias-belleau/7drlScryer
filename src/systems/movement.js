@@ -34,7 +34,9 @@ export const AttemptMove = (moveComp, entity) => {
     const entitiesAtLoc = readCacheSet("entitiesAtLocation", `${mx},${my}`);
     //console.log(entitiesAtLoc)
     for (const eId of entitiesAtLoc) {
-        if (world.getEntity(eId).isBlocking && (entity.has(components.MultiTileHead) && !entity.multiTileHead.bodyEntities.includes(eId)) ) {
+        if( world.getEntity(eId).has(components.IsBlocking) && entity.has(components.MultiTileHead) && !entity.multiTileHead.bodyEntities.includes(eId) ){
+          blockers.push(eId);
+        }else if (world.getEntity(eId).has(components.IsBlocking)  ) {
           blockers.push(eId);
         } 
     }

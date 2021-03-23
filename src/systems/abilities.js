@@ -64,6 +64,16 @@ export const AbilityDodge = {
     },
 }
 
+export const AbilityShieldRaise = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        return yahtzee.CheckSingles(dice)
+    },
+    onUse: (ability, entity,target = null) => {
+        entity.fireEvent("gain-armour", {armourAmt: 1})
+        entity.fireEvent("exhaust-selected")
+    },
+}
+
 export const AbilitySwordJab = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
         if(entity.has(components.IsTurnEnd)){
