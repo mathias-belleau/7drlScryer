@@ -196,7 +196,7 @@ export const Ogre = {
     { type: "AbilityList",
       properties: {abilities: [ ["AbilityOgreRockThrow", 1 ], ["AbilityOgreSmash",1]] }
     },
-    {type: "Health", properties: {max:16,current:16}},
+    {type: "Health", properties: {max:1,current:1}},
     {type: "MultiTileHead", properties: {bodyEntities: [] }},
     {type: "OgreRage"}
    
@@ -384,7 +384,7 @@ export const AbilityOgreSmashSmashSmash ={
   inherit:["AbilityOgreSmash"],
   components:[
     { type: "AbilityTarget", properties: {coords: [[-1,-2],[0,-2],[1,-2],[2,-2],[-2,-1],[-1,-1],[0,-1],[1,-1],[2,1],
-      [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[2,1],[3,1],[-2,2],[-1,2],[2,2],[3,2]
+      [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[2,-1],[3,1],[-2,2],[-1,2],[2,2],[3,2]
       ]} },
   ]
 }
@@ -393,7 +393,7 @@ export const AbilityOgreSmashSmashSmashSmash ={
   name:"AbilityOgreSmashSmashSmashSmash",
   inherit:["AbilityOgreSmash"],
   components:[
-    { type: "AbilityTarget", properties: {coords: [[-1,-2],[0,-2],[1,-2],[2,-1],[2,-2],[-2,-1],[-1,-1],[0,-1],[2,1],[-1,-1],
+    { type: "AbilityTarget", properties: {coords: [[-1,-2],[0,-2],[1,-2],[2,-1],[2,-2],[-2,-1],[-1,-1],[0,-1],[2,1],[1,-1],
       [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[3,1],[-2,2],[-1,2],[2,2],[3,2],
       [0,2],[1,2],[-1,3],[0,3],[1,3],[2,3]
       ]} },

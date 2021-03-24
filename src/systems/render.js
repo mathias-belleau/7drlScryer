@@ -15,7 +15,9 @@ import {DrawHelpMenu,ShowAbilityInfo} from "../state/helpMenu"
 const layerMapEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerMap]
   });
-
+const layerItemEntities = world.createQuery({
+    all: [components.LayerItem, components.Appearance, components.Position]
+})
   const layerUnitEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit]
   });
@@ -93,7 +95,11 @@ const RenderEnemyNumbers = () => {
 }
 
 const renderObjects = () => {
-
+    layerItemEntities.get().forEach(entity => {
+        DrawChar(entity,
+            entity.position.x+grid.map.x,
+            entity.position.y+grid.map.y)
+    })
 }
 
 
@@ -132,6 +138,10 @@ const GetArmourString = (entity) => {
         var armourRating = entity.armour.weight;
         entity.armourDie.forEach( armDie => {
             if(armourRating == "Light" && armDie.number >= 6){
+                armString+= "%c{green}"+armDie.number.toString() + "%c{}"
+            }else if(armourRating == "Medium" && armDie.number >= 5){
+                armString+= "%c{green}"+armDie.number.toString() + "%c{}"
+            }else if(armourRating == "Heavy" && armDie.number >= 4){
                 armString+= "%c{green}"+armDie.number.toString() + "%c{}"
             }else{
                 armString+= "%c{}"+armDie.number.toString() + "%c{}"

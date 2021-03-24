@@ -44,7 +44,7 @@ export class Health extends Component {
     onTakeDamage(evt) {
         console.log("i've been hit!")
         for(var dmg = 0; dmg < evt.data.amount; dmg++){
-          if(this.entity.armour.amount >= 1){
+          if(this.entity.armour && this.entity.armour.amount >= 1){
             this.entity.armour.amount--
           }else {
             this.current--;
@@ -56,14 +56,18 @@ export class Health extends Component {
         console.log(this)
         console.log("ow")
         if (this.current <= 0) {
-            this.entity.remove(this.entity.position)
+            this.entity.remove(this.entity.layerUnit)
+            this.entity.remove(this.entity.isBlocking)
             this.entity.add(IsDead)
-            // this.entity.appearance.char = "%";
-            // this.entity.remove(this.entity.ai)
-            // this.entity.remove(this.entity.isBlocking)
-            // this.entity.remove(this.entity.layer400)
-            // this.entity.add(IsDead);
-            // this.entity.add(Layer300);
+            this.entity.add(LayerItem)
+            this.entity.appearance.char = "%"
+
+            if(this.entity.has(MultiTileHead)){
+              this.entity.multiTileHead.bodyEntities.forEach(body => {
+                var body = world.getEntity(body)
+                body.remove(body.isBlocking)
+              })
+            }
         }
       
         evt.handle();
@@ -214,6 +218,10 @@ export class Health extends Component {
       for(var x = 0; x < this.dice; x++){
         if(this.weight == "Light" && this.entity.armourDie[x].number >= 6){
           this.amount += 1
+        }else if (this.weight == "Medium" && this.entity.armourDie[x].number >= 5){
+          this.amount += 1
+        }else if (this.weight == "Heavy" && this.entity.armourDie[x].number >= 4) {
+          this.amount += 1
         }
       }
     }
@@ -256,6 +264,7 @@ export class Health extends Component {
   export class Ai extends Component {}
 
   export class LayerMap extends Component {}
+  export class LayerItem extends Component {}
   export class LayerUnit extends Component {}
 
   export class SlowAttack extends Component {}

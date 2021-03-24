@@ -18,6 +18,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.IsPlayerControlled)
   ecs.registerComponent(components.IsEnemy)
   ecs.registerComponent(components.LayerMap);
+  ecs.registerComponent(components.LayerItem)
   ecs.registerComponent(components.LayerUnit)
   ecs.registerComponent(components.Movement)
   ecs.registerComponent(components.Position)

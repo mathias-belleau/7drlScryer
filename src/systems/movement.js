@@ -5,13 +5,16 @@ import { addCacheSet, deleteCacheSet, readCacheSet } from "../state/cache";
 import {toCell, toLocId} from "../lib/grid"
 
 export const AttemptMove = (moveComp, entity) => {
+    if(entity.has(components.IsTurnEnd)){
+      return false
+    }
     //move comp will contain an x/y change
 
     //entity is the moving entity
     //console.log("check here")
     //console.log(moveComp)
     //console.log(entity)
-
+ 
     let mx = moveComp.x;
     let my = moveComp.y;
 

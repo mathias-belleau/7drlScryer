@@ -28,6 +28,9 @@ export var targetEntity = world.createEntity("targetEntity")
 targetEntity.add(components.Appearance, {char: 'X', color: "black", background: "green"})
 
 let userInput = null;
+const layerItemEntities = world.createQuery({
+  all: [components.LayerItem, components.Appearance, components.Position]
+})
 
 const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
@@ -465,6 +468,11 @@ const RestPhase = () => {
 }
 
 const CleanUpPostBattle = () => {
+  //remove all the items on the ground
+  layerItemEntities.get().forEach(item => {
+    world.destroyEntity(item.id)
+  })
+
   //we need to delete all enemies
   enemyEntities.get().forEach(enem => { 
     world.destroyEntity(enem.id)
