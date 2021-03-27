@@ -397,7 +397,7 @@ export class AbilityEndsTurn extends Component {}
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [ ["Goblin", 0], ["Goblin Archer", 4], ["Goblin Shaman", 0]], allies: [  ]}
+  static properties = {enemies: [ ["Goblin", 6], ["Goblin Archer", 3], ["Goblin Shaman", 1]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {

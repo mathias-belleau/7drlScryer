@@ -72,7 +72,7 @@ const ChooseAiAttack = (entity,abilityToUse) => {
             console.log("Not In Range so we move")
             
             if(target.length > 1 ){
-                MoveForward(entity, target)
+                MoveForward(abilityToUse, entity, target)
             }
         }
     }    
@@ -99,7 +99,7 @@ const CheckMultiTileMove = (entity, target) => {
     return false
 }
 
-const MoveForward = (entity, target) => {
+const MoveForward = (ability, entity, target) => {
     //DEBUG: give +1 movement
     entity.fireEvent("gain-movement", 2)
 
@@ -107,6 +107,9 @@ const MoveForward = (entity, target) => {
 
     var y = entity.movement.movement
     for(var x = 0; x < y;x++){
+        if(ability.has(components.AbilityProjectile) && CheckInRange(ability, entity, target)){
+            continue;
+        }
         if(target && target.length > 1  && !(entity.has(components.MultiTileHead) && CheckMultiTileMove(entity,target))){
             //console.log("remaining target")
             //console.log(target.toString())
