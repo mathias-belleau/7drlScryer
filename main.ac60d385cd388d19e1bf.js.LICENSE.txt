@@ -116,6 +116,8 @@
 
 /*! ./prefab */
 
+/*! ./projectile */
+
 /*! ./rect.js */
 
 /*! ./recursive-shadowcasting.js */
@@ -152,7 +154,13 @@
 
 /*! ./systems/ai */
 
+/*! ./systems/projectile */
+
 /*! ./systems/render */
+
+/*! ./systems/target */
+
+/*! ./target */
 
 /*! ./term.js */
 
@@ -168,11 +176,11 @@
 
 /*! ./yahtzee */
 
-/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords */
+/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAxeDecapitate, AbilityBowShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
-/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Armour, Stamina, Die, MultiTileHead, MultiTileBody, IsTurnEnd, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
+/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
 
 /*! exports provided: AttemptMove */
 
@@ -186,6 +194,10 @@
 
 /*! exports provided: DrawHelpMenu, HideHelpMenu, ShowAbilityInfo */
 
+/*! exports provided: GetProjectileList, ClearProjectiles, CreateNewPath, UpdateIntersect */
+
+/*! exports provided: GetTargetEntities, GetTargetEntityPos, SetupTargetEntities, ClearTargetEntities, UpdateTargetEntities, UseAbility */
+
 /*! exports provided: HuntList, GetCurrentHunt, GetCurrentScenario, StartNextScenario, StartHunt, SetupHunts */
 
 /*! exports provided: MinHeap */
@@ -198,7 +210,7 @@
 
 /*! exports provided: TYPE_TEXT, TYPE_NEWLINE, TYPE_FG, TYPE_BG, measure, tokenize */
 
-/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Goblin, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilityAxeDecapitate, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario */
+/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Projectile, ProjectilePath, Goblin, GoblinArcher, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilityBowShot, AbilityShieldRaise, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAxeDecapitate, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario */
 
 /*! exports provided: Town, default */
 
@@ -206,11 +218,11 @@
 
 /*! exports provided: default */
 
-/*! exports provided: dungeonMap, makeMap, FetchFreeTile */
+/*! exports provided: dungeonMap, makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits */
 
 /*! exports provided: fromString, add, add_, multiply, multiply_, interpolate, lerp, interpolateHSL, lerpHSL, randomize, rgb2hsl, hsl2rgb, toRGB, toHex */
 
-/*! exports provided: gameState, previousGameState, SetQueuedAbility, SetQueuedEntity, targetEntity, ExamineTargetEnable, ExamineTargetDisable, setupTestFight */
+/*! exports provided: gameState, previousGameState, ExamineTargetEnable, ExamineTargetDisable, setupTestFight */
 
 /*! exports provided: grid, display, divHelp, displayHelp */
 
@@ -276,6 +288,10 @@
   !*** ./src/systems/render.js ***!
   \*******************************/
 
+/*!*******************************!*\
+  !*** ./src/systems/target.js ***!
+  \*******************************/
+
 /*!********************************!*\
   !*** ./src/state/component.js ***!
   \********************************/
@@ -298,6 +314,10 @@
 
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
+  \***********************************/
+
+/*!***********************************!*\
+  !*** ./src/systems/projectile.js ***!
   \***********************************/
 
 /*!************************************!*\
