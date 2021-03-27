@@ -1,18 +1,19 @@
-import {readCacheSet} from "../state/cache"
-import world from "../state/ecs"
-import * as components from "../state/component"
+import {readCacheSet} from "../state/cache";
+import world from "../state/ecs";
+import * as components from "../state/component";
 import * as ROT from "rot-js";
-import {toLocId} from "../lib/grid"
+import {toLocId} from "../lib/grid";
+
 
 const allyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit],
     none: [components.IsEnemy, components.MultiTileBody]
-})
-
-const enemyEntities = world.createQuery({
-    all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
-    none: [components.IsDead, components.MultiTileBody]
   })
+  
+const enemyEntities = world.createQuery({
+all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
+none: [components.IsDead, components.MultiTileBody]
+})
 
 const MakeDijkstra = (x,y) =>{
     /* prepare path to given coords */
@@ -33,13 +34,13 @@ export const AiPathfind = (entity) => {
     if(entity.has(components.MultiTileHead)){
         //awful solution, remove blocking from body parts for now
         // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-        //     var bodyPart = world.getEntity(bodyEnt);
+        //     var bodyPart = ECS.world.getEntity(bodyEnt);
         //     bodyPart.remove(bodyPart.isBlocking)
         // })
         dijkstra = MakeMultiDijkstra(entity.position.x,entity.position.y)
 
         // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-        //     var bodyPart = world.getEntity(bodyEnt);
+        //     var bodyPart = ECS.world.getEntity(bodyEnt);
         //     bodyPart.add(components.IsBlocking)
         // })
     }else {
@@ -48,6 +49,10 @@ export const AiPathfind = (entity) => {
     //console.log("path finder")
     //console.log(dijkstra)
     var target = FindClosestTarget(dijkstra, entity)
+    if(!target){
+        console.error("NO TARGET?")
+        return
+    }
     //console.log(target)
     //target.reverse()
     target.pop()

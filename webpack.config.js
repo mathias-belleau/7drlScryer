@@ -3,6 +3,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const GitRevisionPlugin = require("git-revision-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 
 const gitRevisionPlugin = new GitRevisionPlugin();
@@ -51,12 +52,13 @@ module.exports = {
 },
 
   plugins: [
-    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new CleanWebpackPlugin({ cleanStaleWebpackAssets: true }),
     new HtmlWebpackPlugin({
       title: "jsrlt",
       template: "index.html",
       version: gitRevisionPlugin.commithash().slice(0, 7),
     }),
+    
   ],
   output: {
     filename: "[name].[contenthash].js",

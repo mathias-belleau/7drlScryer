@@ -1,6 +1,7 @@
 import {GetSelectedDie, GetAllDie, RotateCoords} from "./abilities"
 import {readCacheSet} from "../state/cache"
 import world from "../state/ecs"
+
 import * as components from "../state/component"
 import {AiPathfind,CheckStraightLine} from "./pathfinding"
 import {toLocId} from "../lib/grid"
@@ -27,15 +28,11 @@ const ChooseAiAttack = (entity,abilityToUse) => {
         if(!target || target.length == 0){
             return;
         }
-        console.log("our target is")
-        console.log(target.toString())
-        console.log(target.length)
 
         var noAlly = true;
         const entityIsEnemy = entity.has(components.IsEnemy)
 
         for(var coord = 0; coord < target.length; coord++){
-            console.log(target[coord][0])
             var entitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target[coord][0],y:target[coord][1]}))
             entitiesAtLoc = Array.from(entitiesAtLoc)
             for(var ents = 0;ents < entitiesAtLoc.length;ents++){
@@ -43,7 +40,6 @@ const ChooseAiAttack = (entity,abilityToUse) => {
                 var entityAtLoc = world.getEntity(entitiesAtLoc[ents])
                 // console.log(entityAtLoc)
                 // console.log(entityAtLoc.has(components.IsEnemy))
-                console.log(entityAtLoc.has(components.IsEnemy))
                 if(entityAtLoc.has(components.LayerUnit) && entityAtLoc.has(components.IsEnemy) == entityIsEnemy && entity.id != entitiesAtLoc[ents]){
                     noAlly = false
                 }

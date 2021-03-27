@@ -33,6 +33,10 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.MultiTileBody)
   ecs.registerComponent(components.Armour)
   ecs.registerComponent(components.ArmourDie)
+  ecs.registerComponent(components.Invisible)
+  ecs.registerComponent(components.Duration)
+
+  ecs.registerComponent(components.ProjectileTile)
 
   //ability
   ecs.registerComponent(components.AbilityList)
@@ -46,17 +50,19 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.AbilityDamage)
   ecs.registerComponent(components.AbilityEndsTurn)
   ecs.registerComponent(components.AbilityGrabBagList)
+  ecs.registerComponent(components.AbilityProjectile)
+  ecs.registerComponent(components.AbilitySummon)
 
 //unit abilities
 ecs.registerComponent(components.OgreRage)
 
-  //scenario
-  ecs.registerComponent(components.ScenarioBattle)
-  ecs.registerComponent(components.ScenarioChoice)
-  ecs.registerComponent(components.ScenarioMessage)
+//scenario
+ecs.registerComponent(components.ScenarioBattle)
+ecs.registerComponent(components.ScenarioChoice)
+ecs.registerComponent(components.ScenarioMessage)
 
-  //hunt
-  ecs.registerComponent(components.HuntScenarios)
+//hunt
+ecs.registerComponent(components.HuntScenarios)
 
 
   //prefabs
@@ -66,6 +72,10 @@ ecs.registerComponent(components.OgreRage)
   ecs.registerPrefab(prefabs.Scenario)
   ecs.registerPrefab(prefabs.MultiTileBody)
 
+  ecs.registerPrefab(prefabs.Projectile)
+  ecs.registerPrefab(prefabs.ProjectilePath)
+
+
   ecs.registerPrefab(prefabs.Wall)
   ecs.registerPrefab(prefabs.Floor)
 
@@ -73,6 +83,7 @@ ecs.registerComponent(components.OgreRage)
   ecs.registerPrefab(prefabs.Mob)
 
   ecs.registerPrefab(prefabs.Goblin)
+  ecs.registerPrefab(prefabs.GoblinArcher)
   ecs.registerPrefab(prefabs.OrcWarrior)
   ecs.registerPrefab(prefabs.GoblinShaman)
   ecs.registerPrefab(prefabs.Ogre)
@@ -87,7 +98,9 @@ ecs.registerComponent(components.OgreRage)
   ecs.registerPrefab(prefabs.AbilityDoubleAxeSwing)
   ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
   ecs.registerPrefab(prefabs.AbilityFlameHands)
+  ecs.registerPrefab(prefabs.AbilitySummonGoblin)
   ecs.registerPrefab(prefabs.AbilityShieldRaise)
+  ecs.registerPrefab(prefabs.AbilityBowShot)
 
   ecs.registerPrefab(prefabs.AbilityOgreSmash)
   ecs.registerPrefab(prefabs.AbilityOgreSmashSmash)
@@ -106,5 +119,46 @@ export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {
   messageLog.unshift(text);
 };
+
+
+
+ const layerItemEntities = world.createQuery({
+  all: [components.LayerItem, components.Appearance, components.Position]
+})
+
+ const playerEntities = world.createQuery({
+  all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
+  none: [components.IsDead, components.MultiTileBody]
+});
+
+ const dmgTileEntities = world.createQuery({
+  all: [components.DmgTile]
+})
+
+ const layerMapEntities = world.createQuery({
+  all: [components.Position, components.Appearance, components.LayerMap]
+});
+
+ const layerUnitEntities = world.createQuery({
+  all: [components.Position, components.Appearance, components.LayerUnit]
+});
+
+ const slowDmgEntities = world.createQuery({
+  all: [components.Position, components.SlowAttack]
+});
+
+const fastDmgEntities = world.createQuery({
+  all: [components.Position, components.FastAttack]
+});
+
+const allyEntities = world.createQuery({
+  all: [components.Position, components.Appearance, components.LayerUnit],
+  none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
+})
+
+const enemyEntities = world.createQuery({
+  all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
+  none: [components.IsDead, components.MultiTileBody]
+})
 
 export default world;

@@ -5,32 +5,41 @@ import {
 
 import * as components from "../state/component"
 
-import world from "../state/ecs";
+import world from "../state/ecs"
 import { readCacheSet } from "../state/cache";
 import {toCell, toLocId} from "../lib/grid"
-import {CurrrentActivePlayer, gameState, targetEntity} from "../index"
+import {CurrrentActivePlayer, gameState} from "../index"
+import * as Target from "./target"
 import gameTown from "../state/town"
 import {DrawHelpMenu,ShowAbilityInfo} from "../state/helpMenu"
+import * as Projectile from "./projectile";
 
-const layerMapEntities = world.createQuery({
-    all: [components.Position, components.Appearance, components.LayerMap]
-  });
-const layerItemEntities = world.createQuery({
-    all: [components.LayerItem, components.Appearance, components.Position]
-})
-  const layerUnitEntities = world.createQuery({
-    all: [components.Position, components.Appearance, components.LayerUnit]
-  });
-
-  const slowDmgEntities = world.createQuery({
+const slowDmgEntities = world.createQuery({
     all: [components.Position, components.SlowAttack]
   });
-
+  
   const fastDmgEntities = world.createQuery({
     all: [components.Position, components.FastAttack]
   });
 
-  const enemyEntities = world.createQuery({
+const layerMapEntities = world.createQuery({
+    all: [components.Position, components.Appearance, components.LayerMap]
+  });
+  
+   const layerUnitEntities = world.createQuery({
+    all: [components.Position, components.Appearance, components.LayerUnit]
+  });
+
+  const layerItemEntities = world.createQuery({
+    all: [components.LayerItem, components.Appearance, components.Position]
+  })
+
+   const allyEntities = world.createQuery({
+    all: [components.Position, components.Appearance, components.LayerUnit],
+    none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
+  })
+  
+   const enemyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
     none: [components.IsDead, components.MultiTileBody]
   })
@@ -202,14 +211,34 @@ const renderAbilityMenu = () => {
     }
 }
 
+const renderProjectiles = () =>{
+    var projectileList = Projectile.GetProjectileList()
+    projectileList.forEach(pathList => {
+        console.log(pathList)
+        pathList.paths.forEach(path =>{
+            if(!path.has(components.Invisible)){
+                DrawChar(path,
+                    path.position.x + grid.map.x,
+                    path.position.y + grid.map.y)
+            }
+        })
+    })
+}
+
 const renderTarget = () => {
     //get the position of the targetEntity
     //get entities at position
     //for now just draw x at position
     //console.log(targetEntity)
-    DrawChar(targetEntity, 
-        targetEntity.position.x+grid.map.x,
-        targetEntity.position.y+grid.map.y)
+    Target.GetTargetEntities().forEach(targEnt => {
+        if(targEnt.isDestroyed){
+            return;
+        }
+        DrawChar(targEnt,
+            targEnt.position.x + grid.map.x,
+            targEnt.position.y+grid.map.y)
+    })
+ 
 
     // draw the actual target coords
     
@@ -316,6 +345,8 @@ export const render = () => {
         renderPhase()
         renderBorder()
         renderEnemyQuickBar()
+
+        renderProjectiles()
 
         renderSlowAttacks()
         renderFastAttacks()

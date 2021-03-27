@@ -1,10 +1,10 @@
-import world from "./ecs"
+import world from "./ecs";
 
 import { Component } from "geotic";
 import { random, compact } from "lodash";
-import {addCacheSet, deleteCacheSet} from "./cache"
-import * as Abilities from "../systems/abilities"
-import * as Movements from "../systems/movement"
+import {addCacheSet, deleteCacheSet} from "./cache";
+import * as Abilities from "../systems/abilities";
+import * as Movements from "../systems/movement";
 
 import * as ROT from "rot-js"
 
@@ -252,11 +252,31 @@ export class Health extends Component {
     static properties = {headID: ""}
   }
 
+  export class Duration extends Component {
+    static properties = {turns: 2};
+
+    onTurnEnd(evt) {
+      this.turns--;
+      if(this.turns <=0 ){
+        this.entity.destroy()
+      }
+    }
+  }
+
   export class IsTurnEnd extends Component {
     onTurnEnd(evt) {
       this.destroy()
     }
   }
+
+  export class Invisible extends Component {
+    
+  }
+
+  export class ProjectileTile extends Component {
+    static properties = {pathId: ""}
+  }
+
   export class IsPlayerControlled extends Component{}
   export class IsEnemy extends Component {
     static properties = {enemy: true}
@@ -363,13 +383,21 @@ export class AbilityDamage extends Component {
   static properties = {dmg: 1}
 }
 
+export class AbilityProjectile extends Component {
+  static properties = {path: [ [0,-1] ]}
+}
+
+export class AbilitySummon extends Component{
+  static properties = {amount: 1, prefab: "Goblin"}
+}
+
 export class AbilityEndsTurn extends Component {}
 
 
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [["Goblin", 1], ["Goblin Shaman", 0]], allies: [  ]}
+  static properties = {enemies: [ ["Goblin", 0], ["Goblin Archer", 4], ["Goblin Shaman", 0]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {
@@ -395,16 +423,19 @@ export class OgreRage extends Component {
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmashSmash", value: 1})
+      this.entity.abilityList.SetupGrabBag()
       
     }else if(this.entity.health.current <= 8) {
     //check if this unit is below 8hp
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmash", value: 1})
+      this.entity.abilityList.SetupGrabBag()
     }else if(this.entity.health.current <= 12) {
     //check if this unit is below 12hp
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 1})
+      this.entity.abilityList.SetupGrabBag()
     }
     
   }

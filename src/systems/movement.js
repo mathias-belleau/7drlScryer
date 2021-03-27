@@ -1,8 +1,9 @@
-import world from "../state/ecs";
+import world from "../state/ecs"
 import * as components from "../state/component"
 import { grid } from "../lib/canvas";
 import { addCacheSet, deleteCacheSet, readCacheSet } from "../state/cache";
 import {toCell, toLocId} from "../lib/grid"
+import {UpdateIntersect} from "./projectile"
 
 export const AttemptMove = (moveComp, entity) => {
     if(entity.has(components.IsTurnEnd)){
@@ -94,11 +95,32 @@ export const AttemptMove = (moveComp, entity) => {
         entity.id
       );
       addCacheSet("entitiesAtLocation", `${mx},${my}`, entity.id);
-  
+      var prevPos = {x:entity.position.x,y:entity.position.y}
       entity.position.x = mx;
       entity.position.y = my;
 
       console.log(mx +':'+my)
-  
+      
+      //new pos
+      CheckProjectiles(entity.position.x,entity.position.y)
+
+      //old pos
+      CheckProjectiles(prevPos.x, prevPos.y)
     return true
+}
+
+//check did we walk into a path?
+const CheckProjectiles = (x,y) => {
+  //read entities
+  var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", `${x},${y}`)
+
+  //check if any have pathId
+  getEntitiesAtLoc.forEach(eid =>{
+    var ent = world.getEntity(eid);
+    if(ent && ent.has(components.ProjectileTile)){
+      UpdateIntersect(ent.pathId)
+    }
+  })
+  //send to projectile intercept
+
 }
