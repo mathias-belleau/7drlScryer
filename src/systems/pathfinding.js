@@ -4,12 +4,13 @@ import * as components from "../state/component"
 import * as ROT from "rot-js";
 import {toLocId} from "../lib/grid"
 
-const allyEntities = world.createQuery({
-    all: [components.Position, components.Appearance, components.LayerUnit],
-    none: [components.IsEnemy, components.MultiTileBody]
-})
 
-const enemyEntities = world.createQuery({
+export const allyEntities = world.createQuery({
+    all: [components.Position, components.Appearance, components.LayerUnit],
+    none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
+  })
+  
+  export const enemyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
     none: [components.IsDead, components.MultiTileBody]
   })
@@ -33,13 +34,13 @@ export const AiPathfind = (entity) => {
     if(entity.has(components.MultiTileHead)){
         //awful solution, remove blocking from body parts for now
         // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-        //     var bodyPart = world.getEntity(bodyEnt);
+        //     var bodyPart = ECS.world.getEntity(bodyEnt);
         //     bodyPart.remove(bodyPart.isBlocking)
         // })
         dijkstra = MakeMultiDijkstra(entity.position.x,entity.position.y)
 
         // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-        //     var bodyPart = world.getEntity(bodyEnt);
+        //     var bodyPart = ECS.world.getEntity(bodyEnt);
         //     bodyPart.add(components.IsBlocking)
         // })
     }else {

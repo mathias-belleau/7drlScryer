@@ -252,11 +252,31 @@ export class Health extends Component {
     static properties = {headID: ""}
   }
 
+  export class Duration extends Component {
+    static properties = {turns: 2};
+
+    onTurnEnd(evt) {
+      this.turns--;
+      if(this.turns <=0 ){
+        this.entity.destroy()
+      }
+    }
+  }
+
   export class IsTurnEnd extends Component {
     onTurnEnd(evt) {
       this.destroy()
     }
   }
+
+  export class Invisible extends Component {
+    
+  }
+
+  export class ProjectileTile extends Component {
+    static properties = {pathId: ""}
+  }
+
   export class IsPlayerControlled extends Component{}
   export class IsEnemy extends Component {
     static properties = {enemy: true}
@@ -363,13 +383,21 @@ export class AbilityDamage extends Component {
   static properties = {dmg: 1}
 }
 
+export class AbilityProjectile extends Component {
+  static properties = {path: [ [0,-1] ]}
+}
+
+export class AbilitySummon extends Component{
+  static properties = {amount: 1, prefab: "Goblin"}
+}
+
 export class AbilityEndsTurn extends Component {}
 
 
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [["Goblin", 1], ["Goblin Shaman", 0]], allies: [  ]}
+  static properties = {enemies: [["Goblin", 6], ["Goblin Archer", 0], ["Goblin Shaman", 0]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {

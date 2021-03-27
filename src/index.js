@@ -1,8 +1,6 @@
-import "./lib/canvas.js";
-import world from "./state/ecs";
-import * as ROT from "rot-js";
-import {render,SetEntityToRender} from "./systems/render"
-import {makeMap,FetchFreeTile} from "./state/dungeon"
+import world from "./state/ecs"
+import {grid, display, divHelp, displayHelp} from "./lib/canvas.js";
+import {render, SetEntityToRender} from "./systems/render"
 import * as components from "./state/component"
 import { times } from "lodash";
 import {readCacheSet} from "./state/cache"
@@ -11,31 +9,21 @@ import * as AI from "./systems/ai"
 import {HideHelpMenu} from "./state/helpMenu"
 import gameTown from "./state/town"
 import * as Hunt from "./state/scenario"
-
+import * as Target from "./systems/target"
+import * as Projectile from "./systems/projectile"
+//import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
+import * as Dungeon from "./state/dungeon"
 export var gameState = "loading"
 export var previousGameState = ""
-
-var queuedAbility = "hi"
-var queuedEntity = "hi"
-export const SetQueuedAbility = (abil) => {
-  queuedAbility = abil
-}
-export const SetQueuedEntity = (ent) => {
-  queuedEntity = ent
-}
-
-export var targetEntity = world.createEntity("targetEntity")
-targetEntity.add(components.Appearance, {char: 'X', color: "black", background: "green"})
-
-let userInput = null;
-const layerItemEntities = world.createQuery({
-  all: [components.LayerItem, components.Appearance, components.Position]
-})
 
 const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
   none: [components.IsDead, components.MultiTileBody]
 });
+
+const dmgTileEntities = world.createQuery({
+  all: [components.DmgTile]
+})
 
 const allyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit],
@@ -47,16 +35,14 @@ const enemyEntities = world.createQuery({
   none: [components.IsDead, components.MultiTileBody]
 })
 
-const dmgTileEntities = world.createQuery({
-  all: [components.DmgTile]
-})
+let userInput = null;
 
 const update = () => {
     if(gameState == "setup"){
+      Dungeon.FetchFreeTileTarget({x:2,y:2},3)
       gameState = "EnemyTurnDefend"
     }else if(gameState == "EnemyTurnDefend") {
 
-      
       //EnemyDefendTurn()
 
       gameState = "EnemyTurnAttack"
@@ -146,7 +132,7 @@ const processUserInput = () => {
             abil.abilityFunction.function.onTarget(abil, gameTown.GetActive())
 
           }else {
-            abil.abilityFunction.function.onUse(abil, gameTown.GetActive(), GetTargetEntityPos())
+            abil.abilityFunction.function.onUse(abil, gameTown.GetActive(), Target.GetTargetEntityPos())
 
           }
         }
@@ -208,9 +194,8 @@ const processUserInput = () => {
         TargetMove()
         render()
       }else if(userInput === "Enter" && gameState === "targeting"){
-        //activate the queued ability
-        //console.log(queuedAbility)
-        queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity, GetTargetEntityPos())
+        Target.UseAbility()
+        // queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity, Target.GetTargetEntityPos())
         ExamineTargetDisable()
         render()
     }
@@ -249,19 +234,13 @@ const ConvertSkillHotkey = (hotkey) => {
   }
 }
 
-const GetTargetEntityPos = () => {
-  if(targetEntity.has(components.Position)){
-    return {x:targetEntity.position.x,y:targetEntity.position.y}
-  }else {
-    return {x:0,y:0}
-  }
-}
 
 export const ExamineTargetEnable = (state) => {
   SetPreviousState(state)
 
   //set examine base position to current active player position
-  targetEntity.add(components.Position, {x: gameTown.GetActive().position.x,y: gameTown.GetActive().position.y})
+
+  //targetEntity.add(components.Position, {x: gameTown.GetActive().position.x,y: gameTown.GetActive().position.y})
 }
 
 const SetPreviousState = (state) => {
@@ -271,7 +250,8 @@ const SetPreviousState = (state) => {
 
 export const ExamineTargetDisable= () => {
   ReturnPreviousGameState()
-  targetEntity.remove(targetEntity.position)
+  Target.ClearTargetEntities()
+  // targetEntity.remove(targetEntity.position)
 }
 
 const ReturnPreviousGameState = () => {
@@ -315,17 +295,13 @@ const PlayerAttemptMove = () => {
 
 const TargetMove = () => {
   if (userInput === "ArrowUp") {
-    targetEntity.position.y = gameTown.GetActive().position.y + -1
-    targetEntity.position.x = gameTown.GetActive().position.x
+    Target.UpdateTargetEntities(0,-1)
   } else if (userInput === "ArrowRight") {
-    targetEntity.position.x = gameTown.GetActive().position.x + 1
-    targetEntity.position.y = gameTown.GetActive().position.y
+    Target.UpdateTargetEntities(1,0)
   } else if (userInput === "ArrowDown") {
-    targetEntity.position.y = gameTown.GetActive().position.y + 1
-    targetEntity.position.x = gameTown.GetActive().position.x
+    Target.UpdateTargetEntities(0,1)
   } else if (userInput === "ArrowLeft") {
-    targetEntity.position.x = gameTown.GetActive().position.x + -1
-    targetEntity.position.y = gameTown.GetActive().position.y
+    Target.UpdateTargetEntities(-1,0)
   }
 }
 
@@ -337,22 +313,22 @@ export const setupTestFight = () => {
     const newPlayer = world.createPrefab("PlayerBeing", {
       appearance: {char: "@", color: "green"}
     });
-    var emptyTile = FetchFreeTile();
+    var emptyTile = Dungeon.FetchFreeTile();
     newPlayer.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
     CurrrentActivePlayer = newPlayer
 
     const newPlayer2 = world.createPrefab("PlayerBeing", {
       appearance: {char: "@", color: "purple"}
     });
-    emptyTile = FetchFreeTile();
+    emptyTile = Dungeon.FetchFreeTile();
     newPlayer2.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
 
     times(6, () => {
-      emptyTile = FetchFreeTile();
+      emptyTile = Dungeon.FetchFreeTile();
       world.createPrefab("Goblin").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
     });
 
-    emptyTile = FetchFreeTile();
+    emptyTile = Dungeon.FetchFreeTile();
     world.createPrefab("Orc Warrior").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
 }
 
@@ -391,6 +367,8 @@ const ProcessDmgTiles = () => {
   //dont remove from an array while iterating over it
   var toDestroy = []
   dmgTileEntities.get().forEach( (entity) => {
+    console.log("dmg tile id")
+    console.log(entity.id)
     var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
 
     getEntitiesAtLoc.forEach( (eId) => {
@@ -408,18 +386,19 @@ const ProcessDmgTiles = () => {
   });
 
   toDestroy.forEach( (ent) =>{
-    ent.destroy()
+    world.destroyEntity(ent.id)
   })
-  //console.log(dmgTileEntities.get())
-  //console.log("end process dmg")
+
+  //clear projectiles too 
+  Projectile.ClearProjectiles() 
 }
 
 const EndTurnProcess = (entities) => {
   //console.log('ending turn for ')
-  entities.forEach( (entity) => {
-    //console.log(entity)
-    entity.fireEvent('turn-end', entity);
-  });
+  var ents = [...entities]
+  for(var x = 0;x < ents.length;x++){
+    ents[x].fireEvent('turn-end');
+  }
 
 }
 
@@ -439,7 +418,7 @@ const CheckVictory = () =>{
       console.log("going to next scenario")
       CleanUpPostBattle()
       //rest
-      RestPhase()
+      // RestPhase()
       StartScenario()
     }else{
       console.log("finished")
@@ -461,10 +440,10 @@ const CheckDefeat = () => {
   }
 }
 
-const RestPhase = () => {
-  playerEntities.get().forEach(player => {
-    player.stamina.current = 5;
-  })
+const RestPhase = (entity) => {
+  entity.stamina.current = entity.stamina.max;
+  //entity.fireEvent("roll-dice")
+  entity.fireEvent('turn-end', entity);
 }
 
 const CleanUpPostBattle = () => {
@@ -487,6 +466,7 @@ const CleanUpPostBattle = () => {
   for(var x = 0; x<hunters.length;x++){
     if(gameTown.GetVillager(hunters[x]).has(components.Position)){
       gameTown.GetVillager(hunters[x]).remove(gameTown.GetVillager(hunters[x]).position)
+      RestPhase(gameTown.GetVillager(hunters[x]))
     }
   }
 }
@@ -508,7 +488,7 @@ const StartScenario = () => {
   //TODO: check if this has dialogue or battle
   //for now assume battle
   //make map
-  makeMap()
+  Dungeon.makeMap()
   //make allies
   //for loop over current huntScenario.allies
 
@@ -516,14 +496,14 @@ const StartScenario = () => {
   //make enemies
   currScenario.scenarioBattle.enemies.forEach(enem => {
     times(enem[1], () => {
-      SpawnScenarioUnits(enem[0], true)
+      Dungeon.SpawnScenarioUnits(enem[0], true)
     });
   })
 
   //make ally
   currScenario.scenarioBattle.allies.forEach( ally => {
     times(ally[1], () => {
-      SpawnScenarioUnits(ally[0],false)
+      Dungeon.SpawnScenarioUnits(ally[0],false)
     });
   })
 
@@ -536,7 +516,7 @@ const StartScenario = () => {
   hunters.forEach( hunter => {
     console.log("setting up hunter")
     console.log(gameTown.GetVillager(hunter))
-    var emptyTile = FetchFreeTile();
+    var emptyTile = Dungeon.FetchFreeTile();
     gameTown.GetVillager(hunter).add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
   })
 
@@ -544,43 +524,7 @@ const StartScenario = () => {
   render()
 }
 
-const SpawnScenarioUnits = (prefabName, isEnemy) => {
-  //spawn it
-  var newUnit = world.createPrefab(prefabName);
-  newUnit.fireEvent("init")
-  //get an empty tile
-  var emptyTile;
-  if(newUnit.has(components.MultiTileHead)){ //if multitile get empty with clear south,east,se
-    emptyTile = FetchFreeTile();
-  }else {
-    emptyTile = FetchFreeTile();
-  }
-  
-  //add position
-  newUnit.add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
 
-  if(isEnemy){
-    //add is enemy
-    newUnit.add(components.IsEnemy)
-  }else {
-    //add background blue
-    newUnit.appearance.color = "blue"
-  }
-
-  //if multiTile
-    //spawn body parts
-  var coords = [ [0,1], [1,0], [1,1]]
-  if(newUnit.has(components.MultiTileHead)){
-    coords.forEach(coord => {
-      var newBodyPart = world.createPrefab("MultiTileBody")
-      newBodyPart.add(components.Position, {x: emptyTile.position.x + coord[0], y: emptyTile.position.y + coord[1]})
-      newBodyPart.appearance = newUnit.appearance
-      newBodyPart.multiTileBody = {headID: newUnit.id}
-      newUnit.multiTileHead.bodyEntities.push(newBodyPart.id)
-    })
-  }
-  
-}
 
 const SetupGame = () => {
   //make hunts

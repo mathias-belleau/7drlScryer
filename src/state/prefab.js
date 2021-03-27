@@ -110,7 +110,7 @@ export const Floor = {
      { type: "Appearance", properties: {char: "@"} },
     {
       type: "AbilityList",
-      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilityShieldRaise",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
+      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilitySummonGoblin",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
     },
     {type: "Armour"},
     {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}}
@@ -126,22 +126,44 @@ export const Floor = {
   ]
 };
 
+export const Projectile = {
+  name: "Projectile",
+  components: [
+    { type: "ProjectileTile"}
+  ]
+}
+
+export const ProjectilePath = {
+  name: "ProjectilePath",
+  components: [
+    { type: "Appearance"},
+  ]
+}
 
 export const Goblin = {
   name: "Goblin",
   inherit:["Mob"],
   components: [
-    {
-      type: "Appearance",
-      properties: {char: "g", color: "green"}
-    },
-    {
-      type: "Description",
-      properties: {name: "Goblin", description: "A lowly Goblin"}
-    },
+    { type: "Appearance", properties: {char: "g", color: "green"} },
+    { type: "Description", properties: {name: "Goblin", description: "A lowly Goblin"} },
     {
       type: "AbilityList",
       properties: {abilities: [ ["AbilitySpearThrust", 1], ["AbilityDoNothing",1]] }
+    },
+    {type: "Health", properties: {max:2,current:2}},
+    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}},
+  ]
+}
+
+export const GoblinArcher = {
+  name: "Goblin Archer",
+  inherit:["Mob"],
+  components: [
+    { type: "Appearance", properties: {char: "a", color: "green"} },
+    { type: "Description", properties: {name: "Goblin Archer", description: "A lowly Goblin wtih a crude bow"} },
+    {
+      type: "AbilityList",
+      properties: {abilities: [ ["AbilityBowShot", 1], ["AbilityDoNothing",1]] }
     },
     {type: "Health", properties: {max:2,current:2}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
@@ -260,6 +282,21 @@ export const AbilitySpearThrust = {
   ]
 }
 
+export const AbilityBowShot = {
+  name: "AbilityBowShot",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Bow Shot", description: "doubles for 1 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityBowShot} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "BOW"}     },
+    { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
+    { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3],[0,-4],[0,-5] ]} }
+  ]
+}
+
 export const AbilityShieldRaise = {
   name: "AbilityShieldRaise",
   inherit:["Ability"],
@@ -334,6 +371,21 @@ export const AbilityFlameHands = {
     { type: "AbilityTarget", properties: {coords: [ [0,-1],[-1,-2],[0,-2],[1,-2],[-2,-3],[-1,-3],[0,-3],[1,-3],[2,-3]  ]}},
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityDamage", properties: {dmg:2} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilitySummonGoblin = {
+  name: "AbilitySummonGoblin",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Summon Goblin", description: "Summon a goblin"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilitySummonGoblin} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    {type: "AbilitySmallName",properties: {smallName: "SUG"}},
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
+    { type:"AbilitySummon"},
     { type: "AbilityEndsTurn"}
   ]
 }
@@ -420,7 +472,7 @@ export const Hunt = {
   name: "Hunt",
   components:[
     { type: "description"},
-    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Ogre Test Scenario"]}}
+    { type: "HuntScenarios", properties: {scenarios: ["Scenario","Orc Test Scenario","Ogre Test Scenario"]}}
   ]
 }
 
@@ -428,7 +480,7 @@ export const OrcTestScenario = {
   name: "Orc Test Scenario",
   inherit:["Scenario"],
   components:[
-    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [ ["Goblin",4] ]}}
+    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [ ["Goblin Archer",4] ]}}
   ]
 }
 

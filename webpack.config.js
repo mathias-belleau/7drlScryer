@@ -51,7 +51,7 @@ module.exports = {
 },
 
   plugins: [
-    new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
+    new CleanWebpackPlugin({ cleanStaleWebpackAssets: true }),
     new HtmlWebpackPlugin({
       title: "jsrlt",
       template: "index.html",

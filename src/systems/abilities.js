@@ -1,10 +1,12 @@
-import world from "../state/ecs";
+import world from "../state/ecs"
 import * as yahtzee from "./yahtzee"
-import {gameState, targetEntity, SetQueuedAbility, ExamineTargetEnable, SetQueuedEntity} from "../index"
+import { ExamineTargetEnable} from "../index"
 import { readCacheSet } from "../state/cache";
 import {toLocId} from "../lib/grid"
 import * as components from "../state/component"
-
+import * as Target from "./target"
+import * as Projectile from "./projectile"
+import {FetchFreeTile, FetchFreeTileTarget} from "../state/dungeon"
 
 export const Ability = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
@@ -83,11 +85,7 @@ export const AbilitySwordJab = {
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
-        //set gameState to targeting
-        //console.log(queuedAbility)
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
 }
@@ -101,9 +99,7 @@ export const AbilitySwordSwing = {
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
 }
@@ -132,9 +128,7 @@ export const AbilitySpearThrust = {
         }
     }, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
 }
@@ -148,9 +142,7 @@ export const AbilityDoubleAxeSwing = {
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
 }
@@ -164,11 +156,21 @@ export const AbilityFlameHands = {
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
+}
+
+
+export const AbilitySummonGoblin = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckStraight(dice, 3)
+    },
+    onUse:GenericSummon
+   
 }
 
 export const AbilityAxeDecapitate = {
@@ -180,9 +182,21 @@ export const AbilityAxeDecapitate = {
     },
     onUse:GenericFastAttack, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
+        ExamineTargetEnable("targeting")
+    }
+}
+
+export const AbilityBowShot = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericProjectile, 
+    onTarget: (ability,entity) => {
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
 }
@@ -196,9 +210,7 @@ export const AbilityOgreSmash = {
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     }
 }
@@ -215,10 +227,22 @@ export const AbilityOgreRockThrow = {
         entity.abilityList.abilities[0][1] = 0
     }, 
     onTarget: (ability,entity) => {
-        SetQueuedAbility(ability)
-        SetQueuedEntity(entity)
-        //queuedAbility = ability
+        Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
+    }
+}
+
+function GenericProjectile(ability,entity,target = null){
+    var coords = RotateCoords(ability,entity,target);
+
+    //for each target coords make a projectile
+    // coords.forEach(coord => {
+        var newPath = Projectile.CreateNewPath(ability,entity, target)
+    // 
+
+    entity.fireEvent("exhaust-selected")
+    if(ability.has(components.AbilityEndsTurn)){
+        entity.add(components.IsTurnEnd)
     }
 }
 
@@ -257,6 +281,19 @@ function GenericFastAttack(ability,entity,target= null) {
     }
 }
 
+function GenericSummon(ability,entity,target=null){
+    for(var x = 0; x < ability.abilitySummon.amount; x++){
+        //get free tile near summoner
+        var freeTile = FetchFreeTileTarget({x:entity.position.x,y:entity.position.y},4)
+        if(!freeTile){
+            continue;
+        }
+        //create a new prefab and attach duration to it
+        SpawnScenarioUnits(ability.abilitySummon.prefab, entity.has(components.IsEnemy), freeTile)
+    }
+    
+}
+
 export const GetSelectedDie = (entity) => {
     let dieList = []
     for(var x = 0;x < entity.die.length; x++){
@@ -293,7 +330,12 @@ export const RotateCoords = (ability, entity, target) => {
     //do we need to rotate coords?
     var diffX = target.x - entity.position.x  
     var diffY = target.y - entity.position.y;
-    var coords = [...ability.abilityTarget.coords];
+    var coords = []
+    if(ability.has(components.AbilityProjectile) ){
+        coords = [...ability.abilityProjectile.path];
+    }else{
+        coords = [...ability.abilityTarget.coords];
+    }
     var multi = (entity.has(components.MultiTileHead)) ? 1 : 0;
     var newCoords = [...coords]
     //console.log("before rotate")
@@ -314,6 +356,35 @@ export const RotateCoords = (ability, entity, target) => {
     //console.log("after rotate")
      console.log(coords)
     return newCoords
+}
+
+export const RotateCoordsDirection = (ability, entity, target) => {
+    //do we need to rotate coords?
+    var diffX = target.x - entity.position.x  
+    var diffY = target.y - entity.position.y;
+    var coords = []
+    if(ability.has(components.AbilityProjectile) ){
+        coords = [...ability.abilityProjectile.path];
+    }else{
+        coords = [...ability.abilityTarget.coords];
+    }
+    var multi = (entity.has(components.MultiTileHead)) ? 1 : 0;
+    var newCoords = [...coords]
+    //console.log("before rotate")
+    //console.log(coords)
+    //console.log("direction")
+    if(diffY <= -1){
+        return "up"
+    }else if( (diffY >= 1 && !entity.has(components.MultiTileHead) ) || (entity.has(components.MultiTileHead) && diffY >= 2)){
+        //console.log("down")
+        return "down"
+    }else if(diffX <= -1){
+        //console.log("left")
+        return "left"
+    }else if( (diffX >= 1 && !entity.has(components.MultiTileHead)) || (entity.has(components.MultiTileHead) && diffX >= 2)){
+        //console.log("right")
+        return "right"
+    }
 }
 
 const ConvertCoordsRight = (coords, multi = 0) => {
