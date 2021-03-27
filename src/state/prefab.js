@@ -163,7 +163,7 @@ export const GoblinArcher = {
     { type: "Description", properties: {name: "Goblin Archer", description: "A lowly Goblin wtih a crude bow"} },
     {
       type: "AbilityList",
-      properties: {abilities: [ ["AbilityBowShot", 1], ["AbilityDoNothing",1]] }
+      properties: {abilities: [ ["AbilityBowShot", 1]] }
     },
     {type: "Health", properties: {max:2,current:2}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
@@ -218,7 +218,7 @@ export const Ogre = {
     { type: "AbilityList",
       properties: {abilities: [ ["AbilityOgreRockThrow", 1 ], ["AbilityOgreSmash",1]] }
     },
-    {type: "Health", properties: {max:1,current:1}},
+    {type: "Health", properties: {max:16,current:16}},
     {type: "MultiTileHead", properties: {bodyEntities: [] }},
     {type: "OgreRage"}
    

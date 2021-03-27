@@ -35,6 +35,10 @@ const enemyEntities = world.createQuery({
   none: [components.IsDead, components.MultiTileBody]
 })
 
+const layerItemEntities = world.createQuery({
+  all: [components.LayerItem, components.Appearance, components.Position]
+})
+
 let userInput = null;
 
 const update = () => {

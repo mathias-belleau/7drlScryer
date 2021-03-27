@@ -397,7 +397,7 @@ export class AbilityEndsTurn extends Component {}
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [["Goblin", 6], ["Goblin Archer", 0], ["Goblin Shaman", 0]], allies: [  ]}
+  static properties = {enemies: [ ["Goblin", 0], ["Goblin Archer", 4], ["Goblin Shaman", 0]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {
@@ -423,16 +423,19 @@ export class OgreRage extends Component {
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmashSmash", value: 1})
+      this.entity.abilityList.SetupGrabBag()
       
     }else if(this.entity.health.current <= 8) {
     //check if this unit is below 8hp
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmashSmash", value: 1})
+      this.entity.abilityList.SetupGrabBag()
     }else if(this.entity.health.current <= 12) {
     //check if this unit is below 12hp
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmash", value: 0})
       this.entity.fireEvent("change-ability",{abilName: "AbilityOgreSmashSmash", value: 1})
+      this.entity.abilityList.SetupGrabBag()
     }
     
   }
