@@ -1,10 +1,10 @@
-import world from "./ecs"
+import world from "./ecs";
 
 import { Component } from "geotic";
 import { random, compact } from "lodash";
-import {addCacheSet, deleteCacheSet} from "./cache"
-import * as Abilities from "../systems/abilities"
-import * as Movements from "../systems/movement"
+import {addCacheSet, deleteCacheSet} from "./cache";
+import * as Abilities from "../systems/abilities";
+import * as Movements from "../systems/movement";
 
 import * as ROT from "rot-js"
 

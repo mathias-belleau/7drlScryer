@@ -6,7 +6,7 @@ import {toLocId} from "../lib/grid"
 import * as components from "../state/component"
 import * as Target from "./target"
 import * as Projectile from "./projectile"
-import {FetchFreeTile, FetchFreeTileTarget} from "../state/dungeon"
+// import {FetchFreeTile, FetchFreeTileTarget} from "../state/dungeon"
 
 export const Ability = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
@@ -282,15 +282,16 @@ function GenericFastAttack(ability,entity,target= null) {
 }
 
 function GenericSummon(ability,entity,target=null){
-    for(var x = 0; x < ability.abilitySummon.amount; x++){
-        //get free tile near summoner
-        var freeTile = FetchFreeTileTarget({x:entity.position.x,y:entity.position.y},4)
-        if(!freeTile){
-            continue;
-        }
-        //create a new prefab and attach duration to it
-        SpawnScenarioUnits(ability.abilitySummon.prefab, entity.has(components.IsEnemy), freeTile)
-    }
+    return
+    // for(var x = 0; x < ability.abilitySummon.amount; x++){
+    //     //get free tile near summoner
+    //     var freeTile = FetchFreeTileTarget({x:entity.position.x,y:entity.position.y},4)
+    //     if(!freeTile){
+    //         continue;
+    //     }
+    //     //create a new prefab and attach duration to it
+    //     SpawnScenarioUnits(ability.abilitySummon.prefab, entity.has(components.IsEnemy), freeTile)
+    // }
     
 }
 

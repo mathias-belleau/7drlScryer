@@ -1,19 +1,19 @@
-import {readCacheSet} from "../state/cache"
-import world from "../state/ecs"
-import * as components from "../state/component"
+import {readCacheSet} from "../state/cache";
+import world from "../state/ecs";
+import * as components from "../state/component";
 import * as ROT from "rot-js";
-import {toLocId} from "../lib/grid"
+import {toLocId} from "../lib/grid";
 
 
-export const allyEntities = world.createQuery({
+const allyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit],
     none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
   })
   
-  export const enemyEntities = world.createQuery({
-    all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
-    none: [components.IsDead, components.MultiTileBody]
-  })
+const enemyEntities = world.createQuery({
+all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
+none: [components.IsDead, components.MultiTileBody]
+})
 
 const MakeDijkstra = (x,y) =>{
     /* prepare path to given coords */

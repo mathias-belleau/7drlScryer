@@ -120,7 +120,7 @@ export const addLog = (text) => {
   messageLog.unshift(text);
 };
 
-export default world;
+
 
  const layerItemEntities = world.createQuery({
   all: [components.LayerItem, components.Appearance, components.Position]
@@ -160,3 +160,5 @@ const enemyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
   none: [components.IsDead, components.MultiTileBody]
 })
+
+export default world;

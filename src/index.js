@@ -12,7 +12,7 @@ import * as Hunt from "./state/scenario"
 import * as Target from "./systems/target"
 import * as Projectile from "./systems/projectile"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
-import * as Dungeon from "./state/dungeon"
+import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 export var gameState = "loading"
 export var previousGameState = ""
 
@@ -39,7 +39,7 @@ let userInput = null;
 
 const update = () => {
     if(gameState == "setup"){
-      Dungeon.FetchFreeTileTarget({x:2,y:2},3)
+      FetchFreeTileTarget({x:2,y:2},3)
       gameState = "EnemyTurnDefend"
     }else if(gameState == "EnemyTurnDefend") {
 
@@ -72,6 +72,8 @@ const update = () => {
       //render entities under current reticle
 
       
+    }else {
+      SetupGame()
     }
     
 }
@@ -313,22 +315,22 @@ export const setupTestFight = () => {
     const newPlayer = world.createPrefab("PlayerBeing", {
       appearance: {char: "@", color: "green"}
     });
-    var emptyTile = Dungeon.FetchFreeTile();
+    var emptyTile = FetchFreeTile();
     newPlayer.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
     CurrrentActivePlayer = newPlayer
 
     const newPlayer2 = world.createPrefab("PlayerBeing", {
       appearance: {char: "@", color: "purple"}
     });
-    emptyTile = Dungeon.FetchFreeTile();
+    emptyTile = FetchFreeTile();
     newPlayer2.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
 
     times(6, () => {
-      emptyTile = Dungeon.FetchFreeTile();
+      emptyTile = FetchFreeTile();
       world.createPrefab("Goblin").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
     });
 
-    emptyTile = Dungeon.FetchFreeTile();
+    emptyTile = FetchFreeTile();
     world.createPrefab("Orc Warrior").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
 }
 
@@ -488,7 +490,7 @@ const StartScenario = () => {
   //TODO: check if this has dialogue or battle
   //for now assume battle
   //make map
-  Dungeon.makeMap()
+  makeMap()
   //make allies
   //for loop over current huntScenario.allies
 
@@ -496,14 +498,14 @@ const StartScenario = () => {
   //make enemies
   currScenario.scenarioBattle.enemies.forEach(enem => {
     times(enem[1], () => {
-      Dungeon.SpawnScenarioUnits(enem[0], true)
+      SpawnScenarioUnits(enem[0], true)
     });
   })
 
   //make ally
   currScenario.scenarioBattle.allies.forEach( ally => {
     times(ally[1], () => {
-      Dungeon.SpawnScenarioUnits(ally[0],false)
+      SpawnScenarioUnits(ally[0],false)
     });
   })
 
@@ -516,7 +518,7 @@ const StartScenario = () => {
   hunters.forEach( hunter => {
     console.log("setting up hunter")
     console.log(gameTown.GetVillager(hunter))
-    var emptyTile = Dungeon.FetchFreeTile();
+    var emptyTile = FetchFreeTile();
     gameTown.GetVillager(hunter).add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
   })
 
@@ -541,7 +543,7 @@ const SetupGame = () => {
 // render()
 }
 
-SetupGame()
+// SetupGame()
 
 
 
