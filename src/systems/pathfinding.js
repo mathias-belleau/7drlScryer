@@ -7,7 +7,7 @@ import {toLocId} from "../lib/grid";
 
 const allyEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerUnit],
-    none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
+    none: [components.IsEnemy, components.MultiTileBody]
   })
   
 const enemyEntities = world.createQuery({
@@ -49,6 +49,10 @@ export const AiPathfind = (entity) => {
     //console.log("path finder")
     //console.log(dijkstra)
     var target = FindClosestTarget(dijkstra, entity)
+    if(!target){
+        console.error("NO TARGET?")
+        return
+    }
     //console.log(target)
     //target.reverse()
     target.pop()

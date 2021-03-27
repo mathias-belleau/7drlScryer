@@ -72,6 +72,7 @@ const update = () => {
       //render entities under current reticle
 
       
+    }else if (gameState == "gameover") {
     }else {
       SetupGame()
     }
@@ -432,7 +433,7 @@ const CheckVictory = () =>{
 const CheckDefeat = () => {
   var stillAlive = false
   for(var x = 0; x < playerEntities.get().length;x++){
-    if(playerEntities.get()[x].health.current > 0){
+    if(playerEntities.get()[x].health.current > 0 && !playerEntities.get()[x].has(components.IsDead)){
       stillAlive = true
     }
   }
