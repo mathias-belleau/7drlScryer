@@ -13,6 +13,7 @@ import * as Target from "./target"
 import gameTown from "../state/town"
 import {DrawHelpMenu,ShowAbilityInfo} from "../state/helpMenu"
 import * as Projectile from "./projectile";
+import { Display } from "rot-js";
 
 const slowDmgEntities = world.createQuery({
     all: [components.Position, components.SlowAttack]
@@ -183,6 +184,9 @@ const GetArmourString = (entity) => {
 
 }
 const renderPhase = () => {
+    for(var x = 0; x<20;x++){
+        display.draw(grid.phaseMenu.x + x, grid.phaseMenu.y, " ")
+    }
     DrawText(gameState, grid.phaseMenu.x,grid.phaseMenu.y)
 }
 
@@ -388,8 +392,10 @@ export const render = () => {
     }else if (gameState == "AbilityInfo"){
         ShowAbilityInfo(EntityToRender)
     }else if (gameState == "EnemyNumbers"){
+        renderPhase()
         RenderEnemyNumbers()
     }else if ( gameState == "DamageShow"){
+        renderPhase()
         RenderDamageNumbers()
     }else {
         clearDisplay()

@@ -87,7 +87,7 @@ const update = () => {
 const processUserInput = () => {
 //show help screen
   if(!userInput){
-
+    return;
   }else if(gameState == "PlayerTurnDefend" || gameState == "PlayerTurnAttack"){
     if(userInput === "?") {
       SetPreviousState("Help")
@@ -201,7 +201,7 @@ const processUserInput = () => {
       }else if (userInput === "ArrowUp" || userInput === "ArrowRight" || userInput === "ArrowDown" || userInput === "ArrowLeft") {
         TargetMove()
         render()
-      }else if(userInput === "Enter" && gameState === "targeting"){
+      }else if(userInput === " " && gameState === "targeting"){
         Target.UseAbility()
         // queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity, Target.GetTargetEntityPos())
         ExamineTargetDisable()
@@ -210,6 +210,12 @@ const processUserInput = () => {
   }else if (gameState === "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers" ) {
     if(userInput ==="Escape"){
       HideHelpMenu()
+      ReturnPreviousGameState()
+      render()
+    }else if( gameState == "DamageShow" && userInput == "c"){
+      ReturnPreviousGameState()
+      render()
+    }else if( gameState == "EnemyNumbers" && userInput == "z"){
       ReturnPreviousGameState()
       render()
     }
