@@ -77,6 +77,9 @@ const CreateFreeSpaceListTarget = (target, range) => {
     for(var x = Math.floor(range/2) * -1; x < Math.floor(range/2) + 1; x++){
         for (var y = Math.floor(range/2) * -1; y < Math.floor(range/2) + 1; y++){
             var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:x+target.x,y:y+target.y}))
+            if(!getEntitiesAtLoc || getEntitiesAtLoc.length == 0){
+                continue;
+            }
             getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
             var blocked = false
             for(var z = 0; z < getEntitiesAtLoc.length; z++){

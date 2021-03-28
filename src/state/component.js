@@ -364,7 +364,7 @@ export class AbilityFunction extends Component {
     static properties = {function: Abilities.Ability} 
 }
 export class AbilityPhase extends Component {
-  static properties = {phase: "Any"}
+  static properties = {phase: "Defend"}
 }
   
 export class AbilitySpeed extends Component {

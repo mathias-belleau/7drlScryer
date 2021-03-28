@@ -86,7 +86,9 @@ const update = () => {
 
 const processUserInput = () => {
 //show help screen
-  if(gameState == "PlayerTurnDefend" || gameState == "PlayerTurnAttack"){
+  if(!userInput){
+
+  }else if(gameState == "PlayerTurnDefend" || gameState == "PlayerTurnAttack"){
     if(userInput === "?") {
       SetPreviousState("Help")
       render()
@@ -123,14 +125,13 @@ const processUserInput = () => {
       PlayerAttemptMove()
     
 //ability use
-    }else if(userInput === "q" || userInput === "w" || userInput === "e" || userInput === "r" || userInput === "t" || userInput === "y") {
+    //}else if(userInput === "q" || userInput === "w" || userInput === "e" || userInput === "r" || userInput === "t" || userInput === "y") {
+    }else if(userInput in gameTown.GetCurrentHunterAbilityMap()){
       //console.log("ability use")
-      var abilityIndex = ConvertSkillHotkey(userInput)
+      //var abilityIndex = ConvertSkillHotkey(userInput)
 
-      //check if ability exists
-      if(abilityIndex < gameTown.GetActive().abilityGrabBagList.abilities.length){
         //hit existing ability key
-        let abil = gameTown.GetActive().abilityGrabBagList.abilities[abilityIndex]
+        let abil = gameTown.GetCurrentHunterAbility(userInput)
         let canUse = abil.abilityFunction.function.canUse(abil,gameTown.GetActive())
         var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
         if(canUse.length > 0 && (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == currentPhase)){
@@ -143,17 +144,17 @@ const processUserInput = () => {
 
           }
         }
-      }
       render()
     
-    }else if(userInput === "Q" || userInput === "W" || userInput === "E" || userInput === "R" || userInput === "T" || userInput === "Y") {
+    //}else if(userInput === "Q" || userInput === "W" || userInput === "E" || userInput === "R" || userInput === "T" || userInput === "Y") {
+    }else if (userInput.length == 1 && userInput.toLowerCase() in gameTown.GetCurrentHunterAbilityMap() ){
   //ability info
       //console.log("ability info")
-      var abilityIndex = ConvertSkillHotkey(userInput)
+      //var abilityIndex = ConvertSkillHotkey(userInput)
       SetPreviousState("AbilityInfo")
       //console.log(abilityIndex)
       //console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
-      SetEntityToRender(gameTown.GetActive().abilityGrabBagList.abilities[abilityIndex])
+      SetEntityToRender(gameTown.GetCurrentHunterAbility(userInput.toLowerCase()))
       render()
     
     }else if(userInput=="Enter"){
@@ -550,6 +551,14 @@ const SetupGame = () => {
 
 // SetupGame()
 
+export const SpawnUnits =(ability, entity) =>{
+  var freeTile = FetchFreeTileTarget({x:entity.position.x,y:entity.position.y},4)
+  if(!freeTile){
+      return
+  }
+  //create a new prefab and attach duration to it
+  SpawnScenarioUnits(ability.abilitySummon.prefab, entity.has(components.IsEnemy), freeTile)
+}
 
 
 const gameLoop = () => {

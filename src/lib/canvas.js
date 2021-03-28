@@ -23,22 +23,22 @@ export const grid = {
     activePlayer: {
       width: 10,
       height: 2,
-      x:1,
+      x:0,
       y:3
     },
 
     dieMenu: {
       width:50,
       height:2,
-      x: 10,
+      x: 11,
       y: 14
     },
 
     abilityMenu: {
       width:30,
       height:1,
-      x:10,
-      y:16
+      x:11,
+      y:17
     },
 
     phaseMenu: {

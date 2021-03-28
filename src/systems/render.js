@@ -122,24 +122,45 @@ const renderUnits = () => {
 }
 
 const renderActivePlayer = () => {
-    if(gameTown.GetActive()){
-        var text = "Active:"
-        DrawText(text,grid.activePlayer.x,grid.activePlayer.y )
-        DrawChar(gameTown.GetActive(),
-            grid.activePlayer.x+ text.length,
-            grid.activePlayer.y)
+    var active = gameTown.GetActive();
+    var hunters = gameTown.GetHunters()
+    var displayedActive = 0 //if true add 10 to y
+    DrawText("#########",grid.activePlayer.x, grid.activePlayer.y-1)
+    for(var x =0;x < hunters.length; x++){
+        if(hunters[x] == active.id){
+            var text = "Active:"
+                DrawText(text,grid.activePlayer.x,grid.activePlayer.y +x )
+                DrawChar(gameTown.GetActive(),
+                    grid.activePlayer.x+ text.length,
+                    grid.activePlayer.y+x)
+        
+                DrawText("Hp:"+gameTown.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1 +x)
+                DrawText("Stam:"+gameTown.GetActive().stamina.current.toString()+"/"+gameTown.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2+x)
+                DrawText("StamRgn:"+(Math.max(0,2 - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3+x)
+                DrawText("Move:"+gameTown.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4+x)
+                DrawText("Dodge:"+gameTown.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5+x)
+        
+                DrawText("-Armour-",grid.activePlayer.x,grid.activePlayer.y+6+x)
+                DrawText(gameTown.GetActive().armour.weight,grid.activePlayer.x,grid.activePlayer.y+7+x)
+                DrawText("Amount: "+gameTown.GetActive().armour.amount,grid.activePlayer.x,grid.activePlayer.y+8+x)
+                DrawText(GetArmourString(gameTown.GetActive()),grid.activePlayer.x,grid.activePlayer.y+9+x)
+            //this is active hunter do normal display
+            displayedActive = 10
+        }else {
+            var hunt = gameTown.GetVillager(hunters[x])
+            //do quick display
+            var text = "#"
+            text += "%c{"+hunt.appearance.color +"}"+hunt.appearance.char + "%c{} "
+            text += "%c{red}"+hunt.health.current+"%c{} "
+            text += "%c{white}"+hunt.stamina.current+"%c{} "
+            text += "%c{green}"+hunt.armour.amount+"%c{}#"
+            DrawText(text, grid.activePlayer.x, grid.activePlayer.y + x + displayedActive)
 
-        DrawText("Hp:"+gameTown.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1)
-        DrawText("Stam:"+gameTown.GetActive().stamina.current.toString()+"/"+gameTown.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2)
-        DrawText("StamRgn:"+(Math.max(0,2 - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3)
-        DrawText("Move:"+gameTown.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4)
-        DrawText("Dodge:"+gameTown.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5)
-
-        DrawText("-Armour-",grid.activePlayer.x,grid.activePlayer.y+6)
-        DrawText(gameTown.GetActive().armour.weight,grid.activePlayer.x,grid.activePlayer.y+7)
-        DrawText("Amount: "+gameTown.GetActive().armour.amount,grid.activePlayer.x,grid.activePlayer.y+8)
-        DrawText(GetArmourString(gameTown.GetActive()),grid.activePlayer.x,grid.activePlayer.y+9)
+        }
     }
+    DrawText("#########",grid.activePlayer.x, grid.activePlayer.y+14)
+    // if(gameTown.GetActive()){
+    //    
 }
 const GetArmourString = (entity) => {
     var armString = "Arm:"
@@ -178,12 +199,20 @@ const renderDieMenu = () => {
                 color = "grey"
             }
             //display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y-1,'_')    
-            DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ (x*5), grid.dieMenu.y)
+            DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ (Math.floor(x/2) * 5) , grid.dieMenu.y + (x%2))
             //console.log(CurrrentActivePlayer.die[x].number)
-            display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y, gameTown.GetActive().die[x].number.toString(), "black", color)
+            display.draw(2+grid.dieMenu.x + (Math.floor(x/2) * 5), grid.dieMenu.y + (x%2), gameTown.GetActive().die[x].number.toString(), "black", color)
         }
     }
 }
+//x = 0 = 0
+//x = 1 = 0
+//x = 2 = 5
+//x = 3 = 5
+//x = 4 = 10
+//x = 5 = 10
+//x = 6 = 15
+//x = 7 = 15
 
 const abilityHotkeys = ['q','w','e','r','t','y']
 
@@ -194,21 +223,49 @@ const renderAbilityMenu = () => {
     //if can use set to green?
     //if already used set to grey
     // console.log(gameTown.GetActive())
-    for(var x = 0; x < gameTown.GetActive().abilityGrabBagList.abilities.length;x++){
+    // for(var x = 0; x < gameTown.GetActive().abilityGrabBagList.abilities.length;x++){
+    //     var color = "gray"
+    //     var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
+    //     if( (gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == "Any" || gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == currentPhase)
+    //      && gameTown.GetActive().abilityGrabBagList.abilities[x].abilityFunction.function.canUse(
+    //         gameTown.GetActive().abilityGrabBagList.abilities[x],
+    //         gameTown.GetActive()).length > 0){
+    //         color = "white"
+    //     }
+
+
+
+    //     let smlName = gameTown.GetActive().abilityGrabBagList.abilities[x].abilitySmallName.smallName
+    //     DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)
+    // }
+
+    var activeHunter = gameTown.GetActive()
+    var abilMap = gameTown.GetCurrentHunterAbilityMap()
+    var DefIndex =0
+    var AtkIndex = 0
+    for (const [key, value] of Object.entries(abilMap)) {
         var color = "gray"
-        var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
-        if( (gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == "Any" || gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == currentPhase)
-         && gameTown.GetActive().abilityGrabBagList.abilities[x].abilityFunction.function.canUse(
-            gameTown.GetActive().abilityGrabBagList.abilities[x],
-            gameTown.GetActive()).length > 0){
-            color = "white"
+        var currAbility = activeHunter.abilityGrabBagList.abilities[value]
+        if(gameTown.GetActive().abilityGrabBagList.abilities[value].abilityFunction.function.canUse(
+            gameTown.GetActive().abilityGrabBagList.abilities[value],
+            gameTown.GetActive()).length > 0) {
+                color = "white"
         }
 
-
-
-        let smlName = gameTown.GetActive().abilityGrabBagList.abilities[x].abilitySmallName.smallName
-        DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)
+        let smlName = gameTown.GetActive().abilityGrabBagList.abilities[value].abilitySmallName.smallName
+        DrawText("Def:",grid.abilityMenu.x, grid.abilityMenu.y)
+        DrawText("Atk:",grid.abilityMenu.x, grid.abilityMenu.y+1)
+        
+        if(currAbility.abilityPhase.phase == "Attack"){
+            //display in first row
+            DrawText(key+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (AtkIndex*7) +4, grid.abilityMenu.y+1)
+            AtkIndex++;
+        }else {
+            DrawText(key+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (DefIndex*7) +4 , grid.abilityMenu.y)
+            DefIndex++;
+        }
     }
+
 }
 
 const renderProjectiles = () =>{

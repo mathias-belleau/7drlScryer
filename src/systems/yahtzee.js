@@ -43,7 +43,7 @@ export const CheckStraight = (counts, match) => {
                     matched++; //we found a match so up it
                     currentFound.push(x)
                     if(matched == match){ // if our matched count equals our straight target found = true
-                        found = currentFound.splice() //our found list should match current found
+                        found = [...currentFound] //our found list should match current found
                     }
                 }else {
                     matched = 1; //current doesn't match previous set matched back to count 1
