@@ -222,7 +222,7 @@
 
 /*! exports provided: fromString, add, add_, multiply, multiply_, interpolate, lerp, interpolateHSL, lerpHSL, randomize, rgb2hsl, hsl2rgb, toRGB, toHex */
 
-/*! exports provided: gameState, previousGameState, ExamineTargetEnable, ExamineTargetDisable, setupTestFight */
+/*! exports provided: gameState, previousGameState, ExamineTargetEnable, ExamineTargetDisable, setupTestFight, SpawnUnits */
 
 /*! exports provided: grid, display, divHelp, displayHelp */
 
