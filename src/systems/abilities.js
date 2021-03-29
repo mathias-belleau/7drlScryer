@@ -1,11 +1,12 @@
 import world from "../state/ecs"
 import * as yahtzee from "./yahtzee"
-import { ExamineTargetEnable, SpawnUnits} from "../index"
+import { ExamineTargetEnable, SpawnUnits, allyEntities, friendlyEntities, enemyEntities} from "../index"
 import { readCacheSet } from "../state/cache";
 import {toLocId} from "../lib/grid"
 import * as components from "../state/component"
 import * as Target from "./target"
 import * as Projectile from "./projectile"
+import * as ROT from "rot-js"
 // import {FetchFreeTile, FetchFreeTileTarget,SpawnScenarioUnits} from "../state/dungeon"
 
 export const Ability = {
@@ -24,8 +25,6 @@ export const Ability = {
     },
     
 }
-
-
 
 export const AbilityDoNothing = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
@@ -87,7 +86,8 @@ export const AbilitySwordJab = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilitySwordSwing = {
@@ -101,7 +101,8 @@ export const AbilitySwordSwing = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilitySpearThrust = {
@@ -130,7 +131,8 @@ export const AbilitySpearThrust = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilityDoubleAxeSwing = {
@@ -144,7 +146,8 @@ export const AbilityDoubleAxeSwing = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilityFlameHands = {
@@ -158,7 +161,8 @@ export const AbilityFlameHands = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 
@@ -184,7 +188,8 @@ export const AbilityAxeDecapitate = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilityBowShot = {
@@ -198,7 +203,8 @@ export const AbilityBowShot = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilityOgreSmash = {
@@ -212,7 +218,8 @@ export const AbilityOgreSmash = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 export const AbilityOgreRockThrow = {
@@ -229,7 +236,8 @@ export const AbilityOgreRockThrow = {
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
-    }
+    },
+    targets: GenericTargetEnemies
 }
 
 function GenericProjectile(ability,entity,target = null){
@@ -293,6 +301,15 @@ function GenericSummon(ability,entity,target=null){
         entity.add(components.IsTurnEnd)
     }
     
+}
+
+//target functions
+function GenericTargetEnemies (entity) {
+    if(entity.has(components.IsEnemy)){
+        return ROT.RNG.shuffle(friendlyEntities.get())
+    }else {
+        return ROT.RNG.shuffle(enemyEntities.get())
+    }
 }
 
 export const GetSelectedDie = (entity) => {

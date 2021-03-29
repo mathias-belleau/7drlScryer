@@ -16,7 +16,7 @@ import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from ".
 export var gameState = "loading"
 export var previousGameState = ""
 
-const playerEntities = world.createQuery({
+export const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
   none: [components.IsDead, components.MultiTileBody]
 });
@@ -25,12 +25,17 @@ const dmgTileEntities = world.createQuery({
   all: [components.DmgTile]
 })
 
-const allyEntities = world.createQuery({
+export const allyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit],
   none: [components.IsEnemy, components.IsPlayerControlled, components.MultiTileBody]
 })
 
-const enemyEntities = world.createQuery({
+export const friendlyEntities = world.createQuery({
+  all: [components.Position, components.Appearance, components.LayerUnit],
+  none: [components.IsEnemy, components.MultiTileBody]
+})
+
+export const enemyEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit,components.IsEnemy],
   none: [components.IsDead, components.MultiTileBody]
 })
@@ -134,7 +139,7 @@ const processUserInput = () => {
         let abil = gameTown.GetCurrentHunterAbility(userInput)
         let canUse = abil.abilityFunction.function.canUse(abil,gameTown.GetActive())
         var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
-        if(canUse.length > 0 && (abil.abilityPhase.phase == "Any" || abil.abilityPhase.phase == currentPhase)){
+        if(canUse.length > 0 && (abil.abilityPhase.phase == "Defend" || abil.abilityPhase.phase == currentPhase)){
           //check if ability is instant or targeted
           if(abil.abilityFunction.function.onTarget){
             abil.abilityFunction.function.onTarget(abil, gameTown.GetActive())

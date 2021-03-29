@@ -24,7 +24,13 @@ const ChooseAiAttack = (entity,abilityToUse) => {
 
     console.log("Doing mob attack: ")
     for(var x = 0; x < 2;x ++){
-        var target = AiPathfind(entity)
+        var target
+        if(abilityToUse.abilityFunction.function.targets){
+            target = AiPathfind(entity, abilityToUse)
+        }else {
+            //if this ability doesn't target anything just target self
+            target = [ [entity.position.x,entity.position.y] ]
+        }
         if(!target || target.length == 0){
             return;
         }
@@ -78,7 +84,7 @@ const ChooseAiAttack = (entity,abilityToUse) => {
     }    
 }
 
-const CheckInRange = (ability, entity, target) => {
+export const CheckInRange = (ability, entity, target) => {
     var coords = RotateCoords(ability,entity,{x:target[0][0], y:target[0][1]})
     //if (target[0] - all the coords == entity.x we are in range!)
     for(var x = 0; x < coords.length; x++){

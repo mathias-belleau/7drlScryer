@@ -3,6 +3,7 @@ import world from "../state/ecs";
 import * as components from "../state/component";
 import * as ROT from "rot-js";
 import {toLocId} from "../lib/grid";
+import {CheckInRange} from "./ai"
 
 
 const allyEntities = world.createQuery({
@@ -27,35 +28,21 @@ const MakeMultiDijkstra = (x,y) => {
 }
 
 let pathingUnit = {};
-export const AiPathfind = (entity) => {
+export const AiPathfind = (entity, ability) => {
     console.log(entity)
     pathingUnit= entity;
     var dijkstra;
     if(entity.has(components.MultiTileHead)){
-        //awful solution, remove blocking from body parts for now
-        // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-        //     var bodyPart = ECS.world.getEntity(bodyEnt);
-        //     bodyPart.remove(bodyPart.isBlocking)
-        // })
         dijkstra = MakeMultiDijkstra(entity.position.x,entity.position.y)
-
-        // pathingUnit.multiTileHead.bodyEntities.forEach( bodyEnt => {
-        //     var bodyPart = ECS.world.getEntity(bodyEnt);
-        //     bodyPart.add(components.IsBlocking)
-        // })
     }else {
         dijkstra = MakeDijkstra(entity.position.x,entity.position.y)
     }   
-    //console.log("path finder")
-    //console.log(dijkstra)
-    var target = FindClosestTarget(dijkstra, entity)
+    var target = FindClosestTarget(dijkstra, entity, ability)
     if(!target){
         console.error("NO TARGET?")
         return
     }
-    //console.log(target)
-    //target.reverse()
-    target.pop()
+    // target.pop()
     return target
 
 }
@@ -71,26 +58,34 @@ const FindClosestEmptyTile = (dijkstra, entity) => {
 
 }
 
-const FindClosestTarget = (dijkstra, entity) => {
-    var winner
-    var toBeLooped = []
-    if(entity.has(components.IsEnemy)) {
-        toBeLooped = allyEntities.get()
-    }else {
-        toBeLooped = enemyEntities.get()
-    }
+const FindClosestTarget = (dijkstra, entity, ability) => {
+    var winner = []
+    var toBeLooped = ability.abilityFunction.function.targets(entity)
+
+    
+
+    
     //loop through all allies and get their coords and calc path
     
     //console.log("enemies to check: " + allyEntities.get().length)
-    toBeLooped.forEach( entity => {
+    toBeLooped.forEach( loopEnt => {
         var closest = []
         // //console.log(entity)
-        dijkstra.compute(entity.position.x, entity.position.y, function (x,y) {
+        dijkstra.compute(loopEnt.position.x, loopEnt.position.y, function (x,y) {
             // //console.log('test path?')
 
             closest.push([x,y])
         })
-        if(!winner || closest.length < winner.length){
+        closest.pop()
+        //check if this is a ranged attack and if the one being shot is in firing arc
+        if(ability.has(components.AbilityProjectile)){
+            var isShootAble = CheckInRange(ability, entity, closest)
+            if(isShootAble){
+                winner = closest
+            }else if(winner.length == 0 || closest.length < winner.length){
+                winner = closest
+            }
+        } else if(winner.length == 0 || closest.length < winner.length){
             winner = closest
         }
     })
