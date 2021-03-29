@@ -5,6 +5,8 @@ import * as ROT from "rot-js";
 import {readCacheSet} from "./cache"
 import * as components from "./component"
 import {toLocId} from "../lib/grid"
+import { SpawnUnits } from "..";
+import * as Units from "../systems/units"
 
 const layerMapEntities = world.createQuery({
     all: [components.Position, components.Appearance, components.LayerMap]
@@ -100,7 +102,7 @@ const CreateFreeSpaceListTarget = (target, range) => {
 export const SpawnScenarioUnits = (prefabName, isEnemy, tileToSpawn = null) => {
     //spawn it
     var newUnit = world.createPrefab(prefabName);
-    newUnit.fireEvent("init")
+    Units.Init(newUnit)
     //get an empty tile
     var emptyTile;
     if(tileToSpawn){

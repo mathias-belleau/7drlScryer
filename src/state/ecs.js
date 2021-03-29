@@ -99,6 +99,7 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.AbilityAxeDecapitate)
   ecs.registerPrefab(prefabs.AbilityFlameHands)
   ecs.registerPrefab(prefabs.AbilitySummonGoblin)
+  ecs.registerPrefab(prefabs.AbilityAnimateDead)
   ecs.registerPrefab(prefabs.AbilityShieldRaise)
   ecs.registerPrefab(prefabs.AbilityBowShot)
 

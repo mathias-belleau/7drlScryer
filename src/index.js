@@ -11,10 +11,12 @@ import gameTown from "./state/town"
 import * as Hunt from "./state/scenario"
 import * as Target from "./systems/target"
 import * as Projectile from "./systems/projectile"
+import * as Unit from "./systems/units"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 export var gameState = "loading"
 export var previousGameState = ""
+
 
 export const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
@@ -40,7 +42,7 @@ export const enemyEntities = world.createQuery({
   none: [components.IsDead, components.MultiTileBody]
 })
 
-const layerItemEntities = world.createQuery({
+export const layerItemEntities = world.createQuery({
   all: [components.LayerItem, components.Appearance, components.Position]
 })
 
@@ -59,6 +61,7 @@ const update = () => {
       //set to playerturndefend
       //check win/lose  
     }else if(gameState == "EnemyTurnAttack"){
+      StartTurnProcess(enemyEntities.get())
       EnemyAttackTurn()
       //fire end turn for all enemy units
       EndTurnProcess(enemyEntities.get())
@@ -165,6 +168,8 @@ const processUserInput = () => {
     }else if(userInput=="Enter"){
       //console.log("Enter")
       if(gameState == "PlayerTurnDefend"){
+        StartTurnProcess(allyEntities.get())
+        StartTurnProcess(playerEntities.get())
         PlayerTurnDefend()
         
         gameState = "PlayerTurnAttack"
@@ -286,14 +291,6 @@ const Targeting = () => {
 }
 
 const PlayerAttemptMove = () => {
-  // player.add(Move, { x: 0, y: -1 }); u
-
-  // player.add(Move, { x: 1, y: 0 }); r
-
-  // player.add(Move, { x: 0, y: 1 }); d
-
-  // player.add(Move, { x: -1, y: 0 }); l
-
   if (userInput === "ArrowUp") {
     gameTown.GetActive().movement.y = -1
   }
@@ -307,7 +304,7 @@ const PlayerAttemptMove = () => {
     gameTown.GetActive().movement.x = -1
   }
 
-  gameTown.GetActive().fireEvent("attempt-move")
+  Unit.AttemptMove(gameTown.GetActive())
 
   render()
 }
@@ -395,10 +392,10 @@ const ProcessDmgTiles = () => {
       var entityAtLoc = world.getEntity(eId);
       //console.log(entityAtLoc)
       if(entityAtLoc.layerUnit && !(entityAtLoc.has(components.MultiTileBody))){
-        entityAtLoc.fireEvent("take-damage", {amount: entity.dmgTile.dmg})
+        Unit.TakeDamage(entityAtLoc, entity.dmgTile.dmg)
       }else if(entityAtLoc.has(components.MultiTileBody)){
         var headEnt = world.getEntity(entityAtLoc.multiTileBody.headID)
-        headEnt.fireEvent("take-damage", {amount: entity.dmgTile.dmg})
+        Unit.TakeDamage(headEnt, entity.dmgTile.dmg)
       }
     });
     toDestroy.push(entity)
@@ -412,11 +409,18 @@ const ProcessDmgTiles = () => {
   Projectile.ClearProjectiles() 
 }
 
+const StartTurnProcess = (entities) => {
+  var ents = [...entities]
+  for(var x = 0; x< ents.length;x++){
+    Unit.StartTurn(ents[x])
+  }
+}
+
 const EndTurnProcess = (entities) => {
   //console.log('ending turn for ')
   var ents = [...entities]
   for(var x = 0;x < ents.length;x++){
-    ents[x].fireEvent('turn-end');
+    Unit.EndTurn(ents[x])
   }
 
 }

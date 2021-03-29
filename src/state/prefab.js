@@ -110,7 +110,7 @@ export const Floor = {
      { type: "Appearance", properties: {char: "@"} },
     {
       type: "AbilityList",
-      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilitySummonGoblin",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
+      properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilityAnimateDead",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
     },
     {type: "Armour"},
     {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}}
@@ -184,7 +184,7 @@ export const GoblinShaman = {
     },
     {
       type: "AbilityList",
-      properties: {abilities: [ ["AbilityFlameHands",1], ["AbilityDoNothing",2]] }
+      properties: {abilities: [ ["AbilityFlameHands",1], ["AbilityDoNothing",2], ["AbilityAnimateDead", 1]] }
     },
     {type: "Health", properties: {max:3,current:3}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
@@ -203,6 +203,7 @@ export const OrcWarrior = {
       properties: {abilities: [["AbilityDoNothing",2], ["AbilityDoubleAxeSwing",3], ["AbilityAxeDecapitate",1]] }
     },
     {type: "Health", properties: {max:8,current:8}},
+    { type: "GainMovement", properties: {amount:4} },
     { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}}
   ]
 }
@@ -219,6 +220,7 @@ export const Ogre = {
       properties: {abilities: [ ["AbilityOgreRockThrow", 1 ], ["AbilityOgreSmash",1]] }
     },
     {type: "Health", properties: {max:16,current:16}},
+    { type: "GainMovement", properties: {amount:6} },
     {type: "MultiTileHead", properties: {bodyEntities: [] }},
     {type: "OgreRage"}
    
@@ -386,6 +388,20 @@ export const AbilitySummonGoblin = {
     {type: "AbilitySmallName",properties: {smallName: "SUG"}},
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type:"AbilitySummon"},
+    { type: "AbilityEndsTurn"}
+  ]
+}
+export const AbilityAnimateDead = {
+  name: "AbilityAnimateDead",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Animate Dead", description: "Straight 3: Animate a corpse"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityAnimateDead} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    {type: "AbilitySmallName",properties: {smallName: "AND"}},
+    { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityEndsTurn"}
   ]
 }

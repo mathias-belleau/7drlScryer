@@ -2,6 +2,7 @@
 
 import world from "./ecs"
 import * as components from "./component"
+import * as Units from "../systems/units"
 
 const { times } = require("lodash")
 const villageColors = ["green","blue","orange","purple","white","yellow","pink"]
@@ -24,7 +25,7 @@ export class Town {
             var newVillager =  world.createPrefab("PlayerBeing", {
                 appearance: {char: "@", color: villageColors[x]}
               });
-              newVillager.fireEvent("init")
+              Units.Init(newVillager)
             this.population[newVillager.id] = newVillager
         }
     }

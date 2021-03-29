@@ -1,12 +1,15 @@
 import world from "../state/ecs"
 import * as yahtzee from "./yahtzee"
-import { ExamineTargetEnable, SpawnUnits, allyEntities, friendlyEntities, enemyEntities} from "../index"
+import { ExamineTargetEnable, SpawnUnits, allyEntities, friendlyEntities, enemyEntities, layerItemEntities} from "../index"
 import { readCacheSet } from "../state/cache";
 import {toLocId} from "../lib/grid"
 import * as components from "../state/component"
 import * as Target from "./target"
 import * as Projectile from "./projectile"
 import * as ROT from "rot-js"
+
+import * as Units from "./units"
+
 // import {FetchFreeTile, FetchFreeTileTarget,SpawnScenarioUnits} from "../state/dungeon"
 
 export const Ability = {
@@ -19,8 +22,8 @@ export const Ability = {
         // console.log(ability)
         // console.log(ability.abilityPhase.phase)
         GetSelectedDie(entity)
-        entity.fireEvent("gain-movement", 3)
-        entity.fireEvent("exhaust-selected")
+        Units.GainMovement(entity, 3)
+        Units.ExhaustSelectedStamina(entity)
         
     },
     
@@ -39,7 +42,18 @@ export const AbilityDoNothing = {
 
 export const AbilityMove = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
-        return yahtzee.CheckSingles(dice)
+        //check weight system
+        var allowed = [1,2,3,4,5,6]
+        if(entity.has(components.Armour)){
+            if(entity.armour.weight == "Light"){
+                allowed = [1,2,3,4,5]
+            }else if(entity.armour.weight == "Medium"){
+                allowed = [1,2,3,4,]
+            }else if(entity.armour.weight == "Heavy"){
+                allowed = [1,2,3]
+            } 
+        }
+        return yahtzee.CheckSingles(dice, allowed)
     },
     onUse: (ability, entity,target = null) => {
         //get selected die
@@ -50,18 +64,30 @@ export const AbilityMove = {
                 toGain = x
             }
         }
-        entity.fireEvent("gain-movement", toGain);
-        entity.fireEvent("exhaust-selected")
+        Units.GainMovement(entity, toGain)
+        Units.ExhaustSelectedStamina(entity)
     },
 }
 
 export const AbilityDodge = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
-        return yahtzee.CheckDoubles(dice)
+         //check weight system
+         var allowed = [1,2,3,4,5,6]
+         if(entity.has(components.Armour)){
+             if(entity.armour.weight == "Light"){
+                 allowed = [1,2,3,4,5]
+             }else if(entity.armour.weight == "Medium"){
+                 allowed = [1,2,3,4,]
+             }else if(entity.armour.weight == "Heavy"){
+                 allowed = [1,2,3]
+             }
+         }
+        return yahtzee.CheckDoubles(dice,allowed )
     },
     onUse: (ability, entity,target= null) => {
-        entity.fireEvent("gain-dodge", 1);
-        entity.fireEvent("exhaust-selected")
+        // entity.fireEvent("gain-dodge", 1);
+        Units.GainDodge(1)
+        Units.ExhaustSelectedStamina(entity)
     },
 }
 
@@ -70,8 +96,8 @@ export const AbilityShieldRaise = {
         return yahtzee.CheckSingles(dice)
     },
     onUse: (ability, entity,target = null) => {
-        entity.fireEvent("gain-armour", {armourAmt: 1})
-        entity.fireEvent("exhaust-selected")
+        Units.GainArmour(entity,1)
+        Units.ExhaustSelectedStamina(entity)
     },
 }
 
@@ -123,7 +149,7 @@ export const AbilitySpearThrust = {
             newDmgTile.add(components.SlowAttack)
             newDmgTile.add(components.DmgTile)
         })
-        entity.fireEvent("exhaust-selected")
+        Units.ExhaustSelectedStamina(entity)
         if(ability.has(components.AbilityEndsTurn)){
             entity.add(components.IsTurnEnd)
         }
@@ -175,6 +201,56 @@ export const AbilitySummonGoblin = {
     },
     onUse:GenericSummon
    
+}
+
+export const AbilityAnimateDead = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckStraight(dice, 3)
+    },
+    onUse:(ability, entity,target= null) => {
+        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target.x,y:target.y}))
+        getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+        for(var x = 0; x < getEntitiesAtLoc.length; x++){
+            var currentEnt = world.getEntity(getEntitiesAtLoc[x])
+            if(currentEnt.has(components.IsDead)){
+                //bring back to life
+                Units.Reanimate(currentEnt, entity.has(components.IsEnemy))
+                return;
+            }
+            
+        }
+
+
+    }, 
+    onTarget: (ability,entity) => {
+        Target.SetupTargetEntities(ability,entity)
+        ExamineTargetEnable("targeting")
+    },
+    targets: (ability, entity) => {
+        //get a list of all corpse entites
+        var possibleTargs = []
+        layerItemEntities.get().forEach( item => {
+            if(item.appearance.char == '%'){
+                //check if any entity on this location is block
+                var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:item.position.x,y:item.position.y}))
+                getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+                var blocked = false
+                for(var x = 0; x < getEntitiesAtLoc.length; x++){
+                    var ent = world.getEntity(getEntitiesAtLoc[x])
+                    if(ent.has(components.IsBlocking)){
+                        blocked = true
+                    }
+                }
+                if(!blocked){
+                    possibleTargs.push(item)
+                }
+            }
+        })
+        return possibleTargs
+    }
 }
 
 export const AbilityAxeDecapitate = {
@@ -248,7 +324,7 @@ function GenericProjectile(ability,entity,target = null){
         var newPath = Projectile.CreateNewPath(ability,entity, target)
     // 
 
-    entity.fireEvent("exhaust-selected")
+    Units.ExhaustSelectedStamina(entity)
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
     }
@@ -265,7 +341,7 @@ function GenericSlowAttack(ability,entity,target= null) {
         newDmgTile.add(components.SlowAttack)
         newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
     })
-    entity.fireEvent("exhaust-selected")
+    Units.ExhaustSelectedStamina(entity)
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
     }
@@ -282,7 +358,7 @@ function GenericFastAttack(ability,entity,target= null) {
         newDmgTile.add(components.FastAttack)
         newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
     })
-    entity.fireEvent("exhaust-selected")
+    Units.ExhaustSelectedStamina(entity)
 
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
@@ -295,7 +371,7 @@ function GenericSummon(ability,entity,target=null){
         SpawnUnits(ability,entity)
     }
 
-    entity.fireEvent("exhaust-selected")
+    Units.ExhaustSelectedStamina(entity)
 
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
@@ -311,6 +387,8 @@ function GenericTargetEnemies (entity) {
         return ROT.RNG.shuffle(enemyEntities.get())
     }
 }
+
+//end target functions
 
 export const GetSelectedDie = (entity) => {
     let dieList = []

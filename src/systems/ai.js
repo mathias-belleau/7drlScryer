@@ -5,6 +5,7 @@ import world from "../state/ecs"
 import * as components from "../state/component"
 import {AiPathfind,CheckStraightLine} from "./pathfinding"
 import {toLocId} from "../lib/grid"
+import * as Units from "./units"
 
 
 export const DoAiTurnAttack = (entity) => {
@@ -107,7 +108,7 @@ const CheckMultiTileMove = (entity, target) => {
 
 const MoveForward = (ability, entity, target) => {
     //DEBUG: give +1 movement
-    entity.fireEvent("gain-movement", 2)
+    Units.GainMovement(entity,2)
 
     //find nearest player
 
@@ -126,19 +127,14 @@ const MoveForward = (ability, entity, target) => {
             //convert to a step from position
             entity.movement.x = nextStep[0] - entity.position.x
             entity.movement.y = nextStep[1] - entity.position.y 
-            var handled = entity.fireEvent("attempt-move")
-            if(handled){
-                //use 1 stamina
-                // entity.fireEvent("use-stamina",1)
-                // entity.fireEvent("ai-use-stamina",1)
-            }
+            Units.AttemptMove(entity)
 
         }
     }
 }
 
 const StaminaCost = (entity, amount) => {
-    entity.fireEvent("use-stamina", amount)
+    Units.UseStamina(entity,amount)
 }
 
 const SelectDie = (entity, amount) => {
