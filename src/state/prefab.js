@@ -380,7 +380,7 @@ export const AbilitySummonGoblin = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Summon Goblin", description: "Summon a goblin"}},
+      properties: {name: "Summon Goblin", description: "Straight 3: Summon a goblin"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySummonGoblin} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     {type: "AbilitySmallName",properties: {smallName: "SUG"}},
