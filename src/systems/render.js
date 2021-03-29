@@ -203,9 +203,9 @@ const renderDieMenu = () => {
                 color = "grey"
             }
             //display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y-1,'_')    
-            DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ (Math.floor(x/2) * 5) , grid.dieMenu.y + (x%2))
+            DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ ( (x%4) * 5) , grid.dieMenu.y + Math.floor(x/4))
             //console.log(CurrrentActivePlayer.die[x].number)
-            display.draw(2+grid.dieMenu.x + (Math.floor(x/2) * 5), grid.dieMenu.y + (x%2), gameTown.GetActive().die[x].number.toString(), "black", color)
+            display.draw(2+grid.dieMenu.x + ( (x%4) * 5), grid.dieMenu.y + Math.floor(x/4), gameTown.GetActive().die[x].number.toString(), "black", color)
         }
     }
 }
