@@ -118,6 +118,7 @@ export const Floor = {
     {type: "EquipmentSlot"},
     {type: "EquipmentSlot", properties: {slot: "Offhand", eid:""}},
     {type: "EquipmentSlot", properties: {slot: "Body", eid:""}},
+    {type: "EquipmentSlot", properties: {slot: "Utility", eid:""}},
    ]
  };
 
@@ -677,7 +678,7 @@ export const ItemBoneArmor = {
 export const ItemDogTreat = {
   name: "ItemDogTreat",
   components: [  
-    {type: "ItemSlot", properties: {slot:"Body"}},
+    {type: "ItemSlot", properties: {slot:"Utility"}},
     {type: "ItemAbilities"},
     {type: "ItemCompanions"}
   ]

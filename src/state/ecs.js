@@ -35,6 +35,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.ArmourDie)
   ecs.registerComponent(components.Invisible)
   ecs.registerComponent(components.Duration)
+  ecs.registerComponent(components.Companion)
 
   //inventory
   ecs.registerComponent(components.EquipmentSlot);
@@ -42,6 +43,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.ItemCraftingRecipe)
   ecs.registerComponent(components.ItemAbilities)
   ecs.registerComponent(components.ItemArmourRating)
+  ecs.registerComponent(components.ItemCompanions)
 
   ecs.registerComponent(components.ProjectileTile)
 
@@ -137,7 +139,7 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.ItemTomeHealing)
   ecs.registerPrefab(prefabs.ItemDagger)
   ecs.registerPrefab(prefabs.ItemStaff)
-
+ecs.registerPrefab(prefabs.ItemDogTreat)
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {
   messageLog.unshift(text);

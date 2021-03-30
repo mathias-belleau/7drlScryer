@@ -209,6 +209,7 @@ export function ExhaustSelectedStamina(entity){
 }
 
 
+
 export function AbilitySetupGrabBag(entity) {
     var abilities = []
 
@@ -270,15 +271,20 @@ function GetEquipmentSlot(entity, slot){
 
 export function BuildAbilityListPlayer(entity){
     entity.abilityList.abilities = []
+    
     entity.abilityList.abilities.push(["AbilityMove",1])
     entity.abilityList.abilities.push(["AbilityDodge",1])
 
     entity.equipmentSlot.forEach( equipment =>{
         if(equipment.eid && equipment.eid != ""){
             var item = world.getEntity(equipment.eid)
+
+            //add any abilities this itme adds
             item.itemAbilities.abilities.forEach(abil =>{
                 entity.abilityList.abilities.push([abil,1])
             })
+
+            //if this is armour set the armour weight
             if(item.has(components.ItemArmourRating)){
                 if(entity.has(components.Armour)){
                     entity.remove(entity.armour)
@@ -286,6 +292,16 @@ export function BuildAbilityListPlayer(entity){
 
                 entity.add(components.Armour, {weight: item.itemArmourRating.weight, dice: item.itemArmourRating.dice})
             }
+
+            //if this adds companions
+            if(item.has(components.ItemCompanions)){
+                for(var x = 0; x < item.itemCompanions.companions.length; x++){
+                    for(var y = 0; y < item.itemCompanions.companions[x][1]; y++) {
+                        entity.add(components.Companion, {name:item.itemCompanions.companions[x][0]})
+                    }
+                }
+            }
+
         }
     })
 }

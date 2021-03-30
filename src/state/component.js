@@ -148,7 +148,7 @@ export class Health extends Component {
   }
 
   export class ItemCompanions extends Component {
-    static properties = {companions: [ ["goblin", 1] ]}
+    static properties = {companions: [ ["Goblin", 2] ]}
   }
 
 

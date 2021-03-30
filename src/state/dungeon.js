@@ -136,5 +136,5 @@ export const SpawnScenarioUnits = (prefabName, isEnemy, tileToSpawn = null) => {
         newUnit.multiTileHead.bodyEntities.push(newBodyPart.id)
       })
     }
-    
+    return newUnit.id
 }

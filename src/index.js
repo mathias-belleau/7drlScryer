@@ -541,13 +541,31 @@ const StartScenario = () => {
     console.log(gameTown.GetVillager(hunter))
     var emptyTile = FetchFreeTile();
     gameTown.GetVillager(hunter).add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
+
+    //spawn companions
+    SpawnCompanions(gameTown.GetVillager(hunter))
   })
+
 
   gameState = "setup"
   render()
 }
 
-
+export function SpawnCompanions(entity){
+  if(entity.has(components.Companion)){
+      entity.companion.forEach( comp =>{
+          var compEnt = world.getEntity(comp.eid)
+          if(!compEnt || compEnt.has(components.IsDead)){
+              //spawn a new companion and assign id
+              var newId = SpawnScenarioUnits(comp.name, false)
+              comp.eid = newId
+          }else {
+              //fully heal it!
+              Heal(compEnt,99)
+          }
+      })
+  }
+}
 
 const SetupGame = () => {
   //make hunts

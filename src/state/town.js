@@ -10,7 +10,7 @@ const villageColors = ["green","blue","orange","purple","white","yellow","pink"]
 //placeholder classes
 const classes = [
     ["ItemShortSword","ItemBuckler","ItemPaddedLeatherArmor"],
-    ["ItemShortBow","ItemLeatherArmor"],
+    ["ItemShortBow","ItemLeatherArmor", "ItemDogTreat"],
     ["ItemDagger","ItemTomeSwamp","ItemBoneArmor"],
     ["ItemStaff","ItemTomeHealing"]
 ]
