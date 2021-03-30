@@ -231,3 +231,38 @@ export function ChangeAbility(entity, abilityName, amount) {
     }
     console.log('but')
 }
+
+//equipment
+export function EquipItem(entity, item){
+    var itemPrefab = world.createPrefab(item)
+    // var slot = GetEquipmentSlot(entity,itemPrefab.itemSlot.slot)
+    for(var x = 0; x < entity.equipmentSlot.length;x++){
+        if(entity.equipmentSlot[x].slot == itemPrefab.itemSlot.slot){
+            entity.equipmentSlot[x].eid = itemPrefab.id
+        }
+    }
+    // /slot.eid = itemPrefab.eid
+}
+
+function GetEquipmentSlot(entity, slot){
+    for(var x = 0; x < entity.equipmentSlot.length;x++){
+        if(entity.equipmentSlot[x].slot == slot){
+            return entity.equipmentSlot[x]
+        }
+    }
+}
+
+export function BuildAbilityListPlayer(entity){
+    entity.abilityList.abilities = []
+    entity.abilityList.abilities.push(["AbilityMove",1])
+    entity.abilityList.abilities.push(["AbilityDodge",1])
+
+    entity.equipmentSlot.forEach( equipment =>{
+        if(equipment.eid && equipment.eid != ""){
+            var item = world.getEntity(equipment.eid)
+            item.itemAbilities.abilities.forEach(abil =>{
+                entity.abilityList.abilities.push([abil,1])
+            })
+        }
+    })
+}

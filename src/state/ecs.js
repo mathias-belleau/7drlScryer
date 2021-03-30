@@ -36,6 +36,12 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.Invisible)
   ecs.registerComponent(components.Duration)
 
+  //inventory
+  ecs.registerComponent(components.EquipmentSlot);
+  ecs.registerComponent(components.ItemSlot)
+  ecs.registerComponent(components.ItemCraftingRecipe)
+  ecs.registerComponent(components.ItemAbilities)
+
   ecs.registerComponent(components.ProjectileTile)
 
   //ability
@@ -115,6 +121,10 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.OgreTestScenario)
   ecs.registerPrefab(prefabs.Hunt)
   
+  //items
+  ecs.registerPrefab(prefabs.ItemShortSword)
+  ecs.registerPrefab(prefabs.ItemBuckler)
+  ecs.registerPrefab(prefabs.ItemShortBow)
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {

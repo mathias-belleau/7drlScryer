@@ -113,7 +113,9 @@ export const Floor = {
       properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilityAnimateDead",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
     },
     {type: "Armour"},
-    {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}}
+    {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}},
+    {type: "EquipmentSlot"},
+    {type: "EquipmentSlot", properties: {slot: "Offhand", eid:""}}
    ]
  };
 
@@ -306,7 +308,7 @@ export const AbilityShieldRaise = {
     { type: "Description",
       properties: {name: "Shield Raise", description: "exhausts 6 to gain 1 armour"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilityShieldRaise} },
-    { type: "AbilityPhase", properties: {phase: "Any"} },
+    { type: "AbilityPhase", properties: {phase: "Defend"} },
     { type: "AbilitySmallName", properties: {smallName: "SHR"}     },
     { type:"AbilityAllowedDie", properties: {allowed:[6]} },
   ]
@@ -505,5 +507,34 @@ export const OgreTestScenario = {
   inherit:["Scenario"],
   components:[
     {type: "ScenarioBattle", properties: {enemies: [["Ogre", 1]], allies: [  ]}}
+  ]
+}
+
+//equipment
+
+export const ItemShortSword = {
+  name: "ItemShortSword",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Hands"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilitySwordJab"],["AbilitySwordSwing"] ]}},
+    {type: "ItemCraftingRecipe", properties: {items: [ ["bone",1]]}}
+  ]
+}
+
+export const ItemBuckler = {
+  name: "ItemBuckler",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Offhand"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityShieldRaise"] ]}},
+    {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1]]}}
+  ]
+}
+
+export const ItemShortBow = {
+  name: "ItemShortBow",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Hands"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityBowShot"] ]}},
+    {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}}
   ]
 }

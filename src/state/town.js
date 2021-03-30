@@ -7,6 +7,14 @@ import * as Units from "../systems/units"
 const { times } = require("lodash")
 const villageColors = ["green","blue","orange","purple","white","yellow","pink"]
 
+//placeholder classes
+const classes = [
+    ["ItemShortSword","ItemBuckler"],
+    ["ItemShortBow"],
+    ["ItemShortSword","ItemBuckler"],
+    ["ItemShortSword","ItemBuckler"]
+]
+
 const DefMap = ['q','w','e','r','t','y']
 const AtkMap = ['a','s','d','f','g','h']
 
@@ -25,6 +33,12 @@ export class Town {
             var newVillager =  world.createPrefab("PlayerBeing", {
                 appearance: {char: "@", color: villageColors[x]}
               });
+
+              //add equipment from class
+              classes[x].forEach(equip =>{
+                  Units.EquipItem(newVillager, equip)
+              })
+              Units.BuildAbilityListPlayer(newVillager)
               Units.Init(newVillager)
             this.population[newVillager.id] = newVillager
         }

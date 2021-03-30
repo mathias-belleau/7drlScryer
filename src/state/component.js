@@ -119,6 +119,25 @@ export class Health extends Component {
   export class DmgTile extends Component {
     static properties = {dmg: 1}
   }
+//inventory
+  export class EquipmentSlot extends Component {
+    static allowMultiple =true;
+    static properties = {slot: "Hands", eid: ""}
+  }
+
+  export class ItemSlot extends Component {
+    static properties = {slot: "Hands"}
+  }
+
+  export class ItemAbilities extends Component {
+    //ItemAbilities
+    static properties = {abilities: [ ["AbilitySwordJab"],["AbilitySwordSwing"] ]} 
+  }
+
+  export class ItemCraftingRecipe extends Component {
+    static properties = {items: [ ["bone",1] ]}
+  }
+
 
   //abilities
 export class AbilityList extends Component {
