@@ -1,5 +1,7 @@
 /*! !webpack amd options */
 
+/*! .. */
+
 /*! ../color.js */
 
 /*! ../constants.js */
@@ -28,6 +30,8 @@
 
 /*! ../systems/movement */
 
+/*! ../systems/units */
+
 /*! ../text.js */
 
 /*! ../util.js */
@@ -43,6 +47,8 @@
 /*! ./abilities */
 
 /*! ./action.js */
+
+/*! ./ai */
 
 /*! ./arena.js */
 
@@ -160,6 +166,8 @@
 
 /*! ./systems/target */
 
+/*! ./systems/units */
+
 /*! ./target */
 
 /*! ./term.js */
@@ -172,15 +180,17 @@
 
 /*! ./uniform.js */
 
+/*! ./units */
+
 /*! ./util.js */
 
 /*! ./yahtzee */
 
-/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilitySwordJab, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAxeDecapitate, AbilityBowShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
+/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilitySwordJab, AbilityMinorBlessing, AbilityMajorHeal, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityBowShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
-/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
+/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
 
 /*! exports provided: AttemptMove */
 
@@ -190,7 +200,7 @@
 
 /*! exports provided: DEFAULT_WIDTH, DEFAULT_HEIGHT, DIRS, KEYS */
 
-/*! exports provided: DoAiTurnAttack */
+/*! exports provided: DoAiTurnAttack, CheckInRange */
 
 /*! exports provided: DrawHelpMenu, HideHelpMenu, ShowAbilityInfo */
 
@@ -199,6 +209,8 @@
 /*! exports provided: GetTargetEntities, GetTargetEntityPos, SetupTargetEntities, ClearTargetEntities, UpdateTargetEntities, UseAbility */
 
 /*! exports provided: HuntList, GetCurrentHunt, GetCurrentScenario, StartNextScenario, StartHunt, SetupHunts */
+
+/*! exports provided: Init, GainArmour, StartTurn, EndTurn, GainMovement, GainDodge, UpdatePosition, TakeDamage, Heal, Die, Reanimate, AttemptMove, UseStamina, ExhaustSelectedStamina, AbilitySetupGrabBag, ChangeAbility, EquipItem, BuildAbilityListPlayer */
 
 /*! exports provided: MinHeap */
 
@@ -210,7 +222,7 @@
 
 /*! exports provided: TYPE_TEXT, TYPE_NEWLINE, TYPE_FG, TYPE_BG, measure, tokenize */
 
-/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Projectile, ProjectilePath, Goblin, GoblinArcher, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilityBowShot, AbilityShieldRaise, AbilitySwordJab, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAxeDecapitate, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario */
+/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Projectile, ProjectilePath, Dog, Goblin, GoblinArcher, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilityBowShot, AbilityShieldRaise, AbilitySwordJab, AbilityDaggerStab, AbilityStaffBonk, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityMinorBlessing, AbilityMajorHeal, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario, ItemShortSword, ItemBuckler, ItemShortBow, ItemDagger, ItemStaff, ItemTomeSwamp, ItemTomeHealing, ItemLeatherArmor, ItemPaddedLeatherArmor, ItemBoneArmor, ItemDogTreat */
 
 /*! exports provided: Town, default */
 
@@ -222,7 +234,7 @@
 
 /*! exports provided: fromString, add, add_, multiply, multiply_, interpolate, lerp, interpolateHSL, lerpHSL, randomize, rgb2hsl, hsl2rgb, toRGB, toHex */
 
-/*! exports provided: gameState, previousGameState, ExamineTargetEnable, ExamineTargetDisable, setupTestFight, SpawnUnits */
+/*! exports provided: gameState, previousGameState, playerEntities, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ExamineTargetEnable, ExamineTargetDisable, setupTestFight, SpawnCompanions, SpawnUnits */
 
 /*! exports provided: grid, display, divHelp, displayHelp */
 
@@ -274,6 +286,10 @@
 
 /*!******************************!*\
   !*** ./src/state/dungeon.js ***!
+  \******************************/
+
+/*!******************************!*\
+  !*** ./src/systems/units.js ***!
   \******************************/
 
 /*!*******************************!*\
