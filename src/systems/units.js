@@ -33,6 +33,9 @@ function RollDice(entity){
 }
 
 function RollDiceArmour(entity){
+    if(!entity.armour){
+        return
+    }
     for(var x = 0; x < entity.armour.dice; x++){
         entity.armourDie[x].number = random(1, 6);
       }
@@ -41,6 +44,9 @@ function RollDiceArmour(entity){
 }
 
 function GetArmourAmount(entity){
+    if(!entity.armour){
+        return 0
+    }
     //get armour value for next turn
     for(var x = 0; x < entity.armour.dice; x++){
         if(entity.armour.weight == "Light" && entity.armour.entity.armourDie[x].number >= 6){
@@ -126,6 +132,10 @@ export function TakeDamage(entity, amount){
       
 }
 
+export function Heal(entity, amount){
+    entity.health.current = Math.min(entity.health.max, entity.health.current + amount)
+}
+
 export function Die(entity){
     entity.remove(entity.layerUnit)
     entity.remove(entity.isBlocking)
@@ -205,6 +215,9 @@ export function AbilitySetupGrabBag(entity) {
     entity.abilityList.abilities.forEach( (abil) => {
       if(abil[1] >= 1){
         var prefAbil = world.createPrefab(abil[0])
+        if(!prefAbil){
+            console.error(abil[0])
+        }
         for(var x = 0;x < abil[1];x++){
           abilities.push(prefAbil)
         }
@@ -235,6 +248,9 @@ export function ChangeAbility(entity, abilityName, amount) {
 //equipment
 export function EquipItem(entity, item){
     var itemPrefab = world.createPrefab(item)
+    if(!itemPrefab){
+        console.error(item)
+    }
     // var slot = GetEquipmentSlot(entity,itemPrefab.itemSlot.slot)
     for(var x = 0; x < entity.equipmentSlot.length;x++){
         if(entity.equipmentSlot[x].slot == itemPrefab.itemSlot.slot){
@@ -263,6 +279,13 @@ export function BuildAbilityListPlayer(entity){
             item.itemAbilities.abilities.forEach(abil =>{
                 entity.abilityList.abilities.push([abil,1])
             })
+            if(item.has(components.ItemArmourRating)){
+                if(entity.has(components.Armour)){
+                    entity.remove(entity.armour)
+                }
+
+                entity.add(components.Armour, {weight: item.itemArmourRating.weight, dice: item.itemArmourRating.dice})
+            }
         }
     })
 }

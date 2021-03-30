@@ -9,10 +9,10 @@ const villageColors = ["green","blue","orange","purple","white","yellow","pink"]
 
 //placeholder classes
 const classes = [
-    ["ItemShortSword","ItemBuckler"],
-    ["ItemShortBow"],
-    ["ItemShortSword","ItemBuckler"],
-    ["ItemShortSword","ItemBuckler"]
+    ["ItemShortSword","ItemBuckler","ItemPaddedLeatherArmor"],
+    ["ItemShortBow","ItemLeatherArmor"],
+    ["ItemDagger","ItemTomeSwamp","ItemBoneArmor"],
+    ["ItemStaff","ItemTomeHealing"]
 ]
 
 const DefMap = ['q','w','e','r','t','y']

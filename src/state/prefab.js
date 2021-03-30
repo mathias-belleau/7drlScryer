@@ -24,6 +24,8 @@ export const Tile = {
       { type: "Stamina"},
       { type: "AbilityGrabBagList"},
       { type: "AbilityList"},
+      {type:"Armour"}
+
     ],
   };
 
@@ -112,10 +114,10 @@ export const Floor = {
       type: "AbilityList",
       properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilityAnimateDead",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
     },
-    {type: "Armour"},
     {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}},
     {type: "EquipmentSlot"},
-    {type: "EquipmentSlot", properties: {slot: "Offhand", eid:""}}
+    {type: "EquipmentSlot", properties: {slot: "Offhand", eid:""}},
+    {type: "EquipmentSlot", properties: {slot: "Body", eid:""}},
    ]
  };
 
@@ -330,6 +332,40 @@ export const AbilitySwordJab = {
   ]
 }
 
+export const AbilityDaggerStab = {
+  name: "AbilityDaggerStab",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Dagger Stab", description: "exhausts a  pair of 6 to do a slow attack on a single tile for 1 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "DST"} },
+    { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    { type: "AbilityDamage", properties: {dmg:1} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+
+
+export const AbilityStaffBonk = {
+  name: "AbilityStaffBonk",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Dagger Stab", description: "exhausts a pair 6 to do a slow attack on a 2 tiles for 1 dmg"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "SBO"} },
+    { type: "AbilityTarget", properties: {coords: [[0,-1],[0,1]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    { type: "AbilityDamage", properties: {dmg:1} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
 export const AbilitySwordSwing = {
   name: "AbilitySwordSwing",
   inherit:["Ability"],
@@ -368,7 +404,7 @@ export const AbilityFlameHands = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Flame Hands", description: "a cone shaped blast of fire using a straight 3 of dice"}},
+      properties: {name: "Flame Hands", description: "a cone shaped blast of fire using a straight 4 of dice"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilityFlameHands} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     {type: "AbilitySmallName",properties: {smallName: "FLH"}},
@@ -420,6 +456,40 @@ export const AbilityAxeDecapitate = {
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
     { type: "AbilityDamage", properties: {dmg:3} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityMinorBlessing = {
+  name: "AbilityMinorBlessing",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Minor Heal", description: "straight 3: fires a healing bolt that processes instantly, Heals a target for 1 hp and grants them 1 armour"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityMinorBlessing} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName",properties: {smallName: "MBL"}},
+    { type: "AbilityTarget", properties: {coords: [[0,0]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
+    { type: "AbilityDamage", properties: {dmg:1} },
+    { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3] ]} },
+    { type: "AbilityEndsTurn"}
+  ]
+}
+
+export const AbilityMajorHeal = {
+  name: "AbilityMajorHeal",
+  inherit:["Ability"],
+  components: [
+    { type: "Description",
+      properties: {name: "Minor Heal", description: "straight 4: fires a healing bolt that processes instantly, Heals a target for 3 hp"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityMajorHeal} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName",properties: {smallName: "MHE"}},
+    { type: "AbilityTarget", properties: {coords: [[0,0]]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
+    { type: "AbilityDamage", properties: {dmg:3} },
+    { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3], ]} },
     { type: "AbilityEndsTurn"}
   ]
 }
@@ -536,5 +606,79 @@ export const ItemShortBow = {
     {type: "ItemSlot", properties: {slot:"Hands"}},
     {type: "ItemAbilities", properties: {abilities: [ ["AbilityBowShot"] ]}},
     {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}}
+  ]
+}
+
+export const ItemDagger = {
+  name:"ItemDagger",
+  components: [
+    {type: "ItemSlot", properties: {slot:"Hands"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityDaggerStab"] ]}}
+  ]
+}
+
+export const ItemStaff = {
+  name: "ItemStaff",
+  components: [
+    {type: "ItemSlot", properties: {slot:"Hands"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityStaffBonk"] ]}}
+  ]
+}
+
+export const ItemTomeSwamp = {
+  name:"ItemTomeSwamp",
+  components: [
+    {type: "ItemSlot", properties: {slot:"Offhand"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityAnimateDead"], ["AbilityFlameHands"]] }}
+  ]
+}
+
+export const ItemTomeHealing = {
+  name:"ItemTomeHealing",
+  components: [
+    {type: "ItemSlot", properties: {slot:"Offhand"}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityMinorBlessing"], ["AbilityMajorHeal"]] }}
+  ]
+}
+
+//item armour
+
+export const ItemLeatherArmor = {
+  name: "ItemLeatherArmor",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Body"}},
+    {type: "ItemAbilities"},
+    {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}},
+    {type: "ItemArmourRating"}
+  ]
+}
+
+export const ItemPaddedLeatherArmor = {
+  name: "ItemPaddedLeatherArmor",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Body"}},
+    {type: "ItemAbilities"},
+    {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}},
+    {type: "ItemArmourRating", properties: {weight: "Medium", dice:2}}
+  ]
+}
+
+export const ItemBoneArmor = {
+  name: "ItemBoneArmor",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Body"}},
+    {type: "ItemAbilities"},
+    {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}},
+    {type: "ItemArmourRating", properties: {weight: "Heavy", dice:1}}
+  ]
+}
+
+//utility items
+export const ItemDogTreat = {
+  name: "ItemDogTreat",
+  components: [  
+    {type: "ItemSlot", properties: {slot:"Body"}},
+    {type: "ItemAbilities"},
+    {type: "ItemCompanions"}
   ]
 }

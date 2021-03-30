@@ -116,6 +116,67 @@ export const AbilitySwordJab = {
     targets: GenericTargetEnemies
 }
 
+export const AbilityMinorBlessing = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckStraight(dice, 3)
+    },
+    onUse:(ability, entity,target= null) => {
+        //find a unit here
+        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target.x,y:target.y}))
+        getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+        for(var x = 0; x < getEntitiesAtLoc.length; x++){
+            var ent = world.getEntity(getEntitiesAtLoc[x])
+            if(ent.has(components.Health)){
+                Units.Heal(ent, 1)
+                Units.GainArmour(ent,1)
+            }
+        }
+
+        Units.ExhaustSelectedStamina(entity)
+        if(ability.has(components.AbilityEndsTurn)){
+            entity.add(components.IsTurnEnd)
+        }
+    }, 
+    onTarget: (ability,entity) => {
+        Target.SetupTargetEntities(ability,entity)
+        ExamineTargetEnable("targeting")
+    },
+    targets: GenericTargetEnemies
+}
+
+export const AbilityMajorHeal = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckStraight(dice, 4)
+    },
+    onUse:(ability, entity,target= null) => {
+        //find a unit here
+        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target.x,y:target.y}))
+        getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+        for(var x = 0; x < getEntitiesAtLoc.length; x++){
+            var ent = world.getEntity(getEntitiesAtLoc[x])
+            if(ent.has(components.Health)){
+                Units.Heal(ent, 3)
+            }
+        }
+
+        Units.ExhaustSelectedStamina(entity)
+        if(ability.has(components.AbilityEndsTurn)){
+            entity.add(components.IsTurnEnd)
+        }
+    }, 
+    onTarget: (ability,entity) => {
+        Target.SetupTargetEntities(ability,entity)
+        ExamineTargetEnable("targeting")
+    },
+    targets: GenericTargetEnemies
+}
+
 export const AbilitySwordSwing = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
         if(entity.has(components.IsTurnEnd)){
@@ -181,7 +242,7 @@ export const AbilityFlameHands = {
         if(entity.has(components.IsTurnEnd)){
             return false
         }
-        return yahtzee.CheckStraight(dice, 3)
+        return yahtzee.CheckStraight(dice, 4)
     },
     onUse:GenericSlowAttack, 
     onTarget: (ability,entity) => {

@@ -51,6 +51,11 @@ export class Health extends Component {
     static properties = {amount:3}
   }
 
+  export class Companion extends Component {
+    static allowMultiple = true;
+    static properties = {name: "Goblin", eid: ""}
+  }
+
   export class Stamina extends Component {
     static properties = { max: 5, current: 5, used: 0, regen: 2}
   }
@@ -61,7 +66,7 @@ export class Health extends Component {
   }
 
   export class Armour extends Component {
-    static properties = {weight: "Light", dice:3, amount: 0}
+    static properties = {weight: "None", dice:0, amount: 0}
   }
 
   export class ArmourDie extends Component {
@@ -131,11 +136,19 @@ export class Health extends Component {
 
   export class ItemAbilities extends Component {
     //ItemAbilities
-    static properties = {abilities: [ ["AbilitySwordJab"],["AbilitySwordSwing"] ]} 
+    static properties = {abilities: [  ]} 
   }
 
   export class ItemCraftingRecipe extends Component {
     static properties = {items: [ ["bone",1] ]}
+  }
+
+  export class ItemArmourRating extends Component {
+    static properties = {weight: "Light", dice: 2}
+  }
+
+  export class ItemCompanions extends Component {
+    static properties = {companions: [ ["goblin", 1] ]}
   }
 
 

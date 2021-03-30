@@ -165,7 +165,7 @@ const renderActivePlayer = () => {
 }
 const GetArmourString = (entity) => {
     var armString = "Arm:"
-    if(entity.has(components.Armour)){
+    if(entity.has(components.Armour) && entity.armour.weight != "None"){
         var armourRating = entity.armour.weight;
         entity.armourDie.forEach( armDie => {
             if(armourRating == "Light" && armDie.number >= 6){

@@ -41,6 +41,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.ItemSlot)
   ecs.registerComponent(components.ItemCraftingRecipe)
   ecs.registerComponent(components.ItemAbilities)
+  ecs.registerComponent(components.ItemArmourRating)
 
   ecs.registerComponent(components.ProjectileTile)
 
@@ -108,6 +109,10 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.AbilityAnimateDead)
   ecs.registerPrefab(prefabs.AbilityShieldRaise)
   ecs.registerPrefab(prefabs.AbilityBowShot)
+  ecs.registerPrefab(prefabs.AbilityDaggerStab)
+  ecs.registerPrefab(prefabs.AbilityStaffBonk)
+  ecs.registerPrefab(prefabs.AbilityMinorBlessing)
+  ecs.registerPrefab(prefabs.AbilityMajorHeal)
 
   ecs.registerPrefab(prefabs.AbilityOgreSmash)
   ecs.registerPrefab(prefabs.AbilityOgreSmashSmash)
@@ -125,6 +130,13 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.ItemShortSword)
   ecs.registerPrefab(prefabs.ItemBuckler)
   ecs.registerPrefab(prefabs.ItemShortBow)
+  ecs.registerPrefab(prefabs.ItemLeatherArmor)
+  ecs.registerPrefab(prefabs.ItemPaddedLeatherArmor)
+  ecs.registerPrefab(prefabs.ItemBoneArmor)
+  ecs.registerPrefab(prefabs.ItemTomeSwamp)
+  ecs.registerPrefab(prefabs.ItemTomeHealing)
+  ecs.registerPrefab(prefabs.ItemDagger)
+  ecs.registerPrefab(prefabs.ItemStaff)
 
 export const messageLog = ["", "Welcome to Gobs 'O Goblins!", ""];
 export const addLog = (text) => {
