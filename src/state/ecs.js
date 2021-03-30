@@ -91,6 +91,8 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.PlayerBeing)
   ecs.registerPrefab(prefabs.Mob)
 
+
+  ecs.registerPrefab(prefabs.Dog)
   ecs.registerPrefab(prefabs.Goblin)
   ecs.registerPrefab(prefabs.GoblinArcher)
   ecs.registerPrefab(prefabs.OrcWarrior)

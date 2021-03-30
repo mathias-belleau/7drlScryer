@@ -82,7 +82,7 @@ export function StartTurn(entity) {
 export function EndTurn(entity){
     if(entity.has(components.IsPlayerControlled)){
         entity.stamina.current = Math.min(entity.stamina.max, entity.stamina.current + Math.max(0,entity.stamina.regen-entity.stamina.used))
-        entity.staminaused = 0;
+        entity.stamina.used = 0;
         RollDice(entity)
     }else {
 

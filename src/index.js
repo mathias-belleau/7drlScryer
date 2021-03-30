@@ -43,7 +43,8 @@ export const enemyEntities = world.createQuery({
 })
 
 export const layerItemEntities = world.createQuery({
-  all: [components.LayerItem, components.Appearance, components.Position]
+  all: [components.LayerItem, components.Appearance, components.Position],
+  none: [components.IsPlayerControlled]
 })
 
 let userInput = null;
@@ -471,19 +472,12 @@ const RestPhase = (entity) => {
 
 const CleanUpPostBattle = () => {
   //remove all the items on the ground
-  layerItemEntities.get().forEach(item => {
-    world.destroyEntity(item.id)
-  })
 
-  //we need to delete all enemies
-  enemyEntities.get().forEach(enem => { 
-    world.destroyEntity(enem.id)
-  })
-  //delete allies that aren't permanent?
-  allyEntities.get().forEach( ally => {
-    world.destroyEntity(ally.id)
-  })
-  //remove position from all alies
+  DeleteEntities(layerItemEntities.get())
+  DeleteEntities(enemyEntities.get())
+  DeleteEntities(allyEntities.get())
+
+  //remove position from all allies
 
   var hunters = gameTown.GetHunters()
   for(var x = 0; x<hunters.length;x++){
@@ -491,6 +485,13 @@ const CleanUpPostBattle = () => {
       gameTown.GetVillager(hunters[x]).remove(gameTown.GetVillager(hunters[x]).position)
       RestPhase(gameTown.GetVillager(hunters[x]))
     }
+  }
+}
+
+function DeleteEntities(entityList) {
+  var cloneList = [...entityList]
+  for(var x = 0; x < cloneList.length; x++){
+    world.destroyEntity(cloneList[x].id)
   }
 }
 
@@ -537,6 +538,9 @@ const StartScenario = () => {
   console.log("hunters going to battle")
   console.log(hunters)
   hunters.forEach( hunter => {
+    if(gameTown.GetVillager(hunter).has(components.IsDead)){
+      return;
+    }
     console.log("setting up hunter")
     console.log(gameTown.GetVillager(hunter))
     var emptyTile = FetchFreeTile();

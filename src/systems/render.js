@@ -137,7 +137,7 @@ const renderActivePlayer = () => {
         
                 DrawText("Hp:"+gameTown.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1 +x)
                 DrawText("Stam:"+gameTown.GetActive().stamina.current.toString()+"/"+gameTown.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2+x)
-                DrawText("StamRgn:"+(Math.max(0,2 - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3+x)
+                DrawText("StamRgn:"+(Math.max(0,gameTown.GetActive().stamina.regen - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3+x)
                 DrawText("Move:"+gameTown.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4+x)
                 DrawText("Dodge:"+gameTown.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5+x)
         

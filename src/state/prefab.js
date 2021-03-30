@@ -145,6 +145,21 @@ export const ProjectilePath = {
   ]
 }
 
+export const Dog = {
+  name: "Dog",
+  inherit:["Mob"],
+  components: [
+    { type: "Appearance", properties: {char: "d", color: "brown"} },
+    { type: "Description", properties: {name: "Dog", description: "A doggo"} },
+    {
+      type: "AbilityList",
+      properties: {abilities: [ ["AbilityDaggerStab", 1], ["AbilityDoNothing",1]] }
+    },
+    {type: "Health", properties: {max:2,current:2}},
+    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}},
+  ]
+}
+
 export const Goblin = {
   name: "Goblin",
   inherit:["Mob"],
@@ -300,7 +315,8 @@ export const AbilityBowShot = {
     { type: "AbilitySmallName", properties: {smallName: "BOW"}     },
     { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
-    { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3],[0,-4],[0,-5] ]} }
+    { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3],[0,-4],[0,-5] ]} },
+    { type: "AbilityDamage", properties: {dmg:2} }
   ]
 }
 
@@ -680,6 +696,6 @@ export const ItemDogTreat = {
   components: [  
     {type: "ItemSlot", properties: {slot:"Utility"}},
     {type: "ItemAbilities"},
-    {type: "ItemCompanions"}
+    {type: "ItemCompanions", properties: {companions: [ ["Dog", 3] ] } }
   ]
 }
