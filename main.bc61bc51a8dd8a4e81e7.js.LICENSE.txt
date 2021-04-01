@@ -186,15 +186,15 @@
 
 /*! ./yahtzee */
 
-/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilitySwordJab, AbilityMinorBlessing, AbilityMajorHeal, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityBowShot, AbilityCrippleShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
+/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilityGenericDoubleSlow, AbilitySwordJab, AbilityMinorBlessing, AbilityMajorHeal, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityBowShot, AbilityCrippleShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
-/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, DmgTileAfterEffect, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, StatusInvigorate, StatusCripple, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
+/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, NoCorpse, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, DmgTileAfterEffect, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, StatusInvigorate, StatusCripple, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
 
 /*! exports provided: AttemptMove */
 
-/*! exports provided: CheckSingles, CheckDoubles, CheckTriples, CheckQuads, CheckSames, CheckStraight */
+/*! exports provided: CheckSingles, CheckDoubles, CheckTriples, CheckQuads, CheckSames, CheckStraight, CheckBigger */
 
 /*! exports provided: Component, Engine */
 
@@ -210,7 +210,7 @@
 
 /*! exports provided: HuntList, GetCurrentHunt, GetCurrentScenario, StartNextScenario, StartHunt, SetupHunts */
 
-/*! exports provided: Init, GainArmour, StartTurn, EndTurn, GainMovement, GainDodge, UpdatePosition, TakeDamage, Heal, Die, Reanimate, AttemptMove, UseStamina, GainStamina, ExhaustSelectedStamina, AbilitySetupGrabBag, ChangeAbility, EquipItem, BuildAbilityListPlayer */
+/*! exports provided: Init, RollDice, GainArmour, StartTurn, EndTurn, GainMovement, GainDodge, UpdatePosition, TakeDamage, Heal, Die, Reanimate, AttemptMove, UseStamina, GainStamina, ExhaustSelectedStamina, AbilitySetupGrabBag, ChangeAbility, EquipItem, BuildAbilityListPlayer */
 
 /*! exports provided: MinHeap */
 
