@@ -114,7 +114,7 @@ export const Floor = {
       type: "AbilityList",
       properties: {abilities: [["AbilityMove", 1], ["AbilityDodge",1], ["AbilityAnimateDead",1], ["AbilitySwordJab",1], ["AbilitySwordSwing",1]] }
     },
-    {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 2}},
+    {type: "Stamina", properties: {max:8,current:8, used: 0, regen: 3}},
     {type: "EquipmentSlot"},
     {type: "EquipmentSlot", properties: {slot: "Offhand", eid:""}},
     {type: "EquipmentSlot", properties: {slot: "Body", eid:""}},
@@ -702,7 +702,7 @@ export const ItemBoneArmor = {
     {type: "ItemSlot", properties: {slot:"Body"}},
     {type: "ItemAbilities"},
     {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}},
-    {type: "ItemArmourRating", properties: {weight: "Heavy", dice:1}}
+    {type: "ItemArmourRating", properties: {weight: "Medium", dice:1}}
   ]
 }
 
