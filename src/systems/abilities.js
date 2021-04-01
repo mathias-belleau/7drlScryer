@@ -113,7 +113,8 @@ export const AbilitySwordJab = {
         Target.SetupTargetEntities(ability,entity)
         ExamineTargetEnable("targeting")
     },
-    targets: GenericTargetEnemies
+    targets: GenericTargetEnemies,
+    onAffect: GenericAfterEffect
 }
 
 export const AbilityMinorBlessing = {
@@ -344,6 +345,24 @@ export const AbilityBowShot = {
     targets: GenericTargetEnemies
 }
 
+export const AbilityCrippleShot = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckTriples(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericProjectile, 
+    onTarget: (ability,entity) => {
+        Target.SetupTargetEntities(ability,entity)
+        ExamineTargetEnable("targeting")
+    },
+    targets: GenericTargetEnemies,
+    onAffect: (attacker, target) =>{
+        target.add(components.StatusCripple, {amount:3, duration: 1})
+    }
+}
+
 export const AbilityOgreSmash = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
         if(entity.has(components.IsTurnEnd)){
@@ -401,6 +420,7 @@ function GenericSlowAttack(ability,entity,target= null) {
         newDmgTile.add(components.Position, {x:entity.position.x + coord[0],y:entity.position.y + coord[1]} )
         newDmgTile.add(components.SlowAttack)
         newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
+        newDmgTile.add(components.DmgTileAfterEffect, {ability: ability.abilityFunction.function.onAffect, attacker: entity })
     })
     Units.ExhaustSelectedStamina(entity)
     if(ability.has(components.AbilityEndsTurn)){
@@ -439,6 +459,13 @@ function GenericSummon(ability,entity,target=null){
     }
     
 }
+
+//after affect
+function GenericAfterEffect(attacker, target) {
+    console.log("hello")
+}
+
+
 
 //target functions
 function GenericTargetEnemies (entity) {
@@ -511,7 +538,7 @@ export const RotateCoords = (ability, entity, target) => {
         newCoords = ConvertCoordsRight(coords,multi)
     }
     //console.log("after rotate")
-     console.log(coords)
+    //  console.log(coords)
     return newCoords
 }
 

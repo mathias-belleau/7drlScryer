@@ -67,6 +67,9 @@ const update = () => {
       //fire end turn for all enemy units
       EndTurnProcess(enemyEntities.get())
 
+      //fire start turn for all players
+      StartTurnProcess(playerEntities.get())
+
       gameState = "PlayerTurnDefend"
       render()
     }else if(gameState == "PlayerTurnDefend") {
@@ -170,7 +173,6 @@ const processUserInput = () => {
       //console.log("Enter")
       if(gameState == "PlayerTurnDefend"){
         StartTurnProcess(allyEntities.get())
-        StartTurnProcess(playerEntities.get())
         PlayerTurnDefend()
         
         gameState = "PlayerTurnAttack"
@@ -394,9 +396,20 @@ const ProcessDmgTiles = () => {
       //console.log(entityAtLoc)
       if(entityAtLoc.layerUnit && !(entityAtLoc.has(components.MultiTileBody))){
         Unit.TakeDamage(entityAtLoc, entity.dmgTile.dmg)
+
+        //activate after affect
+        //activate after affect
+        if(entity.has(components.DmgTileAfterEffect) && entity.dmgTileAfterEffect.ability){
+          entity.dmgTileAfterEffect.ability(entity.dmgTileAfterEffect.attacker, entityAtLoc)
+        }
       }else if(entityAtLoc.has(components.MultiTileBody)){
         var headEnt = world.getEntity(entityAtLoc.multiTileBody.headID)
         Unit.TakeDamage(headEnt, entity.dmgTile.dmg)
+
+        //activate after affect
+        if(entity.has(components.DmgTileAfterEffect) && entity.dmgTileAfterEffect.ability){
+          entity.dmgTileAfterEffect.ability(entity.dmgTileAfterEffect.attacker, headEnt)
+        }
       }
     });
     toDestroy.push(entity)

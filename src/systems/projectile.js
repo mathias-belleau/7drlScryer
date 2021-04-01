@@ -58,6 +58,7 @@ export const CreateNewPath = (ability, entity, target) => {
         newDmgTile.add(components.Position, {x:entity.position.x + coord[0],y:entity.position.y + coord[1]} )
         newDmgTile.add(components.SlowAttack)
         newDmgTile.add(components.DmgTile, {dmg: ability.abilityDamage.dmg})
+        newDmgTile.add(components.DmgTileAfterEffect, {ability: ability.abilityFunction.function.onAffect, attacker: entity })
         newPath.dmgTiles.push(newDmgTile)
     })
 

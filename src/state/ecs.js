@@ -27,6 +27,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.SlowAttack)
   ecs.registerComponent(components.FastAttack)
   ecs.registerComponent(components.DmgTile)
+  ecs.registerComponent(components.DmgTileAfterEffect)
   ecs.registerComponent(components.IsTurnEnd)
   ecs.registerComponent(components.Ai)
   ecs.registerComponent(components.MultiTileHead)
@@ -62,6 +63,10 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.AbilityProjectile)
   ecs.registerComponent(components.AbilitySummon)
 
+
+  //status affects
+  ecs.registerComponent(components.StatusInvigorate)
+  ecs.registerComponent(components.StatusCripple)
 //unit abilities
 ecs.registerComponent(components.OgreRage)
 
@@ -113,6 +118,7 @@ ecs.registerComponent(components.HuntScenarios)
   ecs.registerPrefab(prefabs.AbilityAnimateDead)
   ecs.registerPrefab(prefabs.AbilityShieldRaise)
   ecs.registerPrefab(prefabs.AbilityBowShot)
+  ecs.registerPrefab(prefabs.AbilityCrippleShot)
   ecs.registerPrefab(prefabs.AbilityDaggerStab)
   ecs.registerPrefab(prefabs.AbilityStaffBonk)
   ecs.registerPrefab(prefabs.AbilityMinorBlessing)

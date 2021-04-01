@@ -124,6 +124,11 @@ export class Health extends Component {
   export class DmgTile extends Component {
     static properties = {dmg: 1}
   }
+
+  export class DmgTileAfterEffect extends Component {
+    static properties = {ability : Abilities.AbilitySwordJab, attacker: undefined}
+  }
+
 //inventory
   export class EquipmentSlot extends Component {
     static allowMultiple =true;
@@ -201,6 +206,39 @@ export class AbilitySummon extends Component{
 }
 
 export class AbilityEndsTurn extends Component {}
+
+
+//status affects
+export class StatusInvigorate extends Component{
+  static allowMultiple = true;
+  static properties = {amount: 1, duration: 1}
+
+  onTurnStart(evt){
+    console.log("invigorate")
+    Units.GainStamina(this.entity, this.amount)
+
+    this.duration--;
+    if(this.duration == 0){
+      this.destroy()
+    }
+  }
+}
+
+export class StatusCripple extends Component{
+  static allowMultiple = true;
+  static properties = {amount: 1, duration: 1}
+
+  onTurnStart(evt){
+    console.log("invigorate")
+    Units.GainMovement(this.entity, this.amount * -1)
+
+    this.duration--;
+    if(this.duration == 0){
+      this.destroy()
+    }
+  }
+}
+
 
 
 //scenarios

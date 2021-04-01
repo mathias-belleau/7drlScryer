@@ -77,6 +77,9 @@ const FindClosestTarget = (dijkstra, entity, ability) => {
             closest.push([x,y])
         })
         closest.pop()
+        if(closest.length <= 0){
+            return;
+        }
         //check if this is a ranged attack and if the one being shot is in firing arc
         if(ability.has(components.AbilityProjectile)){
             var isShootAble = CheckInRange(ability, entity, closest)

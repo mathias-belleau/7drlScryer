@@ -320,6 +320,22 @@ export const AbilityBowShot = {
   ]
 }
 
+export const AbilityCrippleShot = {
+  name: "AbilityCrippleShot",
+  inherit:["Ability"],
+  components:[
+    { type: "Description",
+      properties: {name: "Cripple Shot", description: "triples for 2 dmg and cripple 3 movement"}},
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityCrippleShot} },
+    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilitySmallName", properties: {smallName: "CRS"}     },
+    { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
+    { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
+    { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3],[0,-4],[0,-5] ]} },
+    { type: "AbilityDamage", properties: {dmg:2} }
+  ]
+}
+
 export const AbilityShieldRaise = {
   name: "AbilityShieldRaise",
   inherit:["Ability"],
@@ -621,7 +637,7 @@ export const ItemShortBow = {
   name: "ItemShortBow",
   components: [  
     {type: "ItemSlot", properties: {slot:"Hands"}},
-    {type: "ItemAbilities", properties: {abilities: [ ["AbilityBowShot"] ]}},
+    {type: "ItemAbilities", properties: {abilities: [ ["AbilityBowShot"], ["AbilityCrippleShot"] ]}},
     {type: "ItemCraftingRecipe", properties: {items: [ ["leather",1], ["bone",1]]}}
   ]
 }

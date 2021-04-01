@@ -196,6 +196,10 @@ export function UseStamina(entity, amount){
     entity.stamina.current = Math.max(entity.stamina.current - amount, 0)
 }
 
+export function GainStamina(entity, amount){
+    entity.stamina.current = Math.min(entity.stamina.max, entity.stamina.current + amount)
+}
+
 export function ExhaustSelectedStamina(entity){
     entity.die.forEach(die => {
         if(die.selected){
