@@ -294,6 +294,7 @@ const Targeting = () => {
 }
 
 const PlayerAttemptMove = () => {
+  // console.log("MOVEMENT INPUT " + userInput)
   if (userInput === "ArrowUp") {
     gameTown.GetActive().movement.y = -1
   }
@@ -479,6 +480,7 @@ const CheckDefeat = () => {
 
 const RestPhase = (entity) => {
   entity.stamina.current = entity.stamina.max;
+  Unit.RollDice(entity)
   //entity.fireEvent("roll-dice")
   entity.fireEvent('turn-end', entity);
 }

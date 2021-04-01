@@ -244,7 +244,7 @@ export class StatusCripple extends Component{
 //scenarios
 
 export class ScenarioBattle extends Component {
-  static properties = {enemies: [ ["Goblin", 6], ["Goblin Archer", 3], ["Goblin Shaman", 1]], allies: [  ]}
+  static properties = {enemies: [ ["Goblin", 1], ["Goblin Archer", 0], ["Goblin Shaman", 0]], allies: [  ]}
 }
 
 export class ScenarioMessage extends Component {

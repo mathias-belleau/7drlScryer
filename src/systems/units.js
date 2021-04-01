@@ -22,7 +22,7 @@ export function Init(entity){
     AbilitySetupGrabBag(entity)
 }
 
-function RollDice(entity){
+export function RollDice(entity){
     for(var x = 0; x < entity.stamina.max; x++){
         entity.die[x].selected = false
         entity.die[x].exhausted = (x>=entity.stamina.current)
@@ -188,6 +188,7 @@ export function AttemptMove(entity) {
           // evt.handle()
         }
       }
+    //   console.debug(entity.movement.x + ":"+entity.movement.y)
       entity.movement.x = 0
       entity.movement.y = 0
 }

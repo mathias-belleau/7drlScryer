@@ -57,3 +57,19 @@ export const CheckStraight = (counts, match) => {
 
     return found
 }
+
+export const CheckBigger = (counts,match) => {
+    var found = []
+    var total = 0
+    for (var x = 1; x < 7;x++){
+        if(counts[x] || false){
+            total += counts[x] * x
+            found.push(x)
+        }
+    }
+    if (total >= match){
+        return found
+    }else {
+        return []
+    }
+}

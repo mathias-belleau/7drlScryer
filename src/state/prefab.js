@@ -309,7 +309,7 @@ export const AbilityBowShot = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Bow Shot", description: "doubles for 1 dmg"}},
+      properties: {name: "Bow Shot", description: "dice value >= 10 for 2 dmg"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilityBowShot} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "BOW"}     },
@@ -325,7 +325,7 @@ export const AbilityCrippleShot = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Cripple Shot", description: "triples for 2 dmg and cripple 3 movement"}},
+      properties: {name: "Cripple Shot", description: "dice value >= 12 for 2 dmg and cripple 3 movement"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilityCrippleShot} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "CRS"}     },
@@ -370,12 +370,12 @@ export const AbilityDaggerStab = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Dagger Stab", description: "exhausts a  pair of 6 to do a slow attack on a single tile for 1 dmg"}},
+      properties: {name: "Dagger Stab", description: "exhausts a  pair of 5,6 to do a slow attack on a single tile for 1 dmg"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "DST"} },
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
-    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityDamage", properties: {dmg:1} },
     { type: "AbilityEndsTurn"}
   ]
@@ -388,12 +388,12 @@ export const AbilityStaffBonk = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Dagger Stab", description: "exhausts a pair 6 to do a slow attack on a 2 tiles for 1 dmg"}},
+      properties: {name: "Staff Bonk", description: "exhausts a pair 5,6 to do a slow attack on a 2 tiles for 1 dmg"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "SBO"} },
     { type: "AbilityTarget", properties: {coords: [[0,-1],[0,1]]} },
-    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityDamage", properties: {dmg:1} },
     { type: "AbilityEndsTurn"}
   ]
@@ -498,9 +498,9 @@ export const AbilityMinorBlessing = {
   inherit:["Ability"],
   components:[
     { type: "Description",
-      properties: {name: "Minor Heal", description: "straight 3: fires a healing bolt that processes instantly, Heals a target for 1 hp and grants them 1 armour"}},
+      properties: {name: "Minor Blessing", description: "straight 3: fires a healing bolt that processes instantly, Heals a target for 1 hp and grants them 1 armour"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilityMinorBlessing} },
-    { type: "AbilityPhase", properties: {phase: "Attack"} },
+    { type: "AbilityPhase", properties: {phase: "Defend"} },
     { type: "AbilitySmallName",properties: {smallName: "MBL"}},
     { type: "AbilityTarget", properties: {coords: [[0,0]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
@@ -515,7 +515,7 @@ export const AbilityMajorHeal = {
   inherit:["Ability"],
   components: [
     { type: "Description",
-      properties: {name: "Minor Heal", description: "straight 4: fires a healing bolt that processes instantly, Heals a target for 3 hp"}},
+      properties: {name: "Major Heal", description: "straight 4: fires a healing bolt that processes instantly, Heals a target for 3 hp"}},
     { type: "AbilityFunction", properties: {function: Abilities.AbilityMajorHeal} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName",properties: {smallName: "MHE"}},

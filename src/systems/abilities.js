@@ -335,7 +335,7 @@ export const AbilityBowShot = {
         if(entity.has(components.IsTurnEnd)){
             return false
         }
-        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+        return yahtzee.CheckBigger(dice, 10)
     },
     onUse:GenericProjectile, 
     onTarget: (ability,entity) => {
@@ -350,7 +350,7 @@ export const AbilityCrippleShot = {
         if(entity.has(components.IsTurnEnd)){
             return false
         }
-        return yahtzee.CheckTriples(dice, ability.abilityAllowedDie.allowed)
+        return yahtzee.CheckBigger(dice, 12)
     },
     onUse:GenericProjectile, 
     onTarget: (ability,entity) => {
