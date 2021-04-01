@@ -55,7 +55,8 @@ export class Health extends Component {
     static allowMultiple = true;
     static properties = {name: "Goblin", eid: ""}
   }
-
+  export class NoCorpse extends Component {  } 
+  
   export class Stamina extends Component {
     static properties = { max: 5, current: 5, used: 0, regen: 2}
   }

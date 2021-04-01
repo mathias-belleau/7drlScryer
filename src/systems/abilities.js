@@ -100,7 +100,21 @@ export const AbilityShieldRaise = {
         Units.ExhaustSelectedStamina(entity)
     },
 }
-
+export const AbilityGenericDoubleSlow = {
+    canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
+        if(entity.has(components.IsTurnEnd)){
+            return false
+        }
+        return yahtzee.CheckDoubles(dice, ability.abilityAllowedDie.allowed)
+    },
+    onUse:GenericSlowAttack, 
+    onTarget: (ability,entity) => {
+        Target.SetupTargetEntities(ability,entity)
+        ExamineTargetEnable("targeting")
+    },
+    targets: GenericTargetEnemies,
+    onAffect: GenericAfterEffect
+}
 export const AbilitySwordJab = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
         if(entity.has(components.IsTurnEnd)){
@@ -282,10 +296,13 @@ export const AbilityAnimateDead = {
                 Units.Reanimate(currentEnt, entity.has(components.IsEnemy))
                 return;
             }
-            
         }
 
+        Units.ExhaustSelectedStamina(entity)
 
+        if(ability.has(components.AbilityEndsTurn)){
+            entity.add(components.IsTurnEnd)
+        }
     }, 
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)

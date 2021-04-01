@@ -37,6 +37,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.Invisible)
   ecs.registerComponent(components.Duration)
   ecs.registerComponent(components.Companion)
+  ecs.registerComponent(components.NoCorpse)
 
   //inventory
   ecs.registerComponent(components.EquipmentSlot);

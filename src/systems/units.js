@@ -137,22 +137,30 @@ export function Heal(entity, amount){
 }
 
 export function Die(entity){
-    entity.remove(entity.layerUnit)
-    entity.remove(entity.isBlocking)
-    entity.add(components.IsDead)
-    entity.add(components.LayerItem)
-    //remove enemy flag, corpses are neutral
-    if(entity.has(components.IsEnemy)){
-        entity.remove(entity.isEnemy)
-    }
-    entity.appearance.char = "%"
+    if(!entity.has(components.IsDead) && !entity.has(components.NoCorpse)){
+        entity.remove(entity.layerUnit)
+        entity.remove(entity.isBlocking)
+        entity.add(components.IsDead)
+        entity.add(components.LayerItem)
+        //remove enemy flag, corpses are neutral
+        if(entity.has(components.IsEnemy)){
+            entity.remove(entity.isEnemy)
+        }
+        entity.appearance.char = "%"
 
-    if(entity.has(components.MultiTileHead)){
-        entity.multiTileHead.bodyEntities.forEach(body => {
-            var body = world.getEntity(body)
-            body.remove(body.isBlocking)
-        })
+        if(entity.has(components.MultiTileHead)){
+            entity.multiTileHead.bodyEntities.forEach(body => {
+                var body = world.getEntity(body)
+                body.remove(body.isBlocking)
+            })
+        }
+    }else if (entity.has(components.NoCorpse)){
+        //this entity should be destroyed?
+        if(entity.has(components.Position)){
+            entity.remove(entity.position)
+        }
     }
+    
 }
 
 export function Reanimate(entity, isEnemy = true){
@@ -162,6 +170,7 @@ export function Reanimate(entity, isEnemy = true){
     entity.add(components.IsBlocking)
     entity.health.current = entity.health.max
     entity.appearance.char = "z"
+    entity.add(components.NoCorpse)
 
     if(isEnemy){
         entity.add(components.IsEnemy)

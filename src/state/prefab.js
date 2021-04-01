@@ -371,7 +371,7 @@ export const AbilityDaggerStab = {
   components:[
     { type: "Description",
       properties: {name: "Dagger Stab", description: "exhausts a  pair of 5,6 to do a slow attack on a single tile for 1 dmg"}},
-    { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityGenericDoubleSlow} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "DST"} },
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
@@ -389,7 +389,7 @@ export const AbilityStaffBonk = {
   components:[
     { type: "Description",
       properties: {name: "Staff Bonk", description: "exhausts a pair 5,6 to do a slow attack on a 2 tiles for 1 dmg"}},
-    { type: "AbilityFunction", properties: {function: Abilities.AbilitySwordJab} },
+    { type: "AbilityFunction", properties: {function: Abilities.AbilityGenericDoubleSlow} },
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "SBO"} },
     { type: "AbilityTarget", properties: {coords: [[0,-1],[0,1]]} },
