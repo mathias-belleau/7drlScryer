@@ -186,11 +186,11 @@
 
 /*! ./yahtzee */
 
-/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilitySwordJab, AbilityMinorBlessing, AbilityMajorHeal, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityBowShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
+/*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilitySwordJab, AbilityMinorBlessing, AbilityMajorHeal, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityBowShot, AbilityCrippleShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
-/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
+/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, DmgTileAfterEffect, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, StatusInvigorate, StatusCripple, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
 
 /*! exports provided: AttemptMove */
 
@@ -210,7 +210,7 @@
 
 /*! exports provided: HuntList, GetCurrentHunt, GetCurrentScenario, StartNextScenario, StartHunt, SetupHunts */
 
-/*! exports provided: Init, GainArmour, StartTurn, EndTurn, GainMovement, GainDodge, UpdatePosition, TakeDamage, Heal, Die, Reanimate, AttemptMove, UseStamina, ExhaustSelectedStamina, AbilitySetupGrabBag, ChangeAbility, EquipItem, BuildAbilityListPlayer */
+/*! exports provided: Init, GainArmour, StartTurn, EndTurn, GainMovement, GainDodge, UpdatePosition, TakeDamage, Heal, Die, Reanimate, AttemptMove, UseStamina, GainStamina, ExhaustSelectedStamina, AbilitySetupGrabBag, ChangeAbility, EquipItem, BuildAbilityListPlayer */
 
 /*! exports provided: MinHeap */
 
@@ -222,7 +222,7 @@
 
 /*! exports provided: TYPE_TEXT, TYPE_NEWLINE, TYPE_FG, TYPE_BG, measure, tokenize */
 
-/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Projectile, ProjectilePath, Dog, Goblin, GoblinArcher, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilityBowShot, AbilityShieldRaise, AbilitySwordJab, AbilityDaggerStab, AbilityStaffBonk, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityMinorBlessing, AbilityMajorHeal, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario, ItemShortSword, ItemBuckler, ItemShortBow, ItemDagger, ItemStaff, ItemTomeSwamp, ItemTomeHealing, ItemLeatherArmor, ItemPaddedLeatherArmor, ItemBoneArmor, ItemDogTreat */
+/*! exports provided: Tile, Being, MultiTileBody, Ability, Scenario, Wall, Floor, PlayerBeing, Mob, Projectile, ProjectilePath, Dog, Goblin, GoblinArcher, GoblinShaman, OrcWarrior, Ogre, AbilityMove, AbilityDodge, AbilityDoNothing, AbilitySpearThrust, AbilityBowShot, AbilityCrippleShot, AbilityShieldRaise, AbilitySwordJab, AbilityDaggerStab, AbilityStaffBonk, AbilitySwordSwing, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityMinorBlessing, AbilityMajorHeal, AbilityOgreSmash, AbilityOgreSmashSmash, AbilityOgreSmashSmashSmash, AbilityOgreSmashSmashSmashSmash, AbilityOgreRockThrow, Hunt, OrcTestScenario, OgreTestScenario, ItemShortSword, ItemBuckler, ItemShortBow, ItemDagger, ItemStaff, ItemTomeSwamp, ItemTomeHealing, ItemLeatherArmor, ItemPaddedLeatherArmor, ItemBoneArmor, ItemDogTreat */
 
 /*! exports provided: Town, default */
 
