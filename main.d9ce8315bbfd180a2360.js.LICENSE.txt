@@ -156,6 +156,8 @@
 
 /*! ./state/helpMenu */
 
+/*! ./state/messagelog */
+
 /*! ./state/scenario */
 
 /*! ./state/town */
@@ -196,7 +198,7 @@
 
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
-/*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, NoCorpse, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, DmgTileAfterEffect, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, StatusInvigorate, StatusCripple, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
+/*! exports provided: Appearance, Description, MessageTxt, IsBlocking, Position, Health, Movement, GainMovement, Companion, NoCorpse, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, DmgTileAfterEffect, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, StatusInvigorate, StatusCripple, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
 
 /*! exports provided: AttemptMove */
 
@@ -240,7 +242,7 @@
 
 /*! exports provided: fromString, add, add_, multiply, multiply_, interpolate, lerp, interpolateHSL, lerpHSL, randomize, rgb2hsl, hsl2rgb, toRGB, toHex */
 
-/*! exports provided: gameState, previousGameState, playerEntities, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ExamineTargetEnable, ExamineTargetDisable, setupTestFight, SpawnCompanions, SpawnUnits */
+/*! exports provided: gameState, previousGameState, playerEntities, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ExamineTargetEnable, ExamineTargetDisable, SpawnCompanions, SpawnUnits */
 
 /*! exports provided: grid, display, divHelp, displayHelp, divMSG, displayMsg */
 
