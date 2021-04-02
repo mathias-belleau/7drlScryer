@@ -24,6 +24,8 @@
 
 /*! ../state/helpMenu */
 
+/*! ../state/messagelog */
+
 /*! ../state/town */
 
 /*! ../systems/abilities */
@@ -108,6 +110,8 @@
 
 /*! ./map/index.js */
 
+/*! ./messagelog */
+
 /*! ./noise.js */
 
 /*! ./noise/index.js */
@@ -188,6 +192,8 @@
 
 /*! exports provided: Ability, AbilityDoNothing, AbilityMove, AbilityDodge, AbilityShieldRaise, AbilityGenericDoubleSlow, AbilitySwordJab, AbilityMinorBlessing, AbilityMajorHeal, AbilitySwordSwing, AbilitySpearThrust, AbilityDoubleAxeSwing, AbilityFlameHands, AbilitySummonGoblin, AbilityAnimateDead, AbilityAxeDecapitate, AbilityBowShot, AbilityCrippleShot, AbilityOgreSmash, AbilityOgreRockThrow, GetSelectedDie, GetAllDie, RotateCoords, RotateCoordsDirection */
 
+/*! exports provided: AddLog, GetLogs */
+
 /*! exports provided: AiPathfind, AiPathEmptyTile, CheckStraightLine */
 
 /*! exports provided: Appearance, Description, IsBlocking, Position, Health, Movement, GainMovement, Companion, NoCorpse, Stamina, Die, Armour, ArmourDie, MultiTileHead, MultiTileBody, Duration, IsTurnEnd, Invisible, ProjectileTile, IsPlayerControlled, IsEnemy, Ai, LayerMap, LayerItem, LayerUnit, SlowAttack, FastAttack, IsDead, DmgTile, DmgTileAfterEffect, EquipmentSlot, ItemSlot, ItemAbilities, ItemCraftingRecipe, ItemArmourRating, ItemCompanions, AbilityList, AbilityGrabBagList, AbilityTarget, AbilityAllowedDie, AbilityFunction, AbilityPhase, AbilitySpeed, AbilitySmallName, AbilityDamage, AbilityProjectile, AbilitySummon, AbilityEndsTurn, StatusInvigorate, StatusCripple, ScenarioBattle, ScenarioMessage, ScenarioChoice, HuntScenarios, OgreRage */
@@ -202,7 +208,7 @@
 
 /*! exports provided: DoAiTurnAttack, CheckInRange */
 
-/*! exports provided: DrawHelpMenu, HideHelpMenu, ShowAbilityInfo */
+/*! exports provided: DrawHelpMenu, HideHelpMenu, ShowAbilityInfo, ShowMessageLog */
 
 /*! exports provided: GetProjectileList, ClearProjectiles, CreateNewPath, UpdateIntersect */
 
@@ -236,7 +242,7 @@
 
 /*! exports provided: gameState, previousGameState, playerEntities, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ExamineTargetEnable, ExamineTargetDisable, setupTestFight, SpawnCompanions, SpawnUnits */
 
-/*! exports provided: grid, display, divHelp, displayHelp */
+/*! exports provided: grid, display, divHelp, displayHelp, divMSG, displayMsg */
 
 /*! exports provided: messageLog, addLog, default */
 
@@ -315,6 +321,10 @@
 /*!********************************!*\
   !*** ./src/systems/yahtzee.js ***!
   \********************************/
+
+/*!*********************************!*\
+  !*** ./src/state/messagelog.js ***!
+  \*********************************/
 
 /*!*********************************!*\
   !*** ./src/systems/movement.js ***!
