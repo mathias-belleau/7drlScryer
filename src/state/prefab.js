@@ -24,7 +24,8 @@ export const Tile = {
       { type: "Stamina"},
       { type: "AbilityGrabBagList"},
       { type: "AbilityList"},
-      {type:"Armour"}
+      {type:"Armour"},
+      {type:"MessageTxt"}
 
     ],
   };
@@ -51,6 +52,7 @@ export const Tile = {
       { type: "AbilityTarget"},
       { type: "AbilityAllowedDie"},
       { type: "AbilityDamage"},
+      { type: "MessageTxt"}
     ]
   }
 
@@ -157,6 +159,7 @@ export const Dog = {
     },
     {type: "Health", properties: {max:2,current:2}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}},
+    {type: "MessageTxt", properties: {msg:"Dog"} }
   ]
 }
 
@@ -172,6 +175,7 @@ export const Goblin = {
     },
     {type: "Health", properties: {max:2,current:2}},
     { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}},
+    {type: "MessageTxt", properties: {msg:"Goblin"} }
   ]
 }
 
@@ -186,7 +190,8 @@ export const GoblinArcher = {
       properties: {abilities: [ ["AbilityBowShot", 1]] }
     },
     {type: "Health", properties: {max:2,current:2}},
-    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
+    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}},
+    {type: "MessageTxt", properties: {msg:"Goblin Archer"} }
   ]
 }
 
@@ -207,7 +212,8 @@ export const GoblinShaman = {
       properties: {abilities: [ ["AbilityFlameHands",1], ["AbilityDoNothing",2], ["AbilityAnimateDead", 1]] }
     },
     {type: "Health", properties: {max:3,current:3}},
-    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}}
+    { type: "Stamina", properties: { max: 2, current: 2, used: 0, regen: 2}},
+    {type: "MessageTxt", properties: {msg:"Goblin Shaman"} }
   ]
 }
 
@@ -224,7 +230,8 @@ export const OrcWarrior = {
     },
     {type: "Health", properties: {max:8,current:8}},
     { type: "GainMovement", properties: {amount:4} },
-    { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}}
+    { type: "Stamina", properties: { max: 4, current: 4, used: 0, regen: 4}},
+    {type: "MessageTxt", properties: {msg:"Orc Warrior"} }
   ]
 }
 
@@ -242,7 +249,8 @@ export const Ogre = {
     {type: "Health", properties: {max:16,current:16}},
     { type: "GainMovement", properties: {amount:6} },
     {type: "MultiTileHead", properties: {bodyEntities: [] }},
-    {type: "OgreRage"}
+    {type: "OgreRage"},
+    {type: "MessageTxt", properties: {msg:"Ogre"} }
    
   ]
 }
@@ -287,6 +295,7 @@ export const AbilityDoNothing= {
     { type: "AbilitySmallName", properties: {smallName: "RST"}     },
     { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
+    {type: "MessageTxt", properties: {msg:"rests a moment"} }
   ]
 }
 
@@ -300,7 +309,8 @@ export const AbilitySpearThrust = {
     { type: "AbilityPhase", properties: {phase: "Attack"} },
     { type: "AbilitySmallName", properties: {smallName: "STH"}     },
     { type: "AbilityTarget", properties: {coords: [[0,-1],[0,-2]]}     },
-    { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },,
+    {type: "MessageTxt", properties: {msg:"thrusts their spear"} }
   ]
 }
 
@@ -316,7 +326,8 @@ export const AbilityBowShot = {
     { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
     { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3],[0,-4],[0,-5] ]} },
-    { type: "AbilityDamage", properties: {dmg:2} }
+    { type: "AbilityDamage", properties: {dmg:2} },
+    {type: "MessageTxt", properties: {msg:"fires an arrow"} }
   ]
 }
 
@@ -332,7 +343,8 @@ export const AbilityCrippleShot = {
     { type: "AbilityTarget", properties: {coords: [[0,0]]}     },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]} },
     { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3],[0,-4],[0,-5] ]} },
-    { type: "AbilityDamage", properties: {dmg:2} }
+    { type: "AbilityDamage", properties: {dmg:2} },
+    {type: "MessageTxt", properties: {msg:"fires a crippling shot"} }
   ]
 }
 
@@ -345,7 +357,8 @@ export const AbilityShieldRaise = {
     { type: "AbilityFunction", properties: {function: Abilities.AbilityShieldRaise} },
     { type: "AbilityPhase", properties: {phase: "Defend"} },
     { type: "AbilitySmallName", properties: {smallName: "SHR"}     },
-    { type:"AbilityAllowedDie", properties: {allowed:[6]} },
+    { type:"AbilityAllowedDie", properties: {allowed:[6]} },,
+    {type: "MessageTxt", properties: {msg:"raises their shield."} }
   ]
 }
 
@@ -361,7 +374,8 @@ export const AbilitySwordJab = {
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[4,5,6]} },
     { type: "AbilityDamage", properties: {dmg:2} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"jabs with their sword"} }
   ]
 }
 
@@ -377,7 +391,8 @@ export const AbilityDaggerStab = {
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityDamage", properties: {dmg:1} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"stabs with their dagger"} }
   ]
 }
 
@@ -395,7 +410,8 @@ export const AbilityStaffBonk = {
     { type: "AbilityTarget", properties: {coords: [[0,-1],[0,1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
     { type: "AbilityDamage", properties: {dmg:1} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"thrusts their staff forward and back"} }
   ]
 }
 
@@ -411,7 +427,8 @@ export const AbilitySwordSwing = {
     //{ type: "AbilityTarget", properties: {coords: [ [-1,0],[0,0],[1,0],[0,-1] ]} },
     { type: "AbilityTarget", properties: {coords: [ [-1,-1],[0,-1] ]} },
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"swings their sword wildly"} }
   ]
 }
 
@@ -428,7 +445,8 @@ export const AbilityDoubleAxeSwing = {
     { type: "AbilityTarget", properties: {coords: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0]]}},
     { type:"AbilityAllowedDie", properties: {allowed:[5,6]}  },
     { type: "AbilityDamage", properties: {dmg:2} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"carelessly hacks with their axes"} }
   ]
 }
 
@@ -444,7 +462,8 @@ export const AbilityFlameHands = {
     { type: "AbilityTarget", properties: {coords: [ [0,-1],[-1,-2],[0,-2],[1,-2],[-2,-3],[-1,-3],[0,-3],[1,-3],[2,-3]  ]}},
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityDamage", properties: {dmg:2} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"erupts flames from their hands"} }
   ]
 }
 
@@ -459,7 +478,8 @@ export const AbilitySummonGoblin = {
     {type: "AbilitySmallName",properties: {smallName: "SUG"}},
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type:"AbilitySummon"},
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"summons a poor goblin ally"} }
   ]
 }
 export const AbilityAnimateDead = {
@@ -473,7 +493,8 @@ export const AbilityAnimateDead = {
     {type: "AbilitySmallName",properties: {smallName: "AND"}},
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"raises the ${corpse} corpse back to life"} }
   ]
 }
 
@@ -489,7 +510,8 @@ export const AbilityAxeDecapitate = {
     { type: "AbilityTarget", properties: {coords: [[0,-1]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
     { type: "AbilityDamage", properties: {dmg:3} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"swings their axe aiming for the throat"} }
   ]
 }
 
@@ -506,7 +528,8 @@ export const AbilityMinorBlessing = {
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityDamage", properties: {dmg:1} },
     { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3] ]} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"chants a small blessing"} }
   ]
 }
 
@@ -523,7 +546,8 @@ export const AbilityMajorHeal = {
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityDamage", properties: {dmg:3} },
     { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3], ]} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"fires a healing ray"} }
   ]
 }
 
@@ -539,7 +563,8 @@ export const AbilityOgreSmash = {
     { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2], [-1,-1],[-1,-2], [2,-1],[2,-2]]} },
     { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
     { type: "AbilityDamage", properties: {dmg:4} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"attempts to squash the target"} }
   ]
 }
 
@@ -549,6 +574,8 @@ export const AbilityOgreSmashSmash ={
   components:[
     { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2], [-1,-1],[-1,-2], [2,-1],[2,-2],
       [0,2],[1,2], [0,3], [1,3], [-1,2],[-1,3], [2,2],[2,3]]} },
+      
+    {type: "MessageTxt", properties: {msg:"angrily smashes the ground"} }
   ]
 }
 
@@ -559,6 +586,7 @@ export const AbilityOgreSmashSmashSmash ={
     { type: "AbilityTarget", properties: {coords: [[-1,-2],[0,-2],[1,-2],[2,-2],[-2,-1],[-1,-1],[0,-1],[1,-1],[2,1],
       [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[2,-1],[3,1],[-2,2],[-1,2],[2,2],[3,2]
       ]} },
+      {type: "MessageTxt", properties: {msg:"roars while it smashes the ground"} }
   ]
 }
 
@@ -570,6 +598,7 @@ export const AbilityOgreSmashSmashSmashSmash ={
       [3,-1],[-2,0],[-1,0],[2,0],[3,0],[-2,1],[-1,1],[3,1],[-2,2],[-1,2],[2,2],[3,2],
       [0,2],[1,2],[-1,3],[0,3],[1,3],[2,3]
       ]} },
+      {type: "MessageTxt", properties: {msg:"in a blind rage smashes the ground around it"} }
   ]
 }
 
@@ -585,7 +614,8 @@ export const AbilityOgreRockThrow = {
     { type: "AbilityTarget", properties: {coords: [[0,-1],[1,-1], [0,-2], [1,-2], [0,-3], [1,-3], [0,-4], [1,-4], [0,-5], [1,-5], [0,-6], [1,-6], [0,-7], [1,-7], [0,-8], [1,-8] ]} },
     { type:"AbilityAllowedDie", properties: {allowed:[6]}  },
     { type: "AbilityDamage", properties: {dmg:4} },
-    { type: "AbilityEndsTurn"}
+    { type: "AbilityEndsTurn"},
+    {type: "MessageTxt", properties: {msg:"yeets a boulder"} }
   ]
 }
 
@@ -601,7 +631,7 @@ export const OrcTestScenario = {
   name: "Orc Test Scenario",
   inherit:["Scenario"],
   components:[
-    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [ ["Goblin Archer",4] ]}}
+    {type: "ScenarioBattle", properties: {enemies: [["Orc Warrior", 4]], allies: [  ]}}
   ]
 }
 

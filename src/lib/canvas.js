@@ -54,7 +54,7 @@ export const grid = {
     },
 
     messageLog: {
-      width: 30,
+      width: 50,
       height: 5,
       x: 2,
       y: 0

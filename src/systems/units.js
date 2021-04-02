@@ -182,7 +182,7 @@ export function Reanimate(entity, isEnemy = true){
 
 export function AttemptMove(entity) {
     if(entity.movement.movement <= 0 && entity.movement.dodge <= 0){
-        return;
+        //do nothing
     }else {
         var success = Movements.AttemptMove(entity.movement, entity)
 

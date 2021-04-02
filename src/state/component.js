@@ -23,6 +23,11 @@ export class Description extends Component {
         description: "nothing"
      };
   }
+
+export class MessageTxt extends Component {
+  static properties = {msg: "Txt goes here"}
+}
+
 export class IsBlocking extends Component {}
 
 export class Position extends Component {

@@ -31,7 +31,8 @@ export class Town {
         //for each population we need to make a new default villager and add it
         for(var x = 0; x < population; x++){
             var newVillager =  world.createPrefab("PlayerBeing", {
-                appearance: {char: "@", color: villageColors[x]}
+                appearance: {char: "@", color: villageColors[x]},
+                messageTxt: {msg: "%c{"+villageColors[x]+"}@%c{}"}
               });
 
               //add equipment from class

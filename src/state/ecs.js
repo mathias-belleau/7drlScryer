@@ -12,6 +12,7 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.Appearance);
   ecs.registerComponent(components.Armour)
   ecs.registerComponent(components.Description);
+  ecs.registerComponent(components.MessageTxt)
   ecs.registerComponent(components.Health)
   ecs.registerComponent(components.IsBlocking)
   ecs.registerComponent(components.IsDead)

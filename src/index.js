@@ -12,6 +12,7 @@ import * as Hunt from "./state/scenario"
 import * as Target from "./systems/target"
 import * as Projectile from "./systems/projectile"
 import * as Unit from "./systems/units"
+import * as Message from "./state/messagelog"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 
@@ -68,6 +69,9 @@ const update = () => {
       //fire end turn for all enemy units
       EndTurnProcess(enemyEntities.get())
 
+      //if active player is dead +1
+
+      CheckActiveDead()
       //fire start turn for all players
       StartTurnProcess(playerEntities.get())
 
@@ -96,6 +100,13 @@ const update = () => {
     
 }
 
+function CheckActiveDead(){
+  if(gameTown.GetActive().has(components.IsDead)){
+    if(CheckDefeat()){
+      gameTown.GetNextActive()
+    }
+  }
+}
 
 const processUserInput = () => {
 //show help screen
@@ -157,7 +168,6 @@ const processUserInput = () => {
 
           }else {
             abil.abilityFunction.function.onUse(abil, gameTown.GetActive(), Target.GetTargetEntityPos())
-
           }
         }
       render()
@@ -311,7 +321,7 @@ const PlayerAttemptMove = () => {
   if (userInput === "ArrowLeft") {
     gameTown.GetActive().movement.x = -1
   }
-
+  console.debug("x: " + gameTown.GetActive().movement.x + " y: " + gameTown.GetActive().movement.y)
   Unit.AttemptMove(gameTown.GetActive())
 
   render()
@@ -333,28 +343,6 @@ document.addEventListener("keydown", (ev) => {
   userInput = ev.key;
 });
 
-export const setupTestFight = () => {
-    const newPlayer = world.createPrefab("PlayerBeing", {
-      appearance: {char: "@", color: "green"}
-    });
-    var emptyTile = FetchFreeTile();
-    newPlayer.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
-    CurrrentActivePlayer = newPlayer
-
-    const newPlayer2 = world.createPrefab("PlayerBeing", {
-      appearance: {char: "@", color: "purple"}
-    });
-    emptyTile = FetchFreeTile();
-    newPlayer2.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
-
-    times(6, () => {
-      emptyTile = FetchFreeTile();
-      world.createPrefab("Goblin").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
-    });
-
-    emptyTile = FetchFreeTile();
-    world.createPrefab("Orc Warrior").add(components.Position, {x: emptyTile.position.x, y: emptyTile.position.y})
-}
 
 const EnemyAttackTurn = () => {
   //console.log("enemy attacks")
@@ -378,6 +366,8 @@ const PlayerTurnDefend = () => {
   //process ally turns
   AllyAttackTurn()
 
+  //check if active player is dead
+  CheckActiveDead()
 }
 
 const PlayerTurnAttack = () => {
@@ -479,7 +469,10 @@ const CheckDefeat = () => {
 
   if(!stillAlive){
     gameState = "gameover"
+    
   }
+
+  return stillAlive
 }
 
 const RestPhase = (entity) => {
@@ -562,7 +555,7 @@ const StartScenario = () => {
     }
     console.log("setting up hunter")
     console.log(gameTown.GetVillager(hunter))
-    var emptyTile = FetchFreeTile();
+    var emptyTile = FetchFreeTile("Left");
     gameTown.GetVillager(hunter).add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
 
     //spawn companions

@@ -46,17 +46,26 @@ const CleanUp = () => {
     })
 }
 
-export const FetchFreeTile = () => {
-    var anyFree = CreateFreeSpaceList();
+export const FetchFreeTile = (side = "None") => {
+    var anyFree = CreateFreeSpaceList(side);
     return sample(anyFree)
 }   
 
-const CreateFreeSpaceList = () => {
+const CreateFreeSpaceList = (side) => {
     var emptyTiles = []
 
     layerMapEntities.get().forEach((entity) => {
         if(entity.isBlocking){
             return;
+        }
+        if(side == "Left"){
+            if(entity.position.x > (grid.map.width / 2) - 5){
+                return;
+            }
+        }else if(side == "Right"){
+            if(entity.position.x < (grid.map.width /2) +5){
+                return;
+            }
         }
         var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
         
@@ -107,10 +116,13 @@ export const SpawnScenarioUnits = (prefabName, isEnemy, tileToSpawn = null) => {
     var emptyTile;
     if(tileToSpawn){
       emptyTile = tileToSpawn;
-    }else if(newUnit.has(components.MultiTileHead)){ //if multitile get empty with clear south,east,se
-      emptyTile = FetchFreeTile();
     }else {
-      emptyTile = FetchFreeTile();
+        if(isEnemy){
+            emptyTile = FetchFreeTile("Right")
+        }else {
+            emptyTile = FetchFreeTile("Left");
+
+        }
     }
     
     //add position

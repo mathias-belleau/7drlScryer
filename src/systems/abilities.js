@@ -7,6 +7,7 @@ import * as components from "../state/component"
 import * as Target from "./target"
 import * as Projectile from "./projectile"
 import * as ROT from "rot-js"
+import * as Message from "../state/messagelog"
 
 import * as Units from "./units"
 
@@ -35,6 +36,8 @@ export const AbilityDoNothing = {
         return yahtzee.CheckSingles(dice)
     },
     onUse: (ability, entity, target= null) => {
+        //add to message log!
+        Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
         return;
     },
     
@@ -77,7 +80,7 @@ export const AbilityDodge = {
              if(entity.armour.weight == "Light"){
                  allowed = [1,2,3,4,5]
              }else if(entity.armour.weight == "Medium"){
-                 allowed = [1,2,3,4,]
+                 allowed = [1,2,3,4]
              }else if(entity.armour.weight == "Heavy"){
                  allowed = [1,2,3]
              }
@@ -86,14 +89,14 @@ export const AbilityDodge = {
     },
     onUse: (ability, entity,target= null) => {
         // entity.fireEvent("gain-dodge", 1);
-        Units.GainDodge(1)
+        Units.GainDodge(entity, 1)
         Units.ExhaustSelectedStamina(entity)
     },
 }
 
 export const AbilityShieldRaise = {
     canUse: (ability,entity, dice = GetSelectedDie(entity)) => {
-        return yahtzee.CheckSingles(dice)
+        return yahtzee.CheckSingles(dice, ability.abilityAllowedDie.allowed)
     },
     onUse: (ability, entity,target = null) => {
         Units.GainArmour(entity,1)
@@ -154,6 +157,8 @@ export const AbilityMinorBlessing = {
         if(ability.has(components.AbilityEndsTurn)){
             entity.add(components.IsTurnEnd)
         }
+        Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
     }, 
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
@@ -184,6 +189,8 @@ export const AbilityMajorHeal = {
         if(ability.has(components.AbilityEndsTurn)){
             entity.add(components.IsTurnEnd)
         }
+        Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
     }, 
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
@@ -229,6 +236,8 @@ export const AbilitySpearThrust = {
         if(ability.has(components.AbilityEndsTurn)){
             entity.add(components.IsTurnEnd)
         }
+        Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
     }, 
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
@@ -303,6 +312,8 @@ export const AbilityAnimateDead = {
         if(ability.has(components.AbilityEndsTurn)){
             entity.add(components.IsTurnEnd)
         }
+        Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
     }, 
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
@@ -404,7 +415,7 @@ export const AbilityOgreRockThrow = {
     },
     onUse:(ability,entity,target) => {
         GenericSlowAttack(ability,entity,target);
-        entity.abilityList.abilities[0][1] = 0
+        Units.ChangeAbility(this.entity, "AbilityOgreRockThrow", 0)
     }, 
     onTarget: (ability,entity) => {
         Target.SetupTargetEntities(ability,entity)
@@ -425,6 +436,8 @@ function GenericProjectile(ability,entity,target = null){
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
     }
+    Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
 }
 
 function GenericSlowAttack(ability,entity,target= null) {
@@ -443,6 +456,8 @@ function GenericSlowAttack(ability,entity,target= null) {
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
     }
+    Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
 }
 
 function GenericFastAttack(ability,entity,target= null) {
@@ -461,6 +476,8 @@ function GenericFastAttack(ability,entity,target= null) {
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
     }
+    Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
+
 }
 
 function GenericSummon(ability,entity,target=null){
@@ -474,6 +491,7 @@ function GenericSummon(ability,entity,target=null){
     if(ability.has(components.AbilityEndsTurn)){
         entity.add(components.IsTurnEnd)
     }
+    Message.AddLog("The " + entity.messageTxt.msg + " " + ability.messageTxt.msg)
     
 }
 

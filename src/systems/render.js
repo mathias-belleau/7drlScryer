@@ -354,7 +354,7 @@ const renderMessageLog = () =>{
     displayMsg.clear()
     console.log(displayMsg)
     var msgs = Message.GetLogs(5);
-    for(var y = 0; y < 5; y++){
+    for(var y = 0; y < msgs.length; y++){
         displayMsg.drawText(grid.messageLog.x, grid.messageLog.y + y, msgs[y])
     }
 }
