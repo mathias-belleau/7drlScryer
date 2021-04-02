@@ -4,7 +4,7 @@ import * as ROT from "rot-js";
 
 export const grid = {
     width: 50,
-    height: 34,
+    height: 22,
   
     map: {
       width: 20,
@@ -51,6 +51,13 @@ export const grid = {
     helpMenu: {
       width:45,
       height:30
+    },
+
+    messageLog: {
+      width: 30,
+      height: 5,
+      x: 2,
+      y: 0
     }
 }
 
@@ -81,9 +88,30 @@ const displayOptionsHelp = {
 
 export const  divHelp = document.createElement('div');
 divHelp.id = 'helpMenu';
+divHelp.setAttribute("class", 'helpMenuHidden')
 
 document.body.appendChild(divHelp);
 
 export const displayHelp = new ROT.Display(displayOptionsHelp);
 divHelp.appendChild(displayHelp.getContainer())
 displayHelp.drawText(0,0,"HELLO CAN YOU SEE THIS")
+
+
+const displayOptionsMsg = {
+  // Configure the display
+  bg: "black", // background
+  fg: "Grey", // foreground
+  fontFamily: "Fira Mono", // font (use a monospace for esthetics)
+  width: grid.messageLog.width,
+  height: grid.messageLog.height, // canvas height and width
+  fontSize: 18, // canvas fontsize
+  forceSquareRatio: false // make the canvas squared ratio
+}
+
+export const  divMSG = document.createElement('div');
+divMSG.id = 'divMSG';
+divMSG.setAttribute("class", 'divMsgHidden')
+
+export const displayMsg = new ROT.Display(displayOptionsMsg);
+document.body.appendChild(divMSG);
+divMSG.appendChild(displayMsg.getContainer())

@@ -1,6 +1,7 @@
 //used for drawing the help menu
 
 import {display, displayHelp,divHelp, grid } from "../lib/canvas"
+import * as Message from "./messagelog"
 
 export const DrawHelpMenu = () => {
     MakeVisible()
@@ -35,12 +36,12 @@ export const DrawHelpMenu = () => {
 
 export const HideHelpMenu = () => {
     displayHelp.clear()
-    divHelp.style.visibility = 'hidden'
+    divHelp.setAttribute("class", 'helpMenuHidden')
 }
 
 const MakeVisible = () => {
     //make it visible
-    divHelp.style.visibility = 'visible'
+    divHelp.setAttribute("class", 'helpMenuVisible')
 
     var banner = "#".repeat(grid.helpMenu.width);
     displayHelp.drawText(0,0,banner)
@@ -54,6 +55,14 @@ export const ShowAbilityInfo = (abil) => {
     //Ability short name
     //description
     //phase
+}
+
+export function ShowMessageLog(){
+    MakeVisible()
+    var getMsgs = Message.GetLogs(30)
+    for(var y = 0; y < getMsgs.length; y++){
+        displayHelp.drawText(1, y+1, getMsgs[y])
+    }
 }
 
 const WriteAbility = (abil) => {

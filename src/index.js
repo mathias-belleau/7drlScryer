@@ -14,6 +14,7 @@ import * as Projectile from "./systems/projectile"
 import * as Unit from "./systems/units"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
+
 export var gameState = "loading"
 export var previousGameState = ""
 
@@ -83,7 +84,7 @@ const update = () => {
 
       //fire endTurn for all player units
       
-    }else if(gameState=="examine" || gameState =="targeting" || gameState == "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers"){
+    }else if(gameState == "MessageLog" || gameState=="examine" || gameState =="targeting" || gameState == "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers"){
       processUserInput()
       //render entities under current reticle
 
@@ -105,6 +106,9 @@ const processUserInput = () => {
       SetPreviousState("Help")
       render()
 //select next player
+    }else if (userInput == "M"){
+      SetPreviousState("MessageLog")
+      render()
     }else if (userInput === "n") {
       //change active player to next
       // console.log('input: ' + userInput)
@@ -220,7 +224,7 @@ const processUserInput = () => {
         ExamineTargetDisable()
         render()
     }
-  }else if (gameState === "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers" ) {
+  }else if (gameState === "MessageLog" || gameState === "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers" ) {
     if(userInput ==="Escape"){
       HideHelpMenu()
       ReturnPreviousGameState()

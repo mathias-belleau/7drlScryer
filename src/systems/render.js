@@ -1,5 +1,6 @@
 import {
     display,
+    displayMsg,
     grid
   } from "../lib/canvas";
 
@@ -11,8 +12,9 @@ import {toCell, toLocId} from "../lib/grid"
 import {CurrrentActivePlayer, gameState} from "../index"
 import * as Target from "./target"
 import gameTown from "../state/town"
-import {DrawHelpMenu,ShowAbilityInfo} from "../state/helpMenu"
+import {DrawHelpMenu,ShowAbilityInfo,ShowMessageLog} from "../state/helpMenu"
 import * as Projectile from "./projectile";
+import * as Message from "../state/messagelog"
 import { Display } from "rot-js";
 
 const slowDmgEntities = world.createQuery({
@@ -221,27 +223,6 @@ const renderDieMenu = () => {
 const abilityHotkeys = ['q','w','e','r','t','y']
 
 const renderAbilityMenu = () => {
-    //for each ability make a button max of 3 char name 
-    // q[mv] w[atk] e[dg]
-    
-    //if can use set to green?
-    //if already used set to grey
-    // console.log(gameTown.GetActive())
-    // for(var x = 0; x < gameTown.GetActive().abilityGrabBagList.abilities.length;x++){
-    //     var color = "gray"
-    //     var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
-    //     if( (gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == "Any" || gameTown.GetActive().abilityGrabBagList.abilities[x].abilityPhase.phase == currentPhase)
-    //      && gameTown.GetActive().abilityGrabBagList.abilities[x].abilityFunction.function.canUse(
-    //         gameTown.GetActive().abilityGrabBagList.abilities[x],
-    //         gameTown.GetActive()).length > 0){
-    //         color = "white"
-    //     }
-
-
-
-    //     let smlName = gameTown.GetActive().abilityGrabBagList.abilities[x].abilitySmallName.smallName
-    //     DrawText(abilityHotkeys[x]+"[%c{"+color+"}"+smlName+"%c{}]",grid.abilityMenu.x + (x*7), grid.abilityMenu.y)
-    // }
 
     var activeHunter = gameTown.GetActive()
     var abilMap = gameTown.GetCurrentHunterAbilityMap()
@@ -369,6 +350,15 @@ const renderFastAttacks = () => {
     
 }
 
+const renderMessageLog = () =>{
+    displayMsg.clear()
+    console.log(displayMsg)
+    var msgs = Message.GetLogs(5);
+    for(var y = 0; y < 5; y++){
+        displayMsg.drawText(grid.messageLog.x, grid.messageLog.y + y, msgs[y])
+    }
+}
+
 export const DrawText = (text, x, y) => {
     display.drawText(x,y,text)
 }
@@ -389,6 +379,8 @@ export const renderBorder = () => {
 export const render = () => {
     if(gameState == "Help"){
         DrawHelpMenu()
+    }else if(gameState == "MessageLog"){
+        ShowMessageLog()
     }else if (gameState == "AbilityInfo"){
         ShowAbilityInfo(EntityToRender)
     }else if (gameState == "EnemyNumbers"){
@@ -399,6 +391,7 @@ export const render = () => {
         RenderDamageNumbers()
     }else {
         clearDisplay()
+        renderMessageLog()
         renderMap()
         renderObjects()
         renderUnits()
