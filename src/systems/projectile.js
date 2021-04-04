@@ -13,17 +13,22 @@ export const GetProjectileList = () => {
 
 export const ClearProjectiles = () => {
     Object.keys(_projectileList).forEach(keyname =>{
-        _projectileList[keyname].paths.forEach(paths => {
-            console.log(paths.id)
-            world.destroyEntity(paths.id)
-        })
-        console.log('primary')
-        console.log(_projectileList[keyname].id)
-        world.destroyEntity(_projectileList[keyname].id)
+        ClearProjectile(keyname)
     })
    
         
     _projectileList = {}
+}
+
+export function ClearProjectile(keyname) {
+    _projectileList[keyname].paths.forEach(paths => {
+        console.log(paths.id)
+        world.destroyEntity(paths.id)
+    })
+    console.log('primary')
+    console.log(_projectileList[keyname].id)
+    world.destroyEntity(_projectileList[keyname].id)
+    delete _projectileList[keyname]
 }
 
 export const CreateNewPath = (ability, entity, target) => {
@@ -65,6 +70,7 @@ export const CreateNewPath = (ability, entity, target) => {
 
     _projectileList[newPath.id] = newPath
     FindIntersect(newPath)
+    return newPath
 }
 
 export const UpdateIntersect =(path) =>{

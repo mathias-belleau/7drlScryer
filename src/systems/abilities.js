@@ -1,6 +1,6 @@
 import world from "../state/ecs"
 import * as yahtzee from "./yahtzee"
-import { ExamineTargetEnable, SpawnUnits, allyEntities, friendlyEntities, enemyEntities, layerItemEntities} from "../index"
+import { ExamineTargetEnable, SpawnUnits, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ProcessDmgTiles} from "../index"
 import { readCacheSet } from "../state/cache";
 import {toLocId} from "../lib/grid"
 import * as components from "../state/component"
@@ -142,17 +142,24 @@ export const AbilityMinorBlessing = {
         return yahtzee.CheckStraight(dice, 3)
     },
     onUse:(ability, entity,target= null) => {
-        //find a unit here
-        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target.x,y:target.y}))
-        getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
-        for(var x = 0; x < getEntitiesAtLoc.length; x++){
-            var ent = world.getEntity(getEntitiesAtLoc[x])
-            if(ent.has(components.Health)){
-                Units.Heal(ent, 1)
-                Units.GainArmour(ent,1)
+        var newPath = Projectile.CreateNewPath(ability,entity, target)
+        newPath.dmgTiles.forEach(dmgTile => {
+            //find a unit here
+            var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:dmgTile.position.x,y:dmgTile.position.y}))
+            getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+            for(var x = 0; x < getEntitiesAtLoc.length; x++){
+                var ent = world.getEntity(getEntitiesAtLoc[x])
+                if(ent.has(components.Health)){
+                    Units.Heal(ent, 1)
+                    Units.GainArmour(ent,1)
+                }
             }
-        }
 
+           
+        })
+        ProcessDmgTiles(newPath.dmgTiles)
+        Projectile.ClearProjectile(newPath.id)
+        
         Units.ExhaustSelectedStamina(entity)
         if(ability.has(components.AbilityEndsTurn)){
             entity.add(components.IsTurnEnd)
@@ -175,15 +182,21 @@ export const AbilityMajorHeal = {
         return yahtzee.CheckStraight(dice, 4)
     },
     onUse:(ability, entity,target= null) => {
-        //find a unit here
-        var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:target.x,y:target.y}))
-        getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
-        for(var x = 0; x < getEntitiesAtLoc.length; x++){
-            var ent = world.getEntity(getEntitiesAtLoc[x])
-            if(ent.has(components.Health)){
-                Units.Heal(ent, 3)
+        var newPath = Projectile.CreateNewPath(ability,entity, target)
+        newPath.dmgTiles.forEach(dmgTile => {
+            //find a unit here
+            var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:dmgTile.position.x,y:dmgTile.position.y}))
+            getEntitiesAtLoc = Array.from(getEntitiesAtLoc)
+            for(var x = 0; x < getEntitiesAtLoc.length; x++){
+                var ent = world.getEntity(getEntitiesAtLoc[x])
+                if(ent.has(components.Health)){
+                    Units.Heal(ent, 3)
+                }
             }
-        }
+        })
+
+        ProcessDmgTiles(newPath.dmgTiles)
+        Projectile.ClearProjectile(newPath.id)
 
         Units.ExhaustSelectedStamina(entity)
         if(ability.has(components.AbilityEndsTurn)){

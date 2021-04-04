@@ -528,6 +528,7 @@ export const AbilityMinorBlessing = {
     { type:"AbilityAllowedDie", properties: {allowed:[1,2,3,4,5,6]}  },
     { type: "AbilityDamage", properties: {dmg:1} },
     { type:"AbilityProjectile", properties: {path: [ [0,-1],[0,-2],[0,-3] ]} },
+    { type: "AbilityDamage", properties: {dmg:0} },
     { type: "AbilityEndsTurn"},
     {type: "MessageTxt", properties: {msg:"chants a small blessing"} }
   ]

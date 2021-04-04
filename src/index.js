@@ -194,7 +194,7 @@ const processUserInput = () => {
         CheckDefeat()
       }else if (gameState == "PlayerTurnAttack"){
         //process playerAttack
-        ProcessDmgTiles()
+        ProcessDmgTilesProjectiles()
 
         EndTurnProcess(allyEntities.get())
         EndTurnProcess(playerEntities.get())
@@ -249,32 +249,6 @@ const processUserInput = () => {
   }
     userInput = null
 }
-
-const ConvertSkillHotkey = (hotkey) => {
-  switch (userInput) {
-    case "q":
-    case "Q":
-      return 0
-    case "w":
-    case "W":
-      return 1
-    case "e":
-    case "E":
-      return 2
-    case "r":
-    case "R":
-      return 3
-    case "t":
-    case "T":
-      return 4
-    case "y":
-    case "Y":
-      return 5
-    default:
-      return 0
-  }
-}
-
 
 export const ExamineTargetEnable = (state) => {
   SetPreviousState(state)
@@ -361,7 +335,7 @@ const PlayerTurnDefend = () => {
   //wait for player input and process, but only allow defensive abilities
 
   //proccess enemyAttack
-  ProcessDmgTiles()
+  ProcessDmgTilesProjectiles()
 
   //process ally turns
   AllyAttackTurn()
@@ -374,14 +348,30 @@ const PlayerTurnAttack = () => {
   //wait for player input and process, but only allow offensive abilities 
 }
 
-const ProcessDmgTiles = () => {
+function ProcessDmgTilesProjectiles() {
+  ProcessDmgTiles()
+  Projectile.ClearProjectiles()
+}
+
+export const ProcessDmgTiles = (tilesToProcess = dmgTileEntities.get()) => {
   console.log("process dmg")
   //for each dmgtile
   //console.log(dmgTileEntities.get())
   //dont remove from an array while iterating over it
   var toDestroy = []
-  dmgTileEntities.get().forEach( (entity) => {
-    console.log("dmg tile id")
+  tilesToProcess.forEach( (entity) => {
+    ProcessDmgTile(entity)
+    toDestroy.push(entity)
+  });
+
+  toDestroy.forEach( (ent) =>{
+    world.destroyEntity(ent.id)
+  })
+
+  
+}
+function ProcessDmgTile(entity) {
+  console.log("dmg tile id")
     console.log(entity.id)
     var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
 
@@ -407,17 +397,7 @@ const ProcessDmgTiles = () => {
         }
       }
     });
-    toDestroy.push(entity)
-  });
-
-  toDestroy.forEach( (ent) =>{
-    world.destroyEntity(ent.id)
-  })
-
-  //clear projectiles too 
-  Projectile.ClearProjectiles() 
 }
-
 const StartTurnProcess = (entities) => {
   var ents = [...entities]
   for(var x = 0; x< ents.length;x++){
