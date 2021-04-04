@@ -212,7 +212,7 @@
 
 /*! exports provided: DrawHelpMenu, HideHelpMenu, ShowAbilityInfo, ShowMessageLog */
 
-/*! exports provided: GetProjectileList, ClearProjectiles, CreateNewPath, UpdateIntersect */
+/*! exports provided: GetProjectileList, ClearProjectiles, ClearProjectile, CreateNewPath, UpdateIntersect */
 
 /*! exports provided: GetTargetEntities, GetTargetEntityPos, SetupTargetEntities, ClearTargetEntities, UpdateTargetEntities, UseAbility */
 
@@ -242,7 +242,7 @@
 
 /*! exports provided: fromString, add, add_, multiply, multiply_, interpolate, lerp, interpolateHSL, lerpHSL, randomize, rgb2hsl, hsl2rgb, toRGB, toHex */
 
-/*! exports provided: gameState, previousGameState, playerEntities, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ExamineTargetEnable, ExamineTargetDisable, SpawnCompanions, SpawnUnits */
+/*! exports provided: gameState, previousGameState, playerEntities, allyEntities, friendlyEntities, enemyEntities, layerItemEntities, ExamineTargetEnable, ExamineTargetDisable, ProcessDmgTiles, SpawnCompanions, SpawnUnits */
 
 /*! exports provided: grid, display, divHelp, displayHelp, divMSG, displayMsg */
 
