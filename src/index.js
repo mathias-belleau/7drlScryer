@@ -6,19 +6,27 @@ import { times } from "lodash";
 import {readCacheSet} from "./state/cache"
 import {toLocId} from "./lib/grid"
 import * as AI from "./systems/ai"
-import {HideHelpMenu} from "./state/helpMenu"
+
 import gameTown from "./state/town"
 import * as Hunt from "./state/scenario"
 import * as Target from "./systems/target"
 import * as Projectile from "./systems/projectile"
 import * as Unit from "./systems/units"
 import * as Message from "./state/messagelog"
+import * as Battle from "./systems/battle"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 
 export var gameState = "loading"
 export var previousGameState = ""
 
+export function GetGameState(){
+  return gameState
+}
+
+export function SetGameState(newState){
+  gameState=newState
+}
 
 export const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
@@ -52,55 +60,11 @@ export const layerItemEntities = world.createQuery({
 let userInput = null;
 
 const update = () => {
-    if(gameState == "setup"){
-      FetchFreeTileTarget({x:2,y:2},3)
-      gameState = "EnemyTurnDefend"
-    }else if(gameState == "EnemyTurnDefend") {
-
-      //EnemyDefendTurn()
-
-      gameState = "EnemyTurnAttack"
-      render()
-      //set to playerturndefend
-      //check win/lose  
-    }else if(gameState == "EnemyTurnAttack"){
-      StartTurnProcess(enemyEntities.get())
-      EnemyAttackTurn()
-      //fire end turn for all enemy units
-      EndTurnProcess(enemyEntities.get())
-
-      //if active player is dead +1
-
-      CheckActiveDead()
-      //fire start turn for all players
-      StartTurnProcess(playerEntities.get())
-
-      gameState = "PlayerTurnDefend"
-      render()
-    }else if(gameState == "PlayerTurnDefend") {
-      processUserInput()
-      //set to playerturnattack
-      //check win/lose
-    }else if(gameState == "PlayerTurnAttack") {
-      processUserInput()
-      //set to enemy turn
-      //check win/lose
-
-      //fire endTurn for all player units
-      
-    }else if(gameState == "MessageLog" || gameState=="examine" || gameState =="targeting" || gameState == "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers"){
-      processUserInput()
-      //render entities under current reticle
-
-      
-    }else if (gameState == "gameover") {
-    }else {
-      SetupGame()
-    }
-    
+    Battle.DoBattlePhase(userInput)
+    userInput = null;
 }
 
-function CheckActiveDead(){
+export function CheckActiveDead(){
   if(gameTown.GetActive().has(components.IsDead)){
     if(CheckDefeat()){
       gameTown.GetNextActive()
@@ -108,147 +72,7 @@ function CheckActiveDead(){
   }
 }
 
-const processUserInput = () => {
-//show help screen
-  if(!userInput){
-    return;
-  }else if(gameState == "PlayerTurnDefend" || gameState == "PlayerTurnAttack"){
-    if(userInput === "?") {
-      SetPreviousState("Help")
-      render()
-//select next player
-    }else if (userInput == "M"){
-      SetPreviousState("MessageLog")
-      render()
-    }else if (userInput === "n") {
-      //change active player to next
-      // console.log('input: ' + userInput)
-      gameTown.GetNextActive()
 
-      render()
-
-//die select
-    }else if(userInput === "1" || userInput === "2" || userInput === "3" || userInput === "4" || userInput === "5" || userInput === "6" || userInput === "7" || userInput === "8" || userInput === "9") {
-      // console.log("dice swap")
-      //select die
-      if(userInput - 1 < gameTown.GetActive().die.length) {
-        // console.log(CurrrentActivePlayer.die[userInput-1])
-        if(!gameTown.GetActive().die[userInput-1].exhausted){
-          gameTown.GetActive().die[userInput-1].selected = !gameTown.GetActive().die[userInput-1].selected
-        }
-        render()
-        
-      }
-      
-
-//movement
-    }else if (userInput === "ArrowUp") {
-      PlayerAttemptMove()
-    }else if (userInput === "ArrowRight") {
-      PlayerAttemptMove()
-    }else if (userInput === "ArrowDown") {
-      PlayerAttemptMove()
-    }else if (userInput === "ArrowLeft") {
-      PlayerAttemptMove()
-    
-//ability use
-    //}else if(userInput === "q" || userInput === "w" || userInput === "e" || userInput === "r" || userInput === "t" || userInput === "y") {
-    }else if(userInput in gameTown.GetCurrentHunterAbilityMap()){
-      //console.log("ability use")
-      //var abilityIndex = ConvertSkillHotkey(userInput)
-
-        //hit existing ability key
-        let abil = gameTown.GetCurrentHunterAbility(userInput)
-        let canUse = abil.abilityFunction.function.canUse(abil,gameTown.GetActive())
-        var currentPhase = (gameState == "PlayerTurnDefend") ? "Defend" : "Attack"
-        if(canUse.length > 0 && (abil.abilityPhase.phase == "Defend" || abil.abilityPhase.phase == currentPhase)){
-          //check if ability is instant or targeted
-          if(abil.abilityFunction.function.onTarget){
-            abil.abilityFunction.function.onTarget(abil, gameTown.GetActive())
-
-          }else {
-            abil.abilityFunction.function.onUse(abil, gameTown.GetActive(), Target.GetTargetEntityPos())
-          }
-        }
-      render()
-    
-    //}else if(userInput === "Q" || userInput === "W" || userInput === "E" || userInput === "R" || userInput === "T" || userInput === "Y") {
-    }else if (userInput.length == 1 && userInput.toLowerCase() in gameTown.GetCurrentHunterAbilityMap() ){
-  //ability info
-      //console.log("ability info")
-      //var abilityIndex = ConvertSkillHotkey(userInput)
-      SetPreviousState("AbilityInfo")
-      //console.log(abilityIndex)
-      //console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
-      SetEntityToRender(gameTown.GetCurrentHunterAbility(userInput.toLowerCase()))
-      render()
-    
-    }else if(userInput=="Enter"){
-      //console.log("Enter")
-      if(gameState == "PlayerTurnDefend"){
-        StartTurnProcess(allyEntities.get())
-        PlayerTurnDefend()
-        
-        gameState = "PlayerTurnAttack"
-
-        CheckDefeat()
-      }else if (gameState == "PlayerTurnAttack"){
-        //process playerAttack
-        ProcessDmgTilesProjectiles()
-
-        EndTurnProcess(allyEntities.get())
-        EndTurnProcess(playerEntities.get())
-        CheckVictory()
-        
-        gameState = "EnemyTurnDefend"
-        CheckDefeat()
-      }
-
-      render()
-    }else if (userInput === 'x') {
-      //set examine mode
-      ExamineTargetEnable("examine")
-
-      render()
-    }else if (userInput === 'c') {
-      SetPreviousState("DamageShow")
-      render()
-    }else if (userInput === 'z') {
-      SetPreviousState("EnemyNumbers")
-      render()
-    }else if (userInput === 'p') {
-      //used for testing
-      //console.log(CurrrentActivePlayer)
-      
-    }
-  }else if (gameState === "examine" || gameState === "targeting") {
-      if (userInput === "Escape") {
-        ExamineTargetDisable()
-        render()
-      }else if (userInput === "ArrowUp" || userInput === "ArrowRight" || userInput === "ArrowDown" || userInput === "ArrowLeft") {
-        TargetMove()
-        render()
-      }else if(userInput === " " && gameState === "targeting"){
-        Target.UseAbility()
-        // queuedAbility.abilityFunction.function.onUse(queuedAbility, queuedEntity, Target.GetTargetEntityPos())
-        ExamineTargetDisable()
-        render()
-    }
-  }else if (gameState === "MessageLog" || gameState === "Help" || gameState == "AbilityInfo" || gameState == "DamageShow" || gameState == "EnemyNumbers" ) {
-    if(userInput ==="Escape"){
-      HideHelpMenu()
-      ReturnPreviousGameState()
-      render()
-    }else if( gameState == "DamageShow" && userInput == "c"){
-      ReturnPreviousGameState()
-      render()
-    }else if( gameState == "EnemyNumbers" && userInput == "z"){
-      ReturnPreviousGameState()
-      render()
-    }
-  }
-    userInput = null
-}
 
 export const ExamineTargetEnable = (state) => {
   SetPreviousState(state)
@@ -258,7 +82,7 @@ export const ExamineTargetEnable = (state) => {
   //targetEntity.add(components.Position, {x: gameTown.GetActive().position.x,y: gameTown.GetActive().position.y})
 }
 
-const SetPreviousState = (state) => {
+export const SetPreviousState = (state) => {
   previousGameState = gameState
   gameState = state
 }
@@ -269,7 +93,7 @@ export const ExamineTargetDisable= () => {
   // targetEntity.remove(targetEntity.position)
 }
 
-const ReturnPreviousGameState = () => {
+export const ReturnPreviousGameState = () => {
   gameState = previousGameState
 }
 
@@ -281,7 +105,7 @@ const Targeting = () => {
 
 }
 
-const PlayerAttemptMove = () => {
+export const PlayerAttemptMove = () => {
   // console.log("MOVEMENT INPUT " + userInput)
   if (userInput === "ArrowUp") {
     gameTown.GetActive().movement.y = -1
@@ -301,7 +125,7 @@ const PlayerAttemptMove = () => {
   render()
 }
 
-const TargetMove = () => {
+export const TargetMove = () => {
   if (userInput === "ArrowUp") {
     Target.UpdateTargetEntities(0,-1)
   } else if (userInput === "ArrowRight") {
@@ -318,20 +142,20 @@ document.addEventListener("keydown", (ev) => {
 });
 
 
-const EnemyAttackTurn = () => {
+export const EnemyAttackTurn = () => {
   //console.log("enemy attacks")
   enemyEntities.get().forEach( enem => {
     AI.DoAiTurnAttack(enem)
   })
 }
 
-const AllyAttackTurn = () => {
+export const AllyAttackTurn = () => {
   allyEntities.get().forEach( ally => {
     AI.DoAiTurnAttack(ally)
   })
 }
 
-const PlayerTurnDefend = () => {
+export const PlayerTurnDefend = () => {
   //wait for player input and process, but only allow defensive abilities
 
   //proccess enemyAttack
@@ -344,11 +168,11 @@ const PlayerTurnDefend = () => {
   CheckActiveDead()
 }
 
-const PlayerTurnAttack = () => {
+export const PlayerTurnAttack = () => {
   //wait for player input and process, but only allow offensive abilities 
 }
 
-function ProcessDmgTilesProjectiles() {
+export function ProcessDmgTilesProjectiles() {
   ProcessDmgTiles()
   Projectile.ClearProjectiles()
 }
@@ -370,7 +194,7 @@ export const ProcessDmgTiles = (tilesToProcess = dmgTileEntities.get()) => {
 
   
 }
-function ProcessDmgTile(entity) {
+export function ProcessDmgTile(entity) {
   console.log("dmg tile id")
     console.log(entity.id)
     var getEntitiesAtLoc = readCacheSet("entitiesAtLocation", toLocId({x:entity.position.x,y:entity.position.y}))
@@ -398,14 +222,14 @@ function ProcessDmgTile(entity) {
       }
     });
 }
-const StartTurnProcess = (entities) => {
+export const StartTurnProcess = (entities) => {
   var ents = [...entities]
   for(var x = 0; x< ents.length;x++){
     Unit.StartTurn(ents[x])
   }
 }
 
-const EndTurnProcess = (entities) => {
+export const EndTurnProcess = (entities) => {
   //console.log('ending turn for ')
   var ents = [...entities]
   for(var x = 0;x < ents.length;x++){
@@ -414,7 +238,7 @@ const EndTurnProcess = (entities) => {
 
 }
 
-const CheckVictory = () =>{
+export const CheckVictory = () =>{
   var count = 0
   console.log("check victory")
   enemyEntities.get().forEach(enem => {
@@ -439,7 +263,11 @@ const CheckVictory = () =>{
   }
 }
 
-const CheckDefeat = () => {
+export function FetchFreeTileTargetDungeon(target, range){
+  return FetchFreeTileTarget(target, range)
+}
+
+export const CheckDefeat = () => {
   var stillAlive = false
   for(var x = 0; x < playerEntities.get().length;x++){
     if(playerEntities.get()[x].health.current > 0 && !playerEntities.get()[x].has(components.IsDead)){
@@ -455,14 +283,14 @@ const CheckDefeat = () => {
   return stillAlive
 }
 
-const RestPhase = (entity) => {
+export const RestPhase = (entity) => {
   entity.stamina.current = entity.stamina.max;
   Unit.RollDice(entity)
   //entity.fireEvent("roll-dice")
   entity.fireEvent('turn-end', entity);
 }
 
-const CleanUpPostBattle = () => {
+export const CleanUpPostBattle = () => {
   //remove all the items on the ground
 
   DeleteEntities(layerItemEntities.get())
@@ -487,7 +315,7 @@ function DeleteEntities(entityList) {
   }
 }
 
-const StartHunt = (huntName) => {
+export const StartHunt = (huntName) => {
 
   //set hunt
   Hunt.StartHunt(huntName)
@@ -563,7 +391,7 @@ export function SpawnCompanions(entity){
   }
 }
 
-const SetupGame = () => {
+export const SetupGame = () => {
   //make hunts
   Hunt.SetupHunts()
 
