@@ -14,6 +14,7 @@ import * as Projectile from "./systems/projectile"
 import * as Unit from "./systems/units"
 import * as Message from "./state/messagelog"
 import * as Battle from "./systems/battle"
+import * as Village from "./systems/village"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 
@@ -60,7 +61,13 @@ export const layerItemEntities = world.createQuery({
 let userInput = null;
 
 const update = () => {
-    Battle.DoBattlePhase(userInput)
+    if(Battle.GetBattlePhases().includes(gameState)){
+      Battle.DoBattlePhase(userInput)
+    }else if(Village.GetVillagePhases().includes(gameState)){
+      Village.DoVillagePhase(userInput)
+    }else if(gameState == "loading") {
+      SetupGame()
+    }
     userInput = null;
 }
 
@@ -352,8 +359,7 @@ const StartScenario = () => {
   })
 
   //for loop over current huntscenario
-  //spawn first 4 players in villagers (for now)
-  gameTown.SetHunters()
+  
   var hunters = gameTown.GetHunters()
   console.log("hunters going to battle")
   console.log(hunters)
@@ -395,18 +401,12 @@ export const SetupGame = () => {
   //make hunts
   Hunt.SetupHunts()
 
-  
+  SetGameState("loadingTown")
   //make initial town
   console.log(gameTown)
-
-    StartHunt("Hunt")
-  
-//   makeMap()
-// setupTestFight()
-// render()
+ 
+    // StartHunt("Hunt")
 }
-
-// SetupGame()
 
 export const SpawnUnits =(ability, entity) =>{
   var freeTile = FetchFreeTileTarget({x:entity.position.x,y:entity.position.y},4)

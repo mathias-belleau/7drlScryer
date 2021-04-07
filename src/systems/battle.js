@@ -6,9 +6,12 @@ import gameTown from "../state/town"
 import {HideHelpMenu} from "../state/helpMenu"
 import * as Target from "./target"
 
+const BattlePhases = ["setup","EnemyTurnDefend","EnemyTurnAttack","PlayerTurnDefend","PlayerTurnAttack","MessageLog", "examine", "targeting", "Help", "AbilityInfo", "DamageShow", "EnemyNumbers", "gameover"]
+export function GetBattlePhases() {
+    return BattlePhases
+}
 export function DoBattlePhase(userInput) {
     if(GetGameState() == "setup"){
-        FetchFreeTileTargetDungeon({x:2,y:2},3)
         SetGameState("EnemyTurnDefend") 
       }else if(GetGameState() == "EnemyTurnDefend") {
   
@@ -49,8 +52,6 @@ export function DoBattlePhase(userInput) {
   
         
       }else if (GetGameState() == "gameover") {
-      }else {
-        SetupGame()
       }
 }
 

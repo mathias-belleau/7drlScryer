@@ -58,6 +58,21 @@ export const grid = {
       height: 5,
       x: 2,
       y: 0
+    },
+
+    town: {
+      townMenu: {
+        x: 5,
+        y: 2
+      },
+      villagerMenu:{
+        x:5,
+        y:2
+      },
+      villagerInfo:{
+        x: 25,
+        y:2
+      },
     }
 }
 

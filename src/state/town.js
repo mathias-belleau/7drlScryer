@@ -35,14 +35,21 @@ export class Town {
                 messageTxt: {msg: "%c{"+villageColors[x]+"}@%c{}"}
               });
 
-              //add equipment from class
-              classes[x].forEach(equip =>{
-                  Units.EquipItem(newVillager, equip)
-              })
-              Units.BuildAbilityListPlayer(newVillager)
-              Units.Init(newVillager)
+            if(x < classes.length){
+                //add equipment from class
+                classes[x].forEach(equip =>{
+                    Units.EquipItem(newVillager, equip)
+                })
+            }
+            Units.BuildAbilityListPlayer(newVillager)
+            Units.Init(newVillager)
             this.population[newVillager.id] = newVillager
         }
+        this.SetHunters()
+    }
+
+    GetVillagers(){
+        return Object.keys(this.population)
     }
 
     GetVillager(eid){
@@ -71,13 +78,17 @@ export class Town {
         return this.ActiveHunters
     }
 
+    RemoveHunter(hunterEID){
+        var index = this.ActiveHunters.indexOf(hunterEID)
+        this.ActiveHunters.splice(index,1)
+    }
+
     SetHunters(){
         var hunts = []
         //for now just return the first 4 hunters
-        for (const [key, value] of Object.entries(this.population)) {
-            //console.log(`${key}: ${value}`);
-            hunts.push(key)
-          }
+        for(var x = 0; x < 4; x++){
+            hunts.push(Object.keys(this.population)[x])
+        }
         this.CurrrentActivePlayer = hunts[0]
         this.SetHunterMapping()
         this.ActiveHunters=hunts
@@ -114,5 +125,5 @@ export class Town {
     }
 }
 
-var gameTown = new Town(4,"beep")
+var gameTown = new Town(6,"beep")
 export default gameTown;
