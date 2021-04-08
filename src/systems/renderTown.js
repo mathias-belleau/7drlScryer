@@ -12,7 +12,7 @@ import {toCell, toLocId} from "../lib/grid"
 import * as Town from "../state/town"
 import * as Message from "../state/messagelog"
 import * as Village from "./village"
-import { hunterEntities, playerEntities,villagerEntities } from "../index.js";
+import { hunterEntities, playerEntities,UnlockedHunts,villagerEntities } from "../index.js";
 
 function ClearDisplay(){
     display.clear()
@@ -73,7 +73,15 @@ export const RenderVillager = () =>{
             RenderVillagerExamine(vill)
         }
     }
+}
 
+export function RenderHunts(){
+    ClearDisplay()
+
+    var hunts = UnlockedHunts.get();
+    for(var x = 0; x < hunts.length; x++){
+        display.drawText(grid.town.villagerInfo.x, grid.town.villagerInfo.y, hunts[x].description.name)
+    }
 }
 
 const RenderVillagerExamine = (villager) =>{

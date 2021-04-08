@@ -1,5 +1,5 @@
 import {enemyEntities, GetGameState, hunterEntities, SetGameState, villagerEntities} from "../index"
-import {RenderTownCenter,RenderVillager} from "./renderTown"
+import {RenderTownCenter,RenderVillager, RenderHunts} from "./renderTown"
 import * as Town from "../state/town"
 
 const VillagePhases = ["townCenter","villager","crafting","chooseHunt","loadingTown"]
@@ -31,7 +31,8 @@ export function DoVillagePhase(userInput){
     }else if(GetGameState() == "crafting"){
 
     }else if (GetGameState() == "chooseHunt"){
-
+        RenderHunts()
+        //process input
     }else if (GetGameState() == "loadingTown"){
         RenderTownCenter()
         SetGameState("townCenter")
@@ -68,6 +69,7 @@ function ProcessTownCenterInput(userInput){
         }else if (currentSelectIndex == 2){
             // look at hunts
             console.log("look at hunts")
+            SetGameState("chooseHunt")
         }else {
             console.error("how'd we get here?")
         }

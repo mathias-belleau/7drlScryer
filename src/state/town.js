@@ -129,5 +129,6 @@ export function GetCurrentHunterAbility(keyName){
 }
 // }
 
+
 // var gameTown = new Town(6,"beep")
 var gameTown = world.createEntity("gameTown")

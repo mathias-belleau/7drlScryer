@@ -272,6 +272,7 @@ export class HuntScenarios extends Component {
   static properties = {scenarios: ["Scenario"]}
 }
 
+export class HuntUnlocked extends Component {}
 
 //unit abilities
 export class OgreRage extends Component {

@@ -70,6 +70,10 @@ export const layerItemEntities = world.createQuery({
   none: [components.IsPlayerControlled]
 })
 
+export const UnlockedHunts = world.createQuery({
+  all: [components.HuntUnlocked],
+})
+
 let userInput = null;
 
 const update = () => {
@@ -405,15 +409,19 @@ export function SpawnCompanions(entity){
 }
 
 export const SetupGame = () => {
-  Town.SetupVillage(7)
   //make hunts
   Hunt.SetupHunts()
 
-  // SetGameState("setup")
+  Town.SetupVillage(7)
+
+  //add starting hunt to village
+  Hunt.UnlockHunt("Hunt")
+
+  SetGameState("loadingTown")
   //make initial town
   
  
-    StartHunt("Hunt")
+    // StartHunt("Hunt")
 }
 
 export const SpawnUnits =(ability, entity) =>{

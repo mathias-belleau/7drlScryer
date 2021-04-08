@@ -623,7 +623,7 @@ export const AbilityOgreRockThrow = {
 export const Hunt = {
   name: "Hunt",
   components:[
-    { type: "description"},
+    { type: "description", properties: {name:"Ogre Hunt", description:"first hunt"}},
     { type: "HuntScenarios", properties: {scenarios: ["Scenario","Orc Test Scenario","Ogre Test Scenario"]}}
   ]
 }

@@ -1,6 +1,8 @@
 //list of all the scenarios as well as their handler
 //and hunts
 import world from "./ecs"
+import * as components from "../state/component"
+
 
 export var HuntList = {}
 var CurrentHunt
@@ -38,5 +40,9 @@ export const SetupHunts = () => {
     newHunt.huntScenarios.scenarios = scenarios
     console.log(newHunt.huntScenarios.scenarios)
     HuntList["Hunt"] = newHunt
+}
+
+export const UnlockHunt = (huntName) => {
+    HuntList[huntName].add(components.HuntUnlocked)
 }
 

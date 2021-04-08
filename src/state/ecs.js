@@ -82,6 +82,7 @@ ecs.registerComponent(components.ScenarioMessage)
 
 //hunt
 ecs.registerComponent(components.HuntScenarios)
+ecs.registerComponent(components.HuntUnlocked)
 
 
   //prefabs
