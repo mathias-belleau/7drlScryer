@@ -9,9 +9,9 @@ import * as components from "../state/component"
 import world from "../state/ecs"
 import { readCacheSet } from "../state/cache";
 import {toCell, toLocId} from "../lib/grid"
-import {CurrrentActivePlayer, gameState} from "../index"
+import {CurrrentActivePlayer, gameState, hunterEntities} from "../index"
 import * as Target from "./target"
-import gameTown from "../state/town"
+import * as Town from "../state/town"
 import {DrawHelpMenu,ShowAbilityInfo,ShowMessageLog} from "../state/helpMenu"
 import * as Projectile from "./projectile";
 import * as Message from "../state/messagelog"
@@ -125,32 +125,32 @@ const renderUnits = () => {
 }
 
 const renderActivePlayer = () => {
-    var active = gameTown.GetActive();
-    var hunters = gameTown.GetHunters()
+    var active = Town.GetActive();
+    var hunters = hunterEntities.get()
     var displayedActive = 0 //if true add 10 to y
     DrawText("#########",grid.activePlayer.x, grid.activePlayer.y-1)
     for(var x =0;x < hunters.length; x++){
-        if(hunters[x] == active.id){
+        if(hunters[x].id == active.id){
             var text = "Active:"
                 DrawText(text,grid.activePlayer.x,grid.activePlayer.y +x )
-                DrawChar(gameTown.GetActive(),
+                DrawChar(Town.GetActive(),
                     grid.activePlayer.x+ text.length,
                     grid.activePlayer.y+x)
         
-                DrawText("Hp:"+gameTown.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1 +x)
-                DrawText("Stam:"+gameTown.GetActive().stamina.current.toString()+"/"+gameTown.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2+x)
-                DrawText("StamRgn:"+(Math.max(0,gameTown.GetActive().stamina.regen - gameTown.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3+x)
-                DrawText("Move:"+gameTown.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4+x)
-                DrawText("Dodge:"+gameTown.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5+x)
+                DrawText("Hp:"+Town.GetActive().health.current.toString(),grid.activePlayer.x,grid.activePlayer.y+1 +x)
+                DrawText("Stam:"+Town.GetActive().stamina.current.toString()+"/"+Town.GetActive().stamina.max.toString(),grid.activePlayer.x,grid.activePlayer.y+2+x)
+                DrawText("StamRgn:"+(Math.max(0,Town.GetActive().stamina.regen - Town.GetActive().stamina.used)).toString(),grid.activePlayer.x,grid.activePlayer.y+3+x)
+                DrawText("Move:"+Town.GetActive().movement.movement.toString(),grid.activePlayer.x,grid.activePlayer.y+4+x)
+                DrawText("Dodge:"+Town.GetActive().movement.dodge.toString(),grid.activePlayer.x,grid.activePlayer.y+5+x)
         
                 DrawText("-Armour-",grid.activePlayer.x,grid.activePlayer.y+6+x)
-                DrawText(gameTown.GetActive().armour.weight,grid.activePlayer.x,grid.activePlayer.y+7+x)
-                DrawText("Amount: "+gameTown.GetActive().armour.amount,grid.activePlayer.x,grid.activePlayer.y+8+x)
-                DrawText(GetArmourString(gameTown.GetActive()),grid.activePlayer.x,grid.activePlayer.y+9+x)
+                DrawText(Town.GetActive().armour.weight,grid.activePlayer.x,grid.activePlayer.y+7+x)
+                DrawText("Amount: "+Town.GetActive().armour.amount,grid.activePlayer.x,grid.activePlayer.y+8+x)
+                DrawText(GetArmourString(Town.GetActive()),grid.activePlayer.x,grid.activePlayer.y+9+x)
             //this is active hunter do normal display
             displayedActive = 10
         }else {
-            var hunt = gameTown.GetVillager(hunters[x])
+            var hunt = hunters[x]
             //do quick display
             var text = "#"
             text += "%c{"+hunt.appearance.color +"}"+hunt.appearance.char + "%c{} "
@@ -193,21 +193,21 @@ const renderPhase = () => {
 }
 
 const renderDieMenu = () => {
-    if(gameTown.GetActive()){
-        for(var x = 0; x < gameTown.GetActive().die.length; x++){
+    if(Town.GetActive()){
+        for(var x = 0; x < Town.GetActive().die.length; x++){
             ////console.log(CurrrentActivePlayer.die[x])
             //  1|3|
             //get color
             var color = "white"
-            if(gameTown.GetActive().die[x].selected){
+            if(Town.GetActive().die[x].selected){
                 color = "green"
-            }else if(gameTown.GetActive().die[x].exhausted){
+            }else if(Town.GetActive().die[x].exhausted){
                 color = "grey"
             }
             //display.draw(2+grid.dieMenu.x + (x*5), grid.dieMenu.y-1,'_')    
             DrawText((x+1).toString()+"|"+" "+"|", grid.dieMenu.x+ ( (x%4) * 5) , grid.dieMenu.y + Math.floor(x/4))
             //console.log(CurrrentActivePlayer.die[x].number)
-            display.draw(2+grid.dieMenu.x + ( (x%4) * 5), grid.dieMenu.y + Math.floor(x/4), gameTown.GetActive().die[x].number.toString(), "black", color)
+            display.draw(2+grid.dieMenu.x + ( (x%4) * 5), grid.dieMenu.y + Math.floor(x/4), Town.GetActive().die[x].number.toString(), "black", color)
         }
     }
 }
@@ -224,20 +224,20 @@ const abilityHotkeys = ['q','w','e','r','t','y']
 
 const renderAbilityMenu = () => {
 
-    var activeHunter = gameTown.GetActive()
-    var abilMap = gameTown.GetCurrentHunterAbilityMap()
+    var activeHunter = Town.GetActive()
+    var abilMap = Town.GetCurrentHunterAbilityMap()
     var DefIndex =0
     var AtkIndex = 0
     for (const [key, value] of Object.entries(abilMap)) {
         var color = "gray"
         var currAbility = activeHunter.abilityGrabBagList.abilities[value]
-        if(gameTown.GetActive().abilityGrabBagList.abilities[value].abilityFunction.function.canUse(
-            gameTown.GetActive().abilityGrabBagList.abilities[value],
-            gameTown.GetActive()).length > 0) {
+        if(Town.GetActive().abilityGrabBagList.abilities[value].abilityFunction.function.canUse(
+            Town.GetActive().abilityGrabBagList.abilities[value],
+            Town.GetActive()).length > 0) {
                 color = "white"
         }
 
-        let smlName = gameTown.GetActive().abilityGrabBagList.abilities[value].abilitySmallName.smallName
+        let smlName = Town.GetActive().abilityGrabBagList.abilities[value].abilitySmallName.smallName
         DrawText("Def:",grid.abilityMenu.x, grid.abilityMenu.y)
         DrawText("Atk:",grid.abilityMenu.x, grid.abilityMenu.y+1)
         

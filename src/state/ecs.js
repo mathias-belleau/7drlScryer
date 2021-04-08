@@ -14,6 +14,9 @@ const world = ecs.createWorld();
   ecs.registerComponent(components.Description);
   ecs.registerComponent(components.MessageTxt)
   ecs.registerComponent(components.Health)
+  ecs.registerComponent(components.ActiveHunter)
+  ecs.registerComponent(components.Hunter)
+  ecs.registerComponent(components.CraftingIngredient)
   ecs.registerComponent(components.IsBlocking)
   ecs.registerComponent(components.IsDead)
   ecs.registerComponent(components.IsPlayerControlled)

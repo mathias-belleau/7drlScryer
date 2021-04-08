@@ -7,7 +7,6 @@ import {readCacheSet} from "./state/cache"
 import {toLocId} from "./lib/grid"
 import * as AI from "./systems/ai"
 
-import gameTown from "./state/town"
 import * as Hunt from "./state/scenario"
 import * as Target from "./systems/target"
 import * as Projectile from "./systems/projectile"
@@ -15,6 +14,7 @@ import * as Unit from "./systems/units"
 import * as Message from "./state/messagelog"
 import * as Battle from "./systems/battle"
 import * as Village from "./systems/village"
+import * as Town from "./state/town"
 //import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 import {makeMap, FetchFreeTile, FetchFreeTileTarget, SpawnScenarioUnits} from "./state/dungeon"
 
@@ -29,10 +29,22 @@ export function SetGameState(newState){
   gameState=newState
 }
 
+export const villagerEntities = world.createQuery({
+  all: [components.Appearance, components.IsPlayerControlled],
+});
+
 export const playerEntities = world.createQuery({
   all: [components.Position, components.Appearance, components.LayerUnit, components.IsPlayerControlled],
   none: [components.IsDead, components.MultiTileBody]
 });
+
+export const hunterEntities = world.createQuery({
+  all: [components.Hunter]
+})
+
+export const activeHunter = world.createQuery({
+  all: [components.ActiveHunter]
+})
 
 const dmgTileEntities = world.createQuery({
   all: [components.DmgTile]
@@ -72,9 +84,9 @@ const update = () => {
 }
 
 export function CheckActiveDead(){
-  if(gameTown.GetActive().has(components.IsDead)){
+  if(Town.GetActive().has(components.IsDead)){
     if(CheckDefeat()){
-      gameTown.GetNextActive()
+      Town.GetNextActive()
     }
   }
 }
@@ -83,10 +95,6 @@ export function CheckActiveDead(){
 
 export const ExamineTargetEnable = (state) => {
   SetPreviousState(state)
-
-  //set examine base position to current active player position
-
-  //targetEntity.add(components.Position, {x: gameTown.GetActive().position.x,y: gameTown.GetActive().position.y})
 }
 
 export const SetPreviousState = (state) => {
@@ -115,19 +123,19 @@ const Targeting = () => {
 export const PlayerAttemptMove = () => {
   // console.log("MOVEMENT INPUT " + userInput)
   if (userInput === "ArrowUp") {
-    gameTown.GetActive().movement.y = -1
+    Town.GetActive().movement.y = -1
   }
   if (userInput === "ArrowRight") {
-    gameTown.GetActive().movement.x = 1
+    Town.GetActive().movement.x = 1
   }
   if (userInput === "ArrowDown") {
-    gameTown.GetActive().movement.y = 1
+    Town.GetActive().movement.y = 1
   }
   if (userInput === "ArrowLeft") {
-    gameTown.GetActive().movement.x = -1
+    Town.GetActive().movement.x = -1
   }
-  console.debug("x: " + gameTown.GetActive().movement.x + " y: " + gameTown.GetActive().movement.y)
-  Unit.AttemptMove(gameTown.GetActive())
+  console.debug("x: " + Town.GetActive().movement.x + " y: " + Town.GetActive().movement.y)
+  Unit.AttemptMove(Town.GetActive())
 
   render()
 }
@@ -306,11 +314,11 @@ export const CleanUpPostBattle = () => {
 
   //remove position from all allies
 
-  var hunters = gameTown.GetHunters()
+  var hunters = hunterEntities.Get()
   for(var x = 0; x<hunters.length;x++){
-    if(gameTown.GetVillager(hunters[x]).has(components.Position)){
-      gameTown.GetVillager(hunters[x]).remove(gameTown.GetVillager(hunters[x]).position)
-      RestPhase(gameTown.GetVillager(hunters[x]))
+    if(Town.GetVillager(hunters[x]).has(components.Position)){
+      Town.GetVillager(hunters[x]).remove(Town.GetVillager(hunters[x]).position)
+      RestPhase(Town.GetVillager(hunters[x]))
     }
   }
 }
@@ -360,20 +368,19 @@ const StartScenario = () => {
 
   //for loop over current huntscenario
   
-  var hunters = gameTown.GetHunters()
+  var hunters = hunterEntities.get()
   console.log("hunters going to battle")
   console.log(hunters)
   hunters.forEach( hunter => {
-    if(gameTown.GetVillager(hunter).has(components.IsDead)){
+    if(hunter.has(components.IsDead)){
       return;
     }
     console.log("setting up hunter")
-    console.log(gameTown.GetVillager(hunter))
     var emptyTile = FetchFreeTile("Left");
-    gameTown.GetVillager(hunter).add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
+    hunter.add(components.Position, {x:emptyTile.position.x,y:emptyTile.position.y})
 
     //spawn companions
-    SpawnCompanions(gameTown.GetVillager(hunter))
+    SpawnCompanions(hunter)
   })
 
 
@@ -398,14 +405,15 @@ export function SpawnCompanions(entity){
 }
 
 export const SetupGame = () => {
+  Town.SetupVillage(7)
   //make hunts
   Hunt.SetupHunts()
 
-  SetGameState("loadingTown")
+  // SetGameState("setup")
   //make initial town
-  console.log(gameTown)
+  
  
-    // StartHunt("Hunt")
+    StartHunt("Hunt")
 }
 
 export const SpawnUnits =(ability, entity) =>{

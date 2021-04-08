@@ -2,9 +2,10 @@ import {SetGameState, GetGameState, StartTurnProcess,EnemyAttackTurn,CheckActive
     PlayerAttemptMove,PlayerTurnDefend,CheckDefeat,ProcessDmgTilesProjectiles,ExamineTargetDisable,TargetMove,
     EndTurnProcess,CheckVictory,SetupGame,FetchFreeTileTargetDungeon,enemyEntities,playerEntities,allyEntities} from "../index"
 import {render, SetEntityToRender} from "./render"
-import gameTown from "../state/town"
+import * as Town from "../state/town"
 import {HideHelpMenu} from "../state/helpMenu"
 import * as Target from "./target"
+
 
 const BattlePhases = ["setup","EnemyTurnDefend","EnemyTurnAttack","PlayerTurnDefend","PlayerTurnAttack","MessageLog", "examine", "targeting", "Help", "AbilityInfo", "DamageShow", "EnemyNumbers", "gameover"]
 export function GetBattlePhases() {
@@ -70,7 +71,7 @@ const processUserInput = (userInput) => {
         }else if (userInput === "n") {
           //change active player to next
           // console.log('input: ' + userInput)
-          gameTown.GetNextActive()
+          Town.GetNextActive()
     
           render()
     
@@ -78,10 +79,10 @@ const processUserInput = (userInput) => {
         }else if(userInput === "1" || userInput === "2" || userInput === "3" || userInput === "4" || userInput === "5" || userInput === "6" || userInput === "7" || userInput === "8" || userInput === "9") {
           // console.log("dice swap")
           //select die
-          if(userInput - 1 < gameTown.GetActive().die.length) {
+          if(userInput - 1 < Town.GetActive().die.length) {
             // console.log(CurrrentActivePlayer.die[userInput-1])
-            if(!gameTown.GetActive().die[userInput-1].exhausted){
-              gameTown.GetActive().die[userInput-1].selected = !gameTown.GetActive().die[userInput-1].selected
+            if(!Town.GetActive().die[userInput-1].exhausted){
+              Town.GetActive().die[userInput-1].selected = !Town.GetActive().die[userInput-1].selected
             }
             render()
             
@@ -100,34 +101,34 @@ const processUserInput = (userInput) => {
         
     //ability use
         //}else if(userInput === "q" || userInput === "w" || userInput === "e" || userInput === "r" || userInput === "t" || userInput === "y") {
-        }else if(userInput in gameTown.GetCurrentHunterAbilityMap()){
+        }else if(userInput in Town.GetCurrentHunterAbilityMap()){
           //console.log("ability use")
           //var abilityIndex = ConvertSkillHotkey(userInput)
     
             //hit existing ability key
-            let abil = gameTown.GetCurrentHunterAbility(userInput)
-            let canUse = abil.abilityFunction.function.canUse(abil,gameTown.GetActive())
+            let abil = Town.GetCurrentHunterAbility(userInput)
+            let canUse = abil.abilityFunction.function.canUse(abil,Town.GetActive())
             var currentPhase = (GetGameState() == "PlayerTurnDefend") ? "Defend" : "Attack"
             if(canUse.length > 0 && (abil.abilityPhase.phase == "Defend" || abil.abilityPhase.phase == currentPhase)){
               //check if ability is instant or targeted
               if(abil.abilityFunction.function.onTarget){
-                abil.abilityFunction.function.onTarget(abil, gameTown.GetActive())
+                abil.abilityFunction.function.onTarget(abil, Town.GetActive())
     
               }else {
-                abil.abilityFunction.function.onUse(abil, gameTown.GetActive(), Target.GetTargetEntityPos())
+                abil.abilityFunction.function.onUse(abil, Town.GetActive(), Target.GetTargetEntityPos())
               }
             }
           render()
         
         //}else if(userInput === "Q" || userInput === "W" || userInput === "E" || userInput === "R" || userInput === "T" || userInput === "Y") {
-        }else if (userInput.length == 1 && userInput.toLowerCase() in gameTown.GetCurrentHunterAbilityMap() ){
+        }else if (userInput.length == 1 && userInput.toLowerCase() in Town.GetCurrentHunterAbilityMap() ){
       //ability info
           //console.log("ability info")
           //var abilityIndex = ConvertSkillHotkey(userInput)
           SetPreviousState("AbilityInfo")
           //console.log(abilityIndex)
           //console.log(CurrrentActivePlayer.abilityList.abilities[abilityIndex])
-          SetEntityToRender(gameTown.GetCurrentHunterAbility(userInput.toLowerCase()))
+          SetEntityToRender(Town.GetCurrentHunterAbility(userInput.toLowerCase()))
           render()
         
         }else if(userInput=="Enter"){

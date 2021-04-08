@@ -1,6 +1,6 @@
-import {enemyEntities, GetGameState, SetGameState} from "../index"
+import {enemyEntities, GetGameState, hunterEntities, SetGameState, villagerEntities} from "../index"
 import {RenderTownCenter,RenderVillager} from "./renderTown"
-import gameTown from "../state/town"
+import * as Town from "../state/town"
 
 const VillagePhases = ["townCenter","villager","crafting","chooseHunt","loadingTown"]
 
@@ -78,28 +78,27 @@ function ProcessVillagerInput(userInput){
     if(!userInput){
         return;
     }else if(userInput == "ArrowUp"){
-        ChangeCurrentIndex(-1, gameTown.GetVillagers().length)
+        ChangeCurrentIndex(-1, villagerEntities.get().length + hunterEntities.get().length)
     }else if (userInput == "ArrowDown"){
-        ChangeCurrentIndex(1, gameTown.GetVillagers().length)
+        ChangeCurrentIndex(1, villagerEntities.get().length + hunterEntities.get().length)
     }else if (userInput == "Enter"){
         //swap hunter in and out
-        var huntersEID = gameTown.GetHunters()
-        var villagerEID = gameTown.GetVillagers()
-        var villagersNotHunting = villagerEID.filter(eid => !huntersEID.includes(eid))
+        var huntersEID = hunterEntities.get()
+        var villagerEID = villagerEntities.get()
         var selectedVill
         if(currentSelectIndex < huntersEID.length){
             selectedVill = huntersEID[currentSelectIndex]
         }else {
-            selectedVill = villagersNotHunting[currentSelectIndex - huntersEID.length]
+            selectedVill = villagerEID[currentSelectIndex - huntersEID.length]
         }
         if(huntersEID.includes(selectedVill)){
             //remove from hunters
-            gameTown.RemoveHunter(selectedVill)
-            ChangeCurrentIndex(-1, gameTown.GetVillagers().length)
+            Town.RemoveHunter(selectedVill)
+            ChangeCurrentIndex(-1, villagerEntities.get().length)
         } else{
             //add to hunters
-            huntersEID.push(selectedVill)
-            ChangeCurrentIndex(1, gameTown.GetVillagers().length)
+            Town.AddHunter(selectedVill)
+            ChangeCurrentIndex(1, villagerEntities.get().length)
 
         }
     }else if(userInput == "Escape" || userInput == "Backspace"){

@@ -9,9 +9,10 @@ import world from "../state/ecs"
 import { readCacheSet } from "../state/cache";
 import {toCell, toLocId} from "../lib/grid"
 
-import gameTown from "../state/town"
+import * as Town from "../state/town"
 import * as Message from "../state/messagelog"
 import * as Village from "./village"
+import { hunterEntities, playerEntities,villagerEntities } from "../index.js";
 
 function ClearDisplay(){
     display.clear()
@@ -40,27 +41,35 @@ export const RenderVillager = () =>{
     ClearDisplay()
     var index = Village.GetCurrentIndex()
 
-    var villagerEID = gameTown.GetVillagers()
-    var huntersEID = gameTown.GetHunters()
+    var villagers = villagerEntities.get()
+    var hunters = hunterEntities.get()
 
-    display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y,"Hunters")
-    for(var x = 0; x< huntersEID.length; x++){
-        var vill = gameTown.GetVillager(huntersEID[x])
-        display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y + x + 1, "%c{"+vill.appearance.color+"}"+vill.appearance.char)
+    display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y,"Hunters "+hunters.length+"/4")
+    for(var x = 0; x< hunters.length; x++){
+        var vill = hunters[x]
+        var textToDisplay = "%c{"+vill.appearance.color+"}"+vill.appearance.char
+        if(index == x){
+            textToDisplay = "* " + textToDisplay
+        }
+        display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y + x + 1, textToDisplay)
 
         if(index == x){
             RenderVillagerExamine(vill)
         }
     }
 
-    display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y + huntersEID.length+2,"Villagers")
-    var villagersNotHunting = villagerEID.filter(eid => !huntersEID.includes(eid))
-    for(var x = 0; x< villagersNotHunting.length; x++){
+    display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y + hunters.length+2,"Villagers")
+    for(var x = 0; x< villagers.length; x++){
         
-        var vill = gameTown.GetVillager(villagersNotHunting[x])
-        display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y + x + 3 + huntersEID.length, "%c{"+vill.appearance.color+"}"+vill.appearance.char)
+        var vill = villagers[x]
 
-        if(index == x + huntersEID.length){
+        var textToDisplay = "%c{"+vill.appearance.color+"}"+vill.appearance.char
+        if(index == x + hunters.length){
+            textToDisplay = "* " + textToDisplay
+        }
+        display.drawText(grid.town.villagerMenu.x, grid.town.villagerMenu.y + x + 3 + hunters.length,textToDisplay)
+
+        if(index == x + hunters.length){
             RenderVillagerExamine(vill)
         }
     }

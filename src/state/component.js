@@ -44,6 +44,8 @@ export class Position extends Component {
     }
   }
 
+export class ActiveHunter extends Component{}
+export class Hunter extends Component {}
 export class Health extends Component {
     static properties = { max: 4, current: 4 };
   }
@@ -162,6 +164,10 @@ export class Health extends Component {
     static properties = {companions: [ ["Goblin", 2] ]}
   }
 
+  export class CraftingIngredient extends Component {
+    static allowMultiple = true;
+    static properties = {ingredient: "bone"}
+  }
 
   //abilities
 export class AbilityList extends Component {
